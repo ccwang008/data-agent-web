@@ -1,0 +1,139 @@
+{
+  "app": {
+    "name": "Data Agent",
+    "tagline": "AI 原生数据智能平台"
+  },
+  "nav": {
+    "section.workspace": "工作区",
+    "section.platform": "平台",
+    "knowledge-graph": "知识图谱",
+    "knowledge-graph.graphs": "图实例",
+    "knowledge-graph.metadata": "元数据建模",
+    "knowledge-graph.import": "数据导入",
+    "knowledge-graph.analysis": "数据分析",
+    "knowledge-graph.visualization": "图谱浏览",
+    "knowledge-graph.async-tasks": "异步任务",
+    "knowledge-graph.computer": "图计算",
+    "knowledge-graph.ai": "图 AI",
+    "knowledge-graph.admin": "管理中心",
+    "knowledge-graph.help": "帮助文档",
+    "data-source": "数据源",
+    "agents": "智能体",
+    "workflow": "编排流水线",
+    "insights": "洞察分析",
+    "settings": "系统设置"
+  },
+  "topbar": {
+    "search": "搜索数据资产、智能体或查询…",
+    "locale": "语言"
+  },
+  "actions": {
+    "toggleSidebar": "收起",
+    "switchLocale": "切换语言",
+    "cancel": "取消",
+    "confirm": "确认",
+    "save": "保存",
+    "create": "新建",
+    "delete": "删除",
+    "edit": "编辑",
+    "retry": "重试",
+    "close": "关闭",
+    "back": "返回",
+    "next": "下一步",
+    "submit": "提交",
+    "refresh": "刷新"
+  },
+  "common": {
+    "yes": "是",
+    "no": "否",
+    "loading": "加载中…",
+    "error": "加载失败",
+    "empty": "暂无数据",
+    "search": "搜索",
+    "filter": "筛选",
+    "status": "状态",
+    "type": "类型",
+    "name": "名称",
+    "actions": "操作",
+    "createdAt": "创建时间",
+    "updatedAt": "更新时间",
+    "description": "描述",
+    "id": "ID"
+  },
+  "status": {
+    "mock": "Mock 模式",
+    "healthy": "正常",
+    "warning": "警告",
+    "offline": "离线",
+    "running": "运行中",
+    "success": "成功",
+    "failed": "失败",
+    "pending": "等待中",
+    "cancelled": "已取消",
+    "building": "构建中",
+    "ready": "就绪",
+    "error": "错误"
+  },
+  "settings": {
+    "eyebrow": "平台配置",
+    "title": "系统设置",
+    "subtitle": "管理平台偏好、权限入口与左侧菜单展示。",
+    "placeholder": "该设置子页暂未实现，当前先保留入口。",
+    "nav": {
+      "preferences": "偏好设置",
+      "users": "用户管理",
+      "permissions": "权限策略",
+      "audit": "审计日志",
+      "menu": "菜单管理",
+      "flags": "功能开关"
+    },
+    "menu": {
+      "eyebrow": "菜单配置",
+      "title": "左侧菜单树",
+      "addGroup": "添加分组",
+      "reset": "重置默认",
+      "export": "导出配置",
+      "resetConfirm": "确定要重置为默认菜单结构吗？",
+      "deleteConfirm": "确定要删除该自定义分组吗？",
+      "newGroup": "自定义分组",
+      "groupOnly": "仅展示分组",
+      "visible": "显示",
+      "hidden": "不显示",
+      "preview": "实时预览",
+      "moveUp": "上移",
+      "moveDown": "下移",
+      "promote": "升一级",
+      "demote": "降一级",
+      "columns": {
+        "node": "菜单节点",
+        "zh": "中文名称",
+        "en": "英文名称",
+        "visible": "显示状态",
+        "actions": "层级与排序"
+      }
+    },
+    "preferences": {
+      "language": {
+        "eyebrow": "语言",
+        "title": "界面语言",
+        "description": "选择系统界面显示语言，保存后会立即应用到全局并在刷新后保留。"
+      },
+      "mock": {
+        "eyebrow": "运行模式",
+        "description": "当前前端使用本地 Mock API 数据。真实后端接入前，该状态仅用于说明当前数据来源。",
+        "current": "当前启用本地模拟数据",
+        "readonly": "只读状态"
+      }
+    }
+  },
+  "module": {
+    "todo.title": "{{name}} · 开发中",
+    "todo.subtitle": "该模块为占位入口，业务能力尚未实现。",
+    "todo.checklist.title": "待办清单",
+    "todo.checklist.api": "接入 Mock API 与 fixtures",
+    "todo.checklist.store": "构建特性级 Zustand store",
+    "todo.checklist.pages": "实现页面与子路由",
+    "todo.checklist.i18n": "补全 zh-CN / en-US 文案",
+    "todo.status": "占位"
+  }
+}

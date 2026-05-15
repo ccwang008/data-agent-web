@@ -1,0 +1,110 @@
+{
+  "version": 2,
+  "updatedAt": "2026-05-13T00:00:00.000Z",
+  "root": [
+    {
+      "id": "kg",
+      "builtinRouteKey": "kg",
+      "label": { "zh-CN": "知识图谱", "en-US": "Knowledge Graph" },
+      "visible": true,
+      "children": [
+        {
+          "id": "kg.graphs",
+          "builtinRouteKey": "kg.graphs",
+          "label": { "zh-CN": "图实例", "en-US": "Graphs" },
+          "visible": true
+        },
+        {
+          "id": "kg.metadata",
+          "builtinRouteKey": "kg.metadata",
+          "label": { "zh-CN": "元数据建模", "en-US": "Metadata" },
+          "visible": true
+        },
+        {
+          "id": "kg.import",
+          "builtinRouteKey": "kg.import",
+          "label": { "zh-CN": "数据导入", "en-US": "Import" },
+          "visible": true
+        },
+        {
+          "id": "kg.analysis",
+          "builtinRouteKey": "kg.analysis",
+          "label": { "zh-CN": "数据分析", "en-US": "Analysis" },
+          "visible": true
+        },
+        {
+          "id": "kg.visualization",
+          "builtinRouteKey": "kg.visualization",
+          "label": { "zh-CN": "图谱浏览", "en-US": "Visualization" },
+          "visible": true
+        },
+        {
+          "id": "kg.async-tasks",
+          "builtinRouteKey": "kg.async-tasks",
+          "label": { "zh-CN": "异步任务", "en-US": "Async Tasks" },
+          "visible": true
+        },
+        {
+          "id": "kg.computer",
+          "builtinRouteKey": "kg.computer",
+          "label": { "zh-CN": "图计算", "en-US": "Computer" },
+          "visible": true
+        },
+        {
+          "id": "kg.ai",
+          "builtinRouteKey": "kg.ai",
+          "label": { "zh-CN": "图 AI", "en-US": "AI" },
+          "visible": true
+        },
+        {
+          "id": "kg.ai-graph",
+          "builtinRouteKey": "kg.ai-graph",
+          "label": { "zh-CN": "AI 图谱", "en-US": "AI Graph" },
+          "visible": true
+        },
+        {
+          "id": "kg.admin",
+          "builtinRouteKey": "kg.admin",
+          "label": { "zh-CN": "管理中心", "en-US": "Admin" },
+          "visible": true
+        },
+        {
+          "id": "kg.help",
+          "builtinRouteKey": "kg.help",
+          "label": { "zh-CN": "帮助文档", "en-US": "Help" },
+          "visible": true
+        }
+      ]
+    },
+    {
+      "id": "data-source",
+      "builtinRouteKey": "data-source",
+      "label": { "zh-CN": "数据源", "en-US": "Data Source" },
+      "visible": true
+    },
+    {
+      "id": "agents",
+      "builtinRouteKey": "agents",
+      "label": { "zh-CN": "智能体", "en-US": "Agents" },
+      "visible": true
+    },
+    {
+      "id": "workflow",
+      "builtinRouteKey": "workflow",
+      "label": { "zh-CN": "编排流水线", "en-US": "Workflow" },
+      "visible": true
+    },
+    {
+      "id": "insights",
+      "builtinRouteKey": "insights",
+      "label": { "zh-CN": "洞察分析", "en-US": "Insights" },
+      "visible": true
+    },
+    {
+      "id": "settings",
+      "builtinRouteKey": "settings",
+      "label": { "zh-CN": "系统设置", "en-US": "Settings" },
+      "visible": true
+    }
+  ]
+}

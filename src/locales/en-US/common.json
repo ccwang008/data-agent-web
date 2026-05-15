@@ -1,0 +1,139 @@
+{
+  "app": {
+    "name": "Data Agent",
+    "tagline": "AI-native Data Intelligence"
+  },
+  "nav": {
+    "section.workspace": "Workspace",
+    "section.platform": "Platform",
+    "knowledge-graph": "Knowledge Graph",
+    "knowledge-graph.graphs": "Graphs",
+    "knowledge-graph.metadata": "Metadata",
+    "knowledge-graph.import": "Import",
+    "knowledge-graph.analysis": "Analysis",
+    "knowledge-graph.visualization": "Visualization",
+    "knowledge-graph.async-tasks": "Async Tasks",
+    "knowledge-graph.computer": "Computer",
+    "knowledge-graph.ai": "AI",
+    "knowledge-graph.admin": "Admin",
+    "knowledge-graph.help": "Help",
+    "data-source": "Data Source",
+    "agents": "Agents",
+    "workflow": "Workflow",
+    "insights": "Insights",
+    "settings": "Settings"
+  },
+  "topbar": {
+    "search": "Search assets, agents or queries…",
+    "locale": "Language"
+  },
+  "actions": {
+    "toggleSidebar": "Collapse",
+    "switchLocale": "Switch language",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "create": "Create",
+    "delete": "Delete",
+    "edit": "Edit",
+    "retry": "Retry",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "submit": "Submit",
+    "refresh": "Refresh"
+  },
+  "common": {
+    "yes": "Yes",
+    "no": "No",
+    "loading": "Loading…",
+    "error": "Failed to load",
+    "empty": "No data",
+    "search": "Search",
+    "filter": "Filter",
+    "status": "Status",
+    "type": "Type",
+    "name": "Name",
+    "actions": "Actions",
+    "createdAt": "Created",
+    "updatedAt": "Updated",
+    "description": "Description",
+    "id": "ID"
+  },
+  "status": {
+    "mock": "Mock Mode",
+    "healthy": "Healthy",
+    "warning": "Warning",
+    "offline": "Offline",
+    "running": "Running",
+    "success": "Success",
+    "failed": "Failed",
+    "pending": "Pending",
+    "cancelled": "Cancelled",
+    "building": "Building",
+    "ready": "Ready",
+    "error": "Error"
+  },
+  "settings": {
+    "eyebrow": "Platform",
+    "title": "Settings",
+    "subtitle": "Manage platform preferences, access entries, and sidebar menu display.",
+    "placeholder": "This settings page is not implemented yet. The entry is kept for now.",
+    "nav": {
+      "preferences": "Preferences",
+      "users": "Users",
+      "permissions": "Permissions",
+      "audit": "Audit",
+      "menu": "Menu",
+      "flags": "Flags"
+    },
+    "menu": {
+      "eyebrow": "Menu config",
+      "title": "Sidebar menu tree",
+      "addGroup": "Add group",
+      "reset": "Reset default",
+      "export": "Export config",
+      "resetConfirm": "Reset to the default menu structure?",
+      "deleteConfirm": "Delete this custom group?",
+      "newGroup": "Custom group",
+      "groupOnly": "Display group only",
+      "visible": "Visible",
+      "hidden": "Hidden",
+      "preview": "Live preview",
+      "moveUp": "Move up",
+      "moveDown": "Move down",
+      "promote": "Promote",
+      "demote": "Demote",
+      "columns": {
+        "node": "Menu node",
+        "zh": "Chinese name",
+        "en": "English name",
+        "visible": "Display",
+        "actions": "Level and order"
+      }
+    },
+    "preferences": {
+      "language": {
+        "eyebrow": "Language",
+        "title": "Interface language",
+        "description": "Choose the interface language. Changes apply globally and persist after refresh."
+      },
+      "mock": {
+        "eyebrow": "Runtime mode",
+        "description": "The frontend currently uses local Mock API data. Before a real backend is wired, this status only explains the current data source.",
+        "current": "Local mock data is active",
+        "readonly": "Read-only status"
+      }
+    }
+  },
+  "module": {
+    "todo.title": "{{name}} · Coming Soon",
+    "todo.subtitle": "This module is a placeholder. Business features are not yet implemented.",
+    "todo.checklist.title": "Todo checklist",
+    "todo.checklist.api": "Wire up Mock API & fixtures",
+    "todo.checklist.store": "Build feature-level Zustand store",
+    "todo.checklist.pages": "Implement pages & sub-routes",
+    "todo.checklist.i18n": "Complete zh-CN / en-US copy",
+    "todo.status": "Placeholder"
+  }
+}

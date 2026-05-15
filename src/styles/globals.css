@@ -1,0 +1,128 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Classic SaaS admin palette */
+    --background:      210 24% 97%;
+    --foreground:      222 47% 11%;
+
+    --card:            0 0% 100%;
+    --card-foreground: 222 47% 11%;
+
+    --surface:         0 0% 100%;
+    --surface-raised:  210 40% 98%;
+
+    --popover:         0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+
+    --primary:         221 83% 53%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary:       210 40% 96%;
+    --secondary-foreground: 215 25% 27%;
+
+    --muted:           210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+
+    --accent:          214 95% 93%;
+    --accent-foreground: 221 83% 32%;
+
+    --destructive:     0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border:          214 32% 91%;
+    --input:           214 32% 91%;
+    --ring:            221 83% 53%;
+
+    --radius: 0.5rem;
+  }
+
+  * {
+    @apply border-border;
+  }
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+    font-feature-settings: "rlig" 1, "calt" 1, "ss01" 1;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+}
+
+@layer components {
+  /* Subtle grid for explicit canvas areas only */
+  .bg-grid-paper {
+    background-image:
+      linear-gradient(hsl(var(--border) / 0.42) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--border) / 0.42) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+  .hairline {
+    box-shadow: inset 0 -1px 0 hsl(var(--border));
+  }
+
+  .eyebrow {
+    @apply text-[11px] font-semibold uppercase tracking-wide text-muted-foreground;
+  }
+
+  .card-ticks {
+    position: relative;
+    box-shadow:
+      0 1px 2px hsl(215 25% 27% / 0.04),
+      0 1px 1px hsl(215 25% 27% / 0.03);
+  }
+  .card-ticks::before {
+    content: none;
+  }
+  .card-ticks::after {
+    content: none;
+  }
+
+  .saas-panel {
+    @apply rounded-md border border-border bg-card shadow-sm;
+  }
+
+  .page-shell {
+    @apply h-full w-full overflow-y-auto p-3 scrollbar-thin md:p-4;
+  }
+
+  .page-shell-static {
+    @apply h-full w-full p-3 md:p-4;
+  }
+
+  .workspace-shell {
+    @apply h-full w-full overflow-hidden p-3 md:p-4;
+  }
+
+  .badge-healthy { @apply border-emerald-200 bg-emerald-50 text-emerald-700; }
+  .badge-warning { @apply border-amber-200 bg-amber-50 text-amber-700; }
+  .badge-offline, .badge-failed, .badge-error { @apply border-red-200 bg-red-50 text-red-700; }
+  .badge-running, .badge-building, .badge-pending { @apply border-blue-200 bg-blue-50 text-blue-700; }
+  .badge-success, .badge-ready, .badge-connected { @apply border-emerald-200 bg-emerald-50 text-emerald-700; }
+  .badge-cancelled, .badge-paused { @apply border-slate-200 bg-slate-50 text-slate-600; }
+}
+
+@layer utilities {
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: hsl(215 16% 47% / 0.28);
+    border-radius: 3px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+}
