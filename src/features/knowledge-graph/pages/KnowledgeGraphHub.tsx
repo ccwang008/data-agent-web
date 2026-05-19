@@ -91,7 +91,9 @@ export function KnowledgeGraphHub() {
           >
             <span className="eyebrow">视角</span>
             <span className="max-w-[120px] truncate text-foreground">
-              {currentPersp?.name ?? "默认视角"}
+              {currentPersp
+                ? t(`hub.perspectives.${currentPersp.id}`, currentPersp.name)
+                : t("hub.defaultPerspective")}
             </span>
             <ChevronDown className="h-3 w-3" />
           </button>
@@ -105,7 +107,7 @@ export function KnowledgeGraphHub() {
                   !activePerspectiveId && "bg-accent font-medium",
                 )}
               >
-                默认视角
+                {t("hub.defaultPerspective")}
               </button>
               {perspectives
                 .filter((p) => p.graphId === currentGraphId)
@@ -119,7 +121,7 @@ export function KnowledgeGraphHub() {
                       p.id === activePerspectiveId && "bg-accent font-medium",
                     )}
                   >
-                    {p.name}
+                    {t(`hub.perspectives.${p.id}`, p.name)}
                   </button>
                 ))}
             </div>

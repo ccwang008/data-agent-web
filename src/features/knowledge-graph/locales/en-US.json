@@ -2,6 +2,11 @@
   "hub": {
     "graph": "Graph",
     "perspective": "Perspective",
+    "defaultPerspective": "Default Perspective",
+    "perspectives": {
+      "persp-procurement": "Procurement View",
+      "persp-risk": "Risk View"
+    },
     "notifications": "Notifications",
     "noGraph": "No graph selected"
   },

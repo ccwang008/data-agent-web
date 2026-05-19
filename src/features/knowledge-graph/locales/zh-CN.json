@@ -2,6 +2,11 @@
   "hub": {
     "graph": "图实例",
     "perspective": "视角",
+    "defaultPerspective": "默认视角",
+    "perspectives": {
+      "persp-procurement": "采购视角",
+      "persp-risk": "风险视角"
+    },
     "notifications": "通知",
     "noGraph": "未选择图实例"
   },

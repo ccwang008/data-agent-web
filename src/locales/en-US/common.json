@@ -123,6 +123,17 @@
         "description": "The frontend currently uses local Mock API data. Before a real backend is wired, this status only explains the current data source.",
         "current": "Local mock data is active",
         "readonly": "Read-only status"
+      },
+      "layout": {
+        "eyebrow": "Interface layout",
+        "title": "Shell visibility",
+        "description": "When hidden, the corresponding region is fully removed from every page. To restore, navigate directly to /settings/preferences.",
+        "sidebar.title": "Hide sidebar",
+        "sidebar.description": "Remove the left navigation; the main area fills the full width.",
+        "topbar.title": "Hide top bar",
+        "topbar.description": "Remove the top breadcrumb and search bar; the main area extends to the top edge.",
+        "state.on": "Hidden",
+        "state.off": "Visible"
       }
     }
   },

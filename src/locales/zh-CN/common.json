@@ -123,6 +123,17 @@
         "description": "当前前端使用本地 Mock API 数据。真实后端接入前，该状态仅用于说明当前数据来源。",
         "current": "当前启用本地模拟数据",
         "readonly": "只读状态"
+      },
+      "layout": {
+        "eyebrow": "界面布局",
+        "title": "外壳显示",
+        "description": "隐藏后整个应用都不再渲染对应区域。需要时可直接输入 URL 访问 /settings/preferences 还原。",
+        "sidebar.title": "隐藏左侧菜单",
+        "sidebar.description": "关闭左侧导航栏，主内容区将占满整个宽度。",
+        "topbar.title": "隐藏顶部栏",
+        "topbar.description": "关闭顶部面包屑与搜索栏，主内容区将顶到屏幕上沿。",
+        "state.on": "已隐藏",
+        "state.off": "显示中"
       }
     }
   },
