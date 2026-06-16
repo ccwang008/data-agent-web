@@ -25,6 +25,8 @@ There is no test framework installed. Do not invent a `test` script — if testi
 
 Spec and code must ship in the same PR; do not land code without updating the relevant spec. When a change conflicts with an existing ADR, propose a new ADR that `Supersedes` it rather than silently changing course.
 
+Hard requirement for Plan mode: every accepted or implementation-ready plan must be recorded under the relevant `specs/` feature docs before or together with the code change. The complete plan text and any plan-generated companion/package files must also be archived verbatim under `specs/features/<key>/plans/`; do not only split the plan into `requirements.md`, `design.md`, and `tasks.md` and lose the original plan artifact. If the feature has no spec directory yet, create `specs/features/<key>/` from the templates first, add `plans/`, then place the plan across `requirements.md`, `design.md`, and `tasks.md` as appropriate while preserving the original plan artifact in `plans/`.
+
 ## High-level architecture
 
 ### Bootstrap
@@ -84,4 +86,4 @@ shadcn style is `new-york` (see `components.json`); add primitives with `npx sha
 
 ## Module status (as of current commit)
 
-Only `knowledge-graph` is implemented (hub + 10 sub-routes: `graphs`, `metadata`, `import`, `analysis`, `visualization`, `async-tasks`, `computer`, `ai`, `ai-graph`, `admin`, `help`). The other features (`data-source`, `agents`, `workflow`, `insights`, `settings`) are placeholder shells.
+`knowledge-graph` is implemented (hub + 10 sub-routes: `graphs`, `metadata`, `import`, `analysis`, `visualization`, `async-tasks`, `computer`, `ai`, `ai-graph`, `admin`, `help`). `knowledge-center` is a frontend mock module with knowledge base/document/vector pages. The other features (`data-source`, `agents`, `workflow`, `insights`, `settings`) are placeholder shells or partial admin surfaces.

@@ -10,12 +10,14 @@ specs/
 ├── platform/     # 跨 feature 共识 (架构 / 设计系统 / i18n / mock / 状态 / 路由)
 ├── adr/          # 架构决策记录 (ADR)
 └── features/     # 业务 feature spec, 与 src/features/ 同名
+    └── <feature-key>/plans/  # Plan 原文和 Plan 生成的配套文件归档
 ```
 
 ## Feature 状态 · Feature Status
 | Feature | 路径 · Path | 路由 · Route | 状态 | Spec |
 |---|---|---|---|---|
 | Knowledge Graph | `src/features/knowledge-graph/` | `/knowledge-graph/*` | 🔨 hub (10 子模块) | [README](./features/knowledge-graph/README.md) · [Req](./features/knowledge-graph/requirements.md) · [Design](./features/knowledge-graph/design.md) · [Tasks](./features/knowledge-graph/tasks.md) · [Submodules](./features/knowledge-graph/submodules/) |
+| Knowledge Center | `src/features/knowledge-center/` | `/knowledge-center/*` | 🔨 前端 mock | [README](./features/knowledge-center/README.md) · [Req](./features/knowledge-center/requirements.md) · [Design](./features/knowledge-center/design.md) · [Tasks](./features/knowledge-center/tasks.md) |
 | Data Sources | `src/features/data-source/` | `/data-source` | 🚧 占位 | [README](./features/data-source/README.md) · [Req](./features/data-source/requirements.md) · [Design](./features/data-source/design.md) · [Tasks](./features/data-source/tasks.md) |
 | Agents | `src/features/agents/` | `/agents` | 🚧 占位 | [README](./features/agents/README.md) · [Req](./features/agents/requirements.md) · [Design](./features/agents/design.md) · [Tasks](./features/agents/tasks.md) |
 | Workflows | `src/features/workflow/` | `/workflow` | 🚧 占位 | [README](./features/workflow/README.md) · [Req](./features/workflow/requirements.md) · [Design](./features/workflow/design.md) · [Tasks](./features/workflow/tasks.md) |
@@ -37,6 +39,13 @@ specs/
 见 [adr/README.md](./adr/README.md) 与 [ADR-0001](./adr/0001-record-architecture-decisions.md)。
 
 ## 写作流程 · Workflow
+
+### Plan 模式硬性要求
+- 任何进入实现阶段的 Plan 都必须同步写入 `specs/`。
+- Plan 生成的完整计划正文和配套/套餐文件必须原文归档到 `specs/features/<feature-key>/plans/`, 不得只拆入 `requirements.md` / `design.md` / `tasks.md` 后丢失原始计划。
+- 若 feature 已有 spec, 先更新对应 `requirements.md` / `design.md` / `tasks.md`, 再改代码。
+- 若 feature 尚无 spec, 先创建 `specs/features/<feature-key>/README.md` / `requirements.md` / `design.md` / `tasks.md` / `plans/`, 再把计划拆入这些文件, 并在 `plans/` 中保留原文归档。
+- spec 与代码必须同轮交付, 不接受只实现代码、不落 specs 的改动。
 
 ### 新 feature
 1. 复制 `_templates/feature-README.md` / `requirements.md` / `design.md` / `tasks.md` 到 `features/<feature-key>/`

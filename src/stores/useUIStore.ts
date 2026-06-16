@@ -18,7 +18,7 @@ export const useUIStore = create<UIState>()(
   persist(
     (set) => ({
       sidebarCollapsed: false,
-      sidebarExpandedKeys: ["kg"],
+      sidebarExpandedKeys: ["kg", "knowledge-center"],
       sidebarHidden: false,
       topbarHidden: false,
       toggleSidebar: () =>

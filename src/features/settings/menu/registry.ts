@@ -1,15 +1,18 @@
 import type { LucideIcon } from "lucide-react";
 import {
+  BookOpen,
   Brain,
   BrainCog,
   Database,
   FileInput,
+  FileText,
   GitBranch,
   HelpCircle,
   LineChart,
   Network,
   Settings,
   ShieldAlert,
+  ShieldCheck,
   Sparkles,
   SquareCode,
   Timer,
@@ -118,6 +121,31 @@ export const BUILTIN_MENU: Record<string, BuiltinMenuEntry> = {
     icon: HelpCircle,
     defaultLabel: { "zh-CN": "帮助文档", "en-US": "Help" },
   },
+  "knowledge-center": {
+    key: "knowledge-center",
+    matchPrefix: "/knowledge-center",
+    icon: BookOpen,
+    status: "ready",
+    defaultLabel: { "zh-CN": "知识中心", "en-US": "Knowledge Center" },
+  },
+  "knowledge-center.knowledge-bases": {
+    key: "knowledge-center.knowledge-bases",
+    to: "/knowledge-center/knowledge-bases",
+    icon: BookOpen,
+    defaultLabel: { "zh-CN": "知识库", "en-US": "Knowledge Base" },
+  },
+  "knowledge-center.documents": {
+    key: "knowledge-center.documents",
+    to: "/knowledge-center/documents",
+    icon: FileText,
+    defaultLabel: { "zh-CN": "文档管理", "en-US": "Document Management" },
+  },
+  "knowledge-center.permissions": {
+    key: "knowledge-center.permissions",
+    to: "/knowledge-center/permissions",
+    icon: ShieldCheck,
+    defaultLabel: { "zh-CN": "知识权限", "en-US": "Knowledge Permissions" },
+  },
   "data-source": {
     key: "data-source",
     to: "/data-source",
@@ -170,6 +198,14 @@ const kgChildren: MenuNode[] = [
   builtinNode("kg.help"),
 ];
 
+const knowledgeCenterChildren: MenuNode[] = [
+  builtinNode("knowledge-center.knowledge-bases"),
+  builtinNode("knowledge-center.documents"),
+  builtinNode("knowledge-center.permissions"),
+];
+
+const DEPRECATED_MENU_KEYS = new Set(["knowledge-center.vectors"]);
+
 export function builtinNode(key: string, children?: MenuNode[]): MenuNode {
   const entry = BUILTIN_MENU[key];
 
@@ -210,7 +246,10 @@ export function normalizeMenuConfig(config: MenuConfig): MenuConfig {
   return {
     ...config,
     version: 2,
-    root: mergeMissingBuiltinNodes(flattenLegacySections(config.root), createDefaultRootNodes()),
+    root: mergeMissingBuiltinNodes(
+      removeDeprecatedBuiltinNodes(flattenLegacySections(config.root)),
+      createDefaultRootNodes(),
+    ),
   };
 }
 
@@ -239,9 +278,23 @@ function flattenLegacySections(nodes: MenuNode[]): MenuNode[] {
   });
 }
 
+function removeDeprecatedBuiltinNodes(nodes: MenuNode[]): MenuNode[] {
+  return nodes.flatMap((node) => {
+    if (node.builtinRouteKey && DEPRECATED_MENU_KEYS.has(node.builtinRouteKey)) return [];
+
+    return [
+      {
+        ...node,
+        children: node.children ? removeDeprecatedBuiltinNodes(node.children) : undefined,
+      },
+    ];
+  });
+}
+
 function createDefaultRootNodes(): MenuNode[] {
   return [
     builtinNode("kg", kgChildren),
+    builtinNode("knowledge-center", knowledgeCenterChildren),
     builtinNode("data-source"),
     builtinNode("agents"),
     builtinNode("workflow"),

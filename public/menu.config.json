@@ -77,6 +77,32 @@
       ]
     },
     {
+      "id": "knowledge-center",
+      "builtinRouteKey": "knowledge-center",
+      "label": { "zh-CN": "知识中心", "en-US": "Knowledge Center" },
+      "visible": true,
+      "children": [
+        {
+          "id": "knowledge-center.knowledge-bases",
+          "builtinRouteKey": "knowledge-center.knowledge-bases",
+          "label": { "zh-CN": "知识库", "en-US": "Knowledge Base" },
+          "visible": true
+        },
+        {
+          "id": "knowledge-center.documents",
+          "builtinRouteKey": "knowledge-center.documents",
+          "label": { "zh-CN": "文档管理", "en-US": "Document Management" },
+          "visible": true
+        },
+        {
+          "id": "knowledge-center.permissions",
+          "builtinRouteKey": "knowledge-center.permissions",
+          "label": { "zh-CN": "知识权限", "en-US": "Knowledge Permissions" },
+          "visible": true
+        }
+      ]
+    },
+    {
       "id": "data-source",
       "builtinRouteKey": "data-source",
       "label": { "zh-CN": "数据源", "en-US": "Data Source" },
