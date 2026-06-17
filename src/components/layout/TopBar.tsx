@@ -4,30 +4,6 @@ import { Search } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
-const ROUTE_LABELS: Record<string, string> = {
-  "knowledge-graph": "Knowledge Graph",
-  graphs: "Graphs",
-  metadata: "Metadata",
-  import: "Import",
-  analysis: "Analysis",
-  visualization: "Visualization",
-  "async-tasks": "Async Tasks",
-  computer: "Computer",
-  ai: "AI",
-  admin: "Admin",
-  help: "Help",
-  "knowledge-center": "Knowledge Center",
-  "knowledge-bases": "Knowledge Base",
-  documents: "Documents",
-  vectors: "Knowledge Vectors",
-  permissions: "Permissions",
-  "data-source": "Data Source",
-  agents: "Agents",
-  workflow: "Workflow",
-  insights: "Insights",
-  settings: "Settings",
-};
-
 function pathToCrumbs(pathname: string) {
   return pathname.split("/").filter(Boolean);
 }
@@ -42,22 +18,35 @@ export function TopBar() {
       {/* Breadcrumb */}
       <div className="flex min-w-0 flex-1 items-center gap-1.5 text-[13px]">
         <span className="text-muted-foreground/40">/</span>
-        {crumbs.map((c, i) => (
-          <span key={`${c}-${i}`} className="flex items-center gap-1.5">
-            <span
-              className={cn(
-                i === crumbs.length - 1
-                  ? "font-medium text-foreground"
-                  : "text-muted-foreground",
+        {crumbs.map((crumb, i) => {
+          const root = crumbs[0];
+          const keys = [
+            ...(root === "settings" && i > 0 ? [`settings.nav.${crumb}`] : []),
+            `nav.${root}.${crumb}`,
+            `nav.${crumb}`,
+          ];
+          const label = keys.reduceRight(
+            (fallback, key) => t(key, { defaultValue: fallback }),
+            crumb,
+          );
+
+          return (
+            <span key={`${crumb}-${i}`} className="flex items-center gap-1.5">
+              <span
+                className={cn(
+                  i === crumbs.length - 1
+                    ? "font-medium text-foreground"
+                    : "text-muted-foreground",
+                )}
+              >
+                {label}
+              </span>
+              {i < crumbs.length - 1 && (
+                <span className="text-muted-foreground/40">/</span>
               )}
-            >
-              {ROUTE_LABELS[c] ?? c}
             </span>
-            {i < crumbs.length - 1 && (
-              <span className="text-muted-foreground/40">/</span>
-            )}
-          </span>
-        ))}
+          );
+        })}
       </div>
 
       {/* Search (visual placeholder) */}

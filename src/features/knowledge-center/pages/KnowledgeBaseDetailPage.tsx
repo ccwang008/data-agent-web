@@ -523,7 +523,6 @@ export function KnowledgeBaseDetailPage() {
             {DOCUMENT_STATUS_OPTIONS.map((item) => (
               <ParseStatusSummaryBadge
                 key={item.value}
-                status={item.value}
                 label={item.label}
                 count={statusCounts[item.value]}
               />
@@ -1569,14 +1568,12 @@ function SummaryInfoItem({ label, value }: { label: string; value: string }) {
 function ParseStatusSummaryBadge({
   count,
   label,
-  status,
 }: {
   count: number;
   label: string;
-  status: DocumentStatus;
 }) {
   return (
-    <span className={cn("inline-flex h-7 items-center rounded-full border px-2 text-[12px]", DOCUMENT_STATUS_STYLES[status])}>
+    <span className="inline-flex items-center text-[12px] text-black">
       {label}
       <span className="ml-1 tabular-nums">{count}</span>
     </span>

@@ -3,13 +3,13 @@ import type { RouteObject } from "react-router-dom";
 
 import { MenuManagementPage } from "./pages/MenuManagementPage";
 import { PreferencesPage } from "./pages/PreferencesPage";
-import { SettingsLayout } from "./pages/SettingsLayout";
+import { SettingsPasswordGate } from "./pages/SettingsPasswordGate";
 import { SettingsPlaceholderPage } from "./pages/SettingsPlaceholderPage";
 
 export const settingsRoutes: RouteObject[] = [
   {
     path: "settings",
-    element: <SettingsLayout />,
+    element: <SettingsPasswordGate />,
     children: [
       { index: true, element: <Navigate to="menu" replace /> },
       { path: "menu", element: <MenuManagementPage /> },
