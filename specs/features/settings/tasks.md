@@ -3,6 +3,10 @@
 > ID 规范: `T-settings-NN`。完成后将 `[ ]` 改为 `[x]` 并附 PR/Commit 链接。
 
 ## P0 · 基础脚手架 · Bootstrap
+- [ ] T-settings-18 新增 `public/settings-access.md`, 作为设置门禁密码的唯一明文来源
+- [ ] T-settings-19 新增 `SettingsPasswordGate`, 覆盖 `/settings/*`、运行时解析 Markdown、处理错误密码与加载失败
+- [ ] T-settings-20 使用 `data-agent.settings-access` 持久化授权, 并验证刷新及重新打开浏览器后仍有效
+- [ ] T-settings-21 补充中英文门禁 UI 文案, 确保 locale 文件中不出现密码明文
 - [ ] T-settings-01 创建 `pages/SettingsLayout.tsx` + `PreferencesPage.tsx`, 替换 `routes.tsx` 中的 `ModulePlaceholder`
 - [ ] T-settings-02 创建嵌套路由(`children` 列出 5 个子页面)
 - [ ] T-settings-03 在 `src/lib/i18n.ts` 注册命名空间 `settings`, 补 zh-CN / en-US 最小文案
@@ -31,4 +35,5 @@
 - [ ] i18n 文案 review
 
 ## 历史 · Changelog
+- 2026-06-17 · 新增设置页面 Markdown 密码门禁设计
 - 2026-05-12 · 初始化占位 spec

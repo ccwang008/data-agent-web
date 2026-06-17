@@ -3,13 +3,18 @@
 > 关注 **HOW**: 在 [requirements.md](./requirements.md) 确认的目标下, 如何在代码中落地。
 
 ## 架构概览 · Architecture
-TODO. 多 tab 容器, 每个 tab 是一个子页面。
+`SettingsPasswordGate` 包裹现有 `SettingsLayout`, 在路由树的共同入口统一拦截 Sidebar 导航和直接 URL 访问。门禁从公开 Markdown 读取密码, 验证成功后才渲染设置布局。
 
 ```mermaid
 flowchart LR
-  Page --> Store
-  Page --> MockAPI
+  Route["/settings/*"] --> Gate[SettingsPasswordGate]
+  Gate --> Markdown["/settings-access.md"]
+  Gate --> LocalStorage["localStorage authorization flag"]
+  Gate -->|authorized| Layout[SettingsLayout]
+  Layout --> Page[Settings sub-page]
 ```
+
+> 该门禁不是安全鉴权。Markdown 位于 `public/`, 用户可以直接访问并查看密码; 设计目标仅是减少普通用户误入系统设置。
 
 ## 路由 · Routes
 | Path | Page Component | 说明 |
@@ -22,7 +27,23 @@ flowchart LR
 | `/settings/audit` | `AuditPage` | 审计日志 (P1) |
 | `/settings/flags` | `FlagsPage` | 功能开关 (P2) |
 
-注册位置: `src/features/settings/routes.tsx`, 当前仅占位 `ModulePlaceholder`。
+注册位置: `src/features/settings/routes.tsx`; `SettingsPasswordGate` 作为 `/settings` 路由元素, 内部授权后渲染 `SettingsLayout`。
+
+## 设置访问门禁 · Settings Access Gate
+- 密码文件: `public/settings-access.md`, 使用单一、明确的 `password: <value>` 字段。
+- 加载: `SettingsPasswordGate` 首次需要验证时通过 `fetch` 请求 `${import.meta.env.BASE_URL}settings-access.md`, 以兼容 GitHub Pages basename。
+- 解析: 仅接受非空 `password:` 字段; 加载或格式错误时保持锁定, 显示错误和重试操作。
+- 验证: 表单提交时比较输入值与解析结果; 错误密码显示行内错误, 不渲染 `<SettingsLayout />`。
+- 持久化: 验证成功后写入 `localStorage` key `data-agent.settings-access`; 后续访问检测到授权标记时直接渲染设置内容。
+- 范围: 门禁覆盖 `/settings` 及其全部子路由, 不在 Sidebar 点击事件中重复实现。
+- 明文约束: 密码值不得出现在 TypeScript、TSX、locale 或 spec 示例中; 只存在于实际 Markdown 密码文件。
+
+### 状态与错误
+- `loading`: 正在读取 Markdown, 禁止提交。
+- `locked`: 显示密码输入表单。
+- `authorized`: 渲染现有设置布局和子路由。
+- `loadError`: 拒绝访问, 显示可重试提示。
+- 输入框使用 `type="password"`, 表单可通过 Enter 提交, 错误提示通过 `aria-live` 暴露给辅助技术。
 
 ## 数据模型 · Data Model
 ```ts
@@ -111,6 +132,12 @@ export interface MenuConfig {
 - 偏好修改 optimistic, 立即生效
 - 用户表格按 name / email 搜索
 - 审计日志按 actor / action / 时间范围过滤
+- 未授权进入任意设置路由时, 页面主体显示居中的门禁卡片; 验证成功后保持当前 URL 并原位展示对应设置子页
+
+## 验证策略 · Verification
+- 仓库当前未安装自动化测试框架, 不新增 `test` script。
+- 通过 `npm run typecheck`, `npm run lint`, `npm run build` 验证静态质量和构建。
+- 浏览器验证错误密码、正确密码、直接访问子路由、刷新、关闭后重新打开浏览器、Markdown 加载失败六条路径。
 
 ## i18n · Namespaces
 - 命名空间: `settings`
