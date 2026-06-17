@@ -47,6 +47,16 @@ interface CreateKnowledgeForm {
   status: KnowledgeStatus;
 }
 
+type ParseMode = "auto" | "custom";
+type SensitiveContentAction = "mask" | "block";
+
+interface CustomParseConfig {
+  chunkSize: number;
+  chunkOverlap: number;
+  preprocessingEnabled: boolean;
+  sensitiveContentAction: SensitiveContentAction;
+}
+
 type RecallRetrievalMethod = "vector" | "keyword" | "graph" | "hybrid";
 
 interface RecallTestRequest {
@@ -117,6 +127,14 @@ interface VectorRecord {
 - 列表不展示向量值；详情抽屉继续展示完整预览和 Metadata。
 - 现有 mock `VectorRecord` 不新增接口字段。页面层从 `metadata`、`sourceTitle`、同知识库 Chunk 记录派生所属文档、来源 Chunk、Chunk 大小、实体类型、关系类型、头实体、尾实体、关联关系数和 mock 创建时间。
 
+## 文档解析设置 · Document Parsing Settings
+- 知识库详情页文档列表的“设置解析方法”按钮打开居中弹窗, 替换原行内解析器下拉框。弹窗标题下展示当前文件名, 解析方式使用“自动解析 / 自定义解析”单选框。
+- 每条 `KnowledgeDocument` 保存 `parseMode` 与 `customParseConfig`。自动解析在列表显示“自动解析”且分片大小显示“自动”; 自定义解析显示“自定义解析”与实际分片大小。
+- 自定义解析的分片大小、分片重叠均使用 Token。默认值分别为 512、50; 分片大小必须为 1–8192 的整数, 分片重叠必须为大于或等于 0 且小于分片大小的整数。
+- 文档预处理使用统一总开关且默认关闭。开启后固定覆盖特殊字符清理、敏感内容检测和重复内容去除, 并允许选择“脱敏后入库”或“阻止入库”, 默认脱敏后入库。
+- 弹窗使用独立草稿状态。取消、关闭、点击遮罩或 Escape 不回写; 保存时才更新页面 local state。模式切换不清空已保存的自定义配置, 自动模式下即使未完成自定义草稿也可以保存并继续保留上次有效配置。
+- 新上传文档默认自动解析。本阶段不新增 API, 不执行真实解析或预处理。
+
 ## 召回链路 · Recall Pipeline
 | 检索方式 | 步骤 |
 |---|---|
@@ -159,6 +177,7 @@ mock 实现复用现有 `vectorRecords`, 支持多知识库过滤。LLM 步骤�
 - 手动验证知识库详情页顶部“知识向量”进入向量页, 默认筛选当前知识库。
 - 手动验证知识向量页返回按钮: 从详情页进入时返回详情页, 直接访问时返回知识库列表。
 - 手动验证 Chunk、实体、关系三个 Tab 的列表字段与需求一致, 横向滚动下所有字段可见。
+- 手动验证解析设置弹窗的自动/自定义切换、输入边界、取消不保存、保存回显、配置保留、预处理开关和敏感内容策略。
 
 ## 开放问题 · Open Questions
 - ❓ 后续真实接口是否需要将策略显示名和提交值拆分, 例如 `auto` / `general` / `qa`。

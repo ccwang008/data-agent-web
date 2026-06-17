@@ -968,12 +968,9 @@ function VectorVisualizationDetail({ record, records }: { record: VectorRecord |
 
   return (
     <aside className="rounded-lg border border-border bg-card p-4">
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <h2 className="truncate text-[15px] font-semibold text-foreground">{record.sourceTitle}</h2>
-          <p className="mt-1 font-mono text-[11px] text-muted-foreground">{record.id}</p>
-        </div>
-        <StatusBadge status={record.status} />
+      <div className="min-w-0">
+        <h2 className="truncate text-[15px] font-semibold text-foreground">{record.sourceTitle}</h2>
+        <p className="mt-1 font-mono text-[11px] text-muted-foreground">{record.id}</p>
       </div>
 
       <div className="mt-4 grid gap-3">

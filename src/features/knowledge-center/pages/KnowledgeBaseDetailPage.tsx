@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { ChangeEvent, ReactNode } from "react";
 import {
   AlertCircle,
@@ -38,6 +38,18 @@ interface KnowledgeBaseLocationState {
 }
 
 type DocumentStatus = "unparsed" | "parsing" | "parsed" | "failed";
+type ParseMode =
+  | "inherit"
+  | "auto"
+  | "general"
+  | "table"
+  | "ocr"
+  | "text"
+  | "qa"
+  | "manual"
+  | "academic"
+  | "custom";
+type SensitiveContentAction = "mask" | "block";
 type UploadMode = "local" | "storage";
 type FilterMode = "file" | "chunk";
 type EnabledFilter = "all" | "enabled" | "disabled";
@@ -53,7 +65,8 @@ interface KnowledgeDocument {
   fileName: string;
   categoryId: string;
   knowledgeBase: string;
-  parser: string;
+  parseMode: ParseMode;
+  customParseConfig: CustomParseConfig;
   uploader: string;
   size: string;
   status: DocumentStatus;
@@ -64,6 +77,18 @@ interface KnowledgeDocument {
   enabled: boolean;
   allowReference: boolean;
   chunks: DocumentChunk[];
+}
+
+interface CustomParseConfig {
+  chunkSize: number;
+  chunkOverlap: number;
+  preprocessingEnabled: boolean;
+  sensitiveContentAction: SensitiveContentAction;
+}
+
+interface ParserSettingsPayload {
+  parseMode: ParseMode;
+  customParseConfig: CustomParseConfig;
 }
 
 interface DocumentChunk {
@@ -106,16 +131,65 @@ const DOCUMENT_STATUS_OPTIONS: Array<{ value: DocumentStatus; label: string }> =
   { value: "failed", label: "解析失败" },
 ];
 
-const DOCUMENT_PARSER_OPTIONS = [
-  { value: "Auto", label: "自动(继承知识库)" },
-  { value: "Auto Detect", label: "自动判断" },
-  { value: "DeepDOC", label: "DeepDOC" },
-  { value: "Plain Text", label: "Plain Text" },
-  { value: "PaddleOCR", label: "PaddleOCR" },
-  { value: "Docling", label: "Docling" },
-  { value: "OpenDataLoader", label: "OpenDataLoader" },
-  { value: "TCADP Parser", label: "TCADP Parser" },
+const PARSE_MODE_OPTIONS: Array<{ value: ParseMode; label: string; tip: string }> = [
+  {
+    value: "inherit",
+    label: "继承知识库（推荐）",
+    tip: "使用知识库默认解析配置，默认该解析方式",
+  },
+  {
+    value: "auto",
+    label: "自动解析",
+    tip: "根据文件类型、版式、内容自动选择最佳解析器",
+  },
+  {
+    value: "general",
+    label: "通用文档",
+    tip: "适用于pdf、docx、doc、pptx、ppt、md、html等普通文档",
+  },
+  {
+    value: "table",
+    label: "表格优先",
+    tip: "适用于xlsx、xls、csv、tsv等结构化表格文件，优先保留行列关系",
+  },
+  {
+    value: "ocr",
+    label: "扫描件/OCR优先",
+    tip: "适用于pdf、jpg、jpeg、png、tiff、bmp等包含图片的文档，通过OCR提取文本",
+  },
+  {
+    value: "text",
+    label: "纯文本优先",
+    tip: "适用于txt、md、log、json、xml等文本文件，不进行复杂版式解析",
+  },
+  {
+    value: "qa",
+    label: "问答对",
+    tip: "适用于xlsx、csv、txt、pdf、docx等问答数据集，按照Question-Answer结构构建知识",
+  },
+  {
+    value: "manual",
+    label: "操作手册",
+    tip: "适用于pdf、docx、doc、html、md等操作说明文档，重点保留标题层级和步骤结构",
+  },
+  {
+    value: "academic",
+    label: "学术论文",
+    tip: "适用于pdf、docx、tex等论文文档，重点识别标题、摘要、章节、公式、参考文献等结构",
+  },
+  {
+    value: "custom",
+    label: "自定义解析",
+    tip: "自定义分片大小、重叠等解析参数",
+  },
 ];
+
+const DEFAULT_CUSTOM_PARSE_CONFIG: CustomParseConfig = {
+  chunkSize: 512,
+  chunkOverlap: 50,
+  preprocessingEnabled: false,
+  sensitiveContentAction: "mask",
+};
 
 const DOCUMENT_STATUS_STYLES: Record<DocumentStatus, string> = {
   unparsed: "border-slate-200 bg-slate-50 text-slate-500",
@@ -170,7 +244,8 @@ const DOCUMENTS: KnowledgeDocument[] = [
     fileName: "PostgreSQL从入门到精通.pdf",
     categoryId: "cat-database",
     knowledgeBase: "技术文档知识库",
-    parser: "Plain Text",
+    parseMode: "custom",
+    customParseConfig: { ...DEFAULT_CUSTOM_PARSE_CONFIG },
     uploader: "shixing",
     size: "5.1 MB",
     status: "parsed",
@@ -200,7 +275,8 @@ const DOCUMENTS: KnowledgeDocument[] = [
     fileName: "Kubernetes指南（Kubernetes Handbook）(202005).pdf",
     categoryId: "cat-cloud-native",
     knowledgeBase: "技术文档知识库",
-    parser: "Auto",
+    parseMode: "auto",
+    customParseConfig: { ...DEFAULT_CUSTOM_PARSE_CONFIG },
     uploader: "shixing",
     size: "25 MB",
     status: "unparsed",
@@ -260,7 +336,7 @@ export function KnowledgeBaseDetailPage() {
       const matchesEnabled =
         enabledFilter === "all" ||
         (enabledFilter === "enabled" ? item.enabled : !item.enabled);
-      const matchesParser = parserFilter === "all" || item.parser === parserFilter;
+      const matchesParser = parserFilter === "all" || item.parseMode === parserFilter;
       const matchesStatus = status === "all" || item.status === status;
       const matchesChunk = chunkSearch
         ? item.chunks.some((chunk) => chunk.text.toLowerCase().includes(chunkSearch))
@@ -308,6 +384,7 @@ export function KnowledgeBaseDetailPage() {
   ];
   const allSelected = filtered.length > 0 && filtered.every((item) => selectedIds.includes(item.id));
   const selectedCount = selectedIds.filter((id) => filtered.some((item) => item.id === id)).length;
+  const parserSettingsDocument = documents.find((item) => item.id === parserSettingsDocumentId);
 
   const toggleAll = () => {
     setSelectedIds((current) => {
@@ -331,9 +408,18 @@ export function KnowledgeBaseDetailPage() {
     window.setTimeout(() => setRefreshing(false), 520);
   };
 
-  const updateParser = (id: string, parser: string) => {
+  const updateParserSettings = (id: string, payload: ParserSettingsPayload) => {
     setDocuments((current) =>
-      current.map((item) => (item.id === id ? { ...item, parser } : item)),
+      current.map((item) =>
+        item.id === id
+          ? {
+              ...item,
+              parseMode: payload.parseMode,
+              customParseConfig: { ...payload.customParseConfig },
+              chunkSize: payload.parseMode === "inherit" || payload.parseMode === "auto" ? "自动" : `${payload.customParseConfig.chunkSize} tokens`,
+            }
+          : item,
+      ),
     );
     setParserSettingsDocumentId(null);
   };
@@ -407,7 +493,8 @@ export function KnowledgeBaseDetailPage() {
       fileName: file.name,
       categoryId: payload.categoryId,
       knowledgeBase: name,
-      parser: "Auto",
+      parseMode: "auto",
+      customParseConfig: { ...DEFAULT_CUSTOM_PARSE_CONFIG },
       uploader: "wangchao",
       size: file.size,
       status: "unparsed",
@@ -582,7 +669,7 @@ export function KnowledgeBaseDetailPage() {
                   className="h-8 w-full rounded-lg border border-input bg-card px-3 text-[12px] text-foreground outline-none transition-colors hover:border-primary/30 focus:border-primary sm:w-[170px]"
                 >
                   <option value="all">全部解析方式</option>
-                  {DOCUMENT_PARSER_OPTIONS.map((item) => (
+                  {PARSE_MODE_OPTIONS.map((item) => (
                     <option key={item.value} value={item.value}>
                       {item.label}
                     </option>
@@ -802,7 +889,7 @@ export function KnowledgeBaseDetailPage() {
                       <DocumentCell>{item.knowledgeBase}</DocumentCell>
                       <DocumentCell>
                         <span className="inline-flex h-7 max-w-[150px] items-center rounded-md border border-slate-200 bg-slate-50 px-2.5 text-[12px] text-slate-600">
-                          <span className="truncate">{getParserLabel(item.parser)}</span>
+                          <span className="truncate">{getParseModeLabel(item.parseMode)}</span>
                         </span>
                       </DocumentCell>
                       <DocumentCell>{item.size}</DocumentCell>
@@ -833,9 +920,7 @@ export function KnowledgeBaseDetailPage() {
                           <ActionButton
                             icon={<Settings className="h-3.5 w-3.5" />}
                             label="设置解析方法"
-                            onClick={() =>
-                              setParserSettingsDocumentId((current) => (current === item.id ? null : item.id))
-                            }
+                            onClick={() => setParserSettingsDocumentId(item.id)}
                           />
                           <ActionButton icon={<Download className="h-3.5 w-3.5" />} label="下载" />
                           <ActionButton
@@ -852,24 +937,6 @@ export function KnowledgeBaseDetailPage() {
                               setParserSettingsDocumentId(null);
                             }}
                           />
-                          {parserSettingsDocumentId === item.id && (
-                            <div className="absolute right-0 top-9 z-20 rounded-lg border border-border bg-card p-2 shadow-lg">
-                              <select
-                                autoFocus
-                                value={item.parser}
-                                onChange={(event) => updateParser(item.id, event.target.value)}
-                                onBlur={() => setParserSettingsDocumentId(null)}
-                                aria-label={`设置 ${item.fileName} 的解析方法`}
-                                className="h-8 w-[180px] rounded-lg border border-input bg-card px-3 text-[12px] text-foreground outline-none transition-colors hover:border-primary/30 focus:border-primary"
-                              >
-                                {DOCUMENT_PARSER_OPTIONS.map((option) => (
-                                  <option key={option.value} value={option.value}>
-                                    {option.label}
-                                  </option>
-                                ))}
-                              </select>
-                            </div>
-                          )}
                           {moreActionsDocumentId === item.id && (
                             <div className="absolute right-0 top-9 z-20 w-[150px] rounded-lg border border-border bg-card p-1.5 shadow-lg">
                               <MoreActionMenuItem
@@ -949,6 +1016,14 @@ export function KnowledgeBaseDetailPage() {
 
       {categoryNotice && (
         <CategoryNoticeDialog message={categoryNotice} onClose={() => setCategoryNotice(null)} />
+      )}
+
+      {parserSettingsDocument && (
+        <ParserSettingsDialog
+          document={parserSettingsDocument}
+          onClose={() => setParserSettingsDocumentId(null)}
+          onSubmit={(payload) => updateParserSettings(parserSettingsDocument.id, payload)}
+        />
       )}
 
     </div>
@@ -1238,6 +1313,246 @@ function CategoryNoticeDialog({
         </div>
       </section>
     </div>
+  );
+}
+
+function ParserSettingsDialog({
+  document,
+  onClose,
+  onSubmit,
+}: {
+  document: KnowledgeDocument;
+  onClose: () => void;
+  onSubmit: (payload: ParserSettingsPayload) => void;
+}) {
+  const [parseMode, setParseMode] = useState<ParseMode>(document.parseMode);
+  const [chunkSize, setChunkSize] = useState(String(document.customParseConfig.chunkSize));
+  const [chunkOverlap, setChunkOverlap] = useState(String(document.customParseConfig.chunkOverlap));
+  const [preprocessingEnabled, setPreprocessingEnabled] = useState(document.customParseConfig.preprocessingEnabled);
+  const [sensitiveContentAction, setSensitiveContentAction] = useState<SensitiveContentAction>(
+    document.customParseConfig.sensitiveContentAction,
+  );
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [onClose]);
+
+  const validation = validateCustomParseConfig(chunkSize, chunkOverlap);
+  const canSubmit = parseMode === "inherit" || parseMode === "auto" || (!validation.chunkSize && !validation.chunkOverlap);
+
+  const submit = () => {
+    if (!canSubmit) return;
+    const customParseConfig = !validation.chunkSize && !validation.chunkOverlap
+      ? {
+          chunkSize: Number(chunkSize),
+          chunkOverlap: Number(chunkOverlap),
+          preprocessingEnabled,
+          sensitiveContentAction,
+        }
+      : document.customParseConfig;
+
+    onSubmit({
+      parseMode,
+      customParseConfig,
+    });
+  };
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 p-4"
+      onMouseDown={(event) => {
+        if (event.target === event.currentTarget) onClose();
+      }}
+    >
+      <section
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="parser-settings-title"
+        className="max-h-[calc(100vh-2rem)] w-full max-w-[640px] overflow-y-auto rounded-xl bg-card shadow-xl animate-fade-in"
+      >
+        <div className="flex min-h-14 items-center justify-between border-b border-border px-5 py-3">
+          <div className="min-w-0">
+            <h2 id="parser-settings-title" className="text-[16px] font-semibold text-foreground">解析设置</h2>
+            <p className="mt-0.5 truncate text-[12px] text-muted-foreground" title={document.fileName}>
+              {document.fileName}
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="关闭解析设置"
+            className="grid h-8 w-8 shrink-0 place-items-center rounded-md text-slate-500 transition-colors hover:bg-muted hover:text-foreground"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+
+        <div className="space-y-5 px-5 py-5">
+          <fieldset>
+            <legend className="text-[13px] font-medium text-foreground">解析方式</legend>
+            <div className="mt-2">
+              <select
+                value={parseMode}
+                onChange={(event) => setParseMode(event.target.value as ParseMode)}
+                className="w-full rounded-lg border border-input bg-card px-3 py-2 text-[13px] text-foreground outline-none transition-colors hover:border-primary/30 focus:border-primary"
+              >
+                {PARSE_MODE_OPTIONS.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+              {parseMode && (
+                <div className="mt-2 rounded-md bg-muted/50 p-3">
+                  <p className="text-[12px] text-muted-foreground">
+                    {PARSE_MODE_OPTIONS.find((option) => option.value === parseMode)?.tip}
+                  </p>
+                </div>
+              )}
+            </div>
+          </fieldset>
+
+          {parseMode === "custom" && (
+            <>
+              <section className="rounded-lg border border-border p-4">
+                <h3 className="text-[13px] font-medium text-foreground">分片策略</h3>
+                <p className="mt-1 text-[11px] text-muted-foreground">控制文本切片长度以及相邻切片保留的上下文。</p>
+                <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                  <FieldLabel label="分片大小（Token）" error={validation.chunkSize}>
+                    <input
+                      type="number"
+                      min={1}
+                      max={8192}
+                      step={1}
+                      value={chunkSize}
+                      onChange={(event) => setChunkSize(event.target.value)}
+                      className={dialogInputClass(validation.chunkSize)}
+                      aria-invalid={Boolean(validation.chunkSize)}
+                    />
+                  </FieldLabel>
+                  <FieldLabel label="分片重叠（Token）" error={validation.chunkOverlap}>
+                    <input
+                      type="number"
+                      min={0}
+                      step={1}
+                      value={chunkOverlap}
+                      onChange={(event) => setChunkOverlap(event.target.value)}
+                      className={dialogInputClass(validation.chunkOverlap)}
+                      aria-invalid={Boolean(validation.chunkOverlap)}
+                    />
+                  </FieldLabel>
+                </div>
+              </section>
+
+              <section className="rounded-lg border border-border p-4">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <h3 className="text-[13px] font-medium text-foreground">文档预处理</h3>
+                    <p className="mt-1 text-[11px] leading-5 text-muted-foreground">
+                      提升 Chunk 质量并在入库前检查敏感信息。
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked={preprocessingEnabled}
+                    onClick={() => setPreprocessingEnabled((current) => !current)}
+                    className={cn(
+                      "relative h-6 w-11 shrink-0 rounded-full transition-colors",
+                      preprocessingEnabled ? "bg-primary" : "bg-slate-300",
+                    )}
+                  >
+                    <span
+                      className={cn(
+                        "absolute top-0.5 h-5 w-5 rounded-full bg-white shadow-sm transition-transform",
+                        preprocessingEnabled ? "translate-x-5" : "translate-x-0.5",
+                      )}
+                    />
+                    <span className="sr-only">{preprocessingEnabled ? "关闭文档预处理" : "开启文档预处理"}</span>
+                  </button>
+                </div>
+
+                <div className={cn("mt-4 space-y-3", !preprocessingEnabled && "opacity-50")}>
+                  <PreprocessingRule title="特殊字符" description="清理连续空格、控制字符、乱码字符和 HTML 标签。" />
+                  <PreprocessingRule title="敏感内容" description="检测身份证号、手机号、银行卡号和邮箱。" />
+                  <PreprocessingRule
+                    title="重复内容"
+                    description="去除重复页眉页脚、目录、段落和 OCR 重复识别内容。"
+                  />
+                </div>
+
+                {preprocessingEnabled && (
+                  <fieldset className="mt-4 border-t border-border pt-4">
+                    <legend className="text-[12px] font-medium text-foreground">敏感内容处理</legend>
+                    <div className="mt-2 flex flex-wrap gap-x-6 gap-y-2">
+                      <SensitiveActionRadio
+                        checked={sensitiveContentAction === "mask"}
+                        label="脱敏后入库"
+                        onChange={() => setSensitiveContentAction("mask")}
+                      />
+                      <SensitiveActionRadio
+                        checked={sensitiveContentAction === "block"}
+                        label="阻止入库"
+                        onChange={() => setSensitiveContentAction("block")}
+                      />
+                    </div>
+                  </fieldset>
+                )}
+              </section>
+            </>
+          )}
+        </div>
+
+        <div className="flex justify-end gap-3 border-t border-border px-5 py-3.5">
+          <button
+            type="button"
+            onClick={onClose}
+            className="h-9 rounded-lg border border-input bg-card px-4 text-[13px] font-medium text-foreground transition-colors hover:border-primary/30 hover:text-primary"
+          >
+            取消
+          </button>
+          <button
+            type="button"
+            onClick={submit}
+            disabled={!canSubmit}
+            className="h-9 rounded-lg bg-primary px-4 text-[13px] font-medium text-primary-foreground shadow-sm transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            保存设置
+          </button>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+function PreprocessingRule({ title, description }: { title: string; description: string }) {
+  return (
+    <div className="flex items-start gap-2.5">
+      <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+      <div>
+        <p className="text-[12px] font-medium text-foreground">{title}</p>
+        <p className="mt-0.5 text-[11px] leading-5 text-muted-foreground">{description}</p>
+      </div>
+    </div>
+  );
+}
+
+function SensitiveActionRadio({ checked, label, onChange }: { checked: boolean; label: string; onChange: () => void }) {
+  return (
+    <label className="inline-flex cursor-pointer items-center gap-2 text-[12px] text-foreground">
+      <input
+        type="radio"
+        name="sensitive-content-action"
+        checked={checked}
+        onChange={onChange}
+        className="h-4 w-4 accent-primary"
+      />
+      {label}
+    </label>
   );
 }
 
@@ -1620,8 +1935,25 @@ function ProgressValue({ value }: { value: number }) {
   );
 }
 
-function getParserLabel(value: string) {
-  return DOCUMENT_PARSER_OPTIONS.find((item) => item.value === value)?.label ?? value;
+function getParseModeLabel(value: ParseMode) {
+  return PARSE_MODE_OPTIONS.find((item) => item.value === value)?.label ?? value;
+}
+
+function validateCustomParseConfig(chunkSizeValue: string, chunkOverlapValue: string) {
+  const chunkSize = Number(chunkSizeValue);
+  const chunkOverlap = Number(chunkOverlapValue);
+  const chunkSizeError = !chunkSizeValue.trim() || !Number.isInteger(chunkSize) || chunkSize < 1 || chunkSize > 8192
+    ? "请输入 1–8192 之间的整数"
+    : undefined;
+  let chunkOverlapError: string | undefined;
+
+  if (!chunkOverlapValue.trim() || !Number.isInteger(chunkOverlap) || chunkOverlap < 0) {
+    chunkOverlapError = "请输入大于或等于 0 的整数";
+  } else if (!chunkSizeError && chunkOverlap >= chunkSize) {
+    chunkOverlapError = "分片重叠必须小于分片大小";
+  }
+
+  return { chunkSize: chunkSizeError, chunkOverlap: chunkOverlapError };
 }
 
 function ActionButton({
