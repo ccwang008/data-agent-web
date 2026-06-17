@@ -1,5 +1,7 @@
 import { registerMockRoute } from "@/lib/mock-client";
 
+import { buildKnowledgeCenterReport, type ReportRange } from "./report-data";
+
 export type VectorRecordType = "chunk" | "entity" | "relation";
 export type VectorRecordStatus = "ready" | "vectorizing" | "failed" | "deleted";
 
@@ -582,6 +584,13 @@ function buildRecallTrace(payload: RecallTestRequest, results: RecallTestResult[
 }
 
 registerMockRoute("GET", "/api/knowledge-center/vector-records", () => cloneRecords());
+
+registerMockRoute("GET", "/api/knowledge-center/reports", (_body, params) => {
+  return buildKnowledgeCenterReport({
+    knowledgeBaseId: params?.knowledgeBaseId || "all",
+    range: (params?.range as ReportRange | undefined) || "7d",
+  });
+});
 
 registerMockRoute("POST", "/api/knowledge-center/vector-records/delete", (body) => {
   const ids = new Set(((body as { ids?: string[] })?.ids ?? []));

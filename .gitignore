@@ -34,3 +34,4 @@ lerna-debug.log*
 # misc
 *.local
 .eslintcache
+.superpowers/

@@ -51,6 +51,9 @@ async function dispatch<T>(
 ): Promise<T> {
   const latency = opts.latencyMs ?? DEFAULT_LATENCY;
   const failure = opts.failureRate ?? DEFAULT_FAILURE;
+  const url = new URL(path, "http://mock.local");
+  const routePath = url.pathname;
+  const queryParams = Object.fromEntries(url.searchParams.entries());
 
   await new Promise((r) => setTimeout(r, latency));
 
@@ -58,9 +61,9 @@ async function dispatch<T>(
     throw new Error(`MockClient: simulated failure for ${method} ${path}`);
   }
 
-  const exact = routes.get(keyOf({ method, path }));
+  const exact = routes.get(keyOf({ method, path: routePath }));
   if (exact) {
-    const data = await exact(body);
+    const data = await exact(body, queryParams);
     return data as T;
   }
 
@@ -68,11 +71,11 @@ async function dispatch<T>(
   for (const [key, handler] of routes) {
     const sp = key.indexOf(" ");
     if (key.slice(0, sp) !== method) continue;
-    const routePath = key.slice(sp + 1);
-    if (!routePath.includes(":")) continue;
-    const params = matchPattern(routePath, path);
+    const patternPath = key.slice(sp + 1);
+    if (!patternPath.includes(":")) continue;
+    const params = matchPattern(patternPath, routePath);
     if (params) {
-      const data = await handler(body, params);
+      const data = await handler(body, { ...queryParams, ...params });
       return data as T;
     }
   }

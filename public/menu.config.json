@@ -95,6 +95,12 @@
           "visible": true
         },
         {
+          "id": "knowledge-center.reports",
+          "builtinRouteKey": "knowledge-center.reports",
+          "label": { "zh-CN": "分析报表", "en-US": "Analysis Reports" },
+          "visible": true
+        },
+        {
           "id": "knowledge-center.permissions",
           "builtinRouteKey": "knowledge-center.permissions",
           "label": { "zh-CN": "知识权限", "en-US": "Knowledge Permissions" },

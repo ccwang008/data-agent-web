@@ -2,6 +2,7 @@ import { Navigate } from "react-router-dom";
 import type { RouteObject } from "react-router-dom";
 
 import { ModulePlaceholder } from "@/components/layout/ModulePlaceholder";
+import { AnalysisReportsPage } from "./pages/AnalysisReportsPage";
 import { DocumentDetailPage } from "./pages/DocumentDetailPage";
 import { KnowledgeBaseDetailPage } from "./pages/KnowledgeBaseDetailPage";
 import { KnowledgeBaseGraphPage } from "./pages/KnowledgeBaseGraphPage";
@@ -39,6 +40,10 @@ export const knowledgeCenterRoutes: RouteObject[] = [
       {
         path: "documents",
         element: <ModulePlaceholder featureKey="knowledge-center.documents" />,
+      },
+      {
+        path: "reports",
+        element: <AnalysisReportsPage />,
       },
       {
         path: "vectors",

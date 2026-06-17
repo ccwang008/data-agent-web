@@ -140,6 +140,12 @@ export const BUILTIN_MENU: Record<string, BuiltinMenuEntry> = {
     icon: FileText,
     defaultLabel: { "zh-CN": "文档管理", "en-US": "Document Management" },
   },
+  "knowledge-center.reports": {
+    key: "knowledge-center.reports",
+    to: "/knowledge-center/reports",
+    icon: LineChart,
+    defaultLabel: { "zh-CN": "分析报表", "en-US": "Analysis Reports" },
+  },
   "knowledge-center.permissions": {
     key: "knowledge-center.permissions",
     to: "/knowledge-center/permissions",
@@ -201,6 +207,7 @@ const kgChildren: MenuNode[] = [
 const knowledgeCenterChildren: MenuNode[] = [
   builtinNode("knowledge-center.knowledge-bases"),
   builtinNode("knowledge-center.documents"),
+  builtinNode("knowledge-center.reports"),
   builtinNode("knowledge-center.permissions"),
 ];
 

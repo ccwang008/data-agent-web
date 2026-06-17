@@ -785,7 +785,11 @@ export function KnowledgeBaseDetailPage() {
                         ) : (
                           <button
                             type="button"
-                            onClick={() => navigate(`/knowledge-center/knowledge-bases/${knowledgeBaseId}/documents/${item.id}`)}
+                            onClick={() =>
+                              navigate(`/knowledge-center/knowledge-bases/${knowledgeBaseId}/documents/${item.id}`, {
+                                state: { knowledgeBaseName: name, documentName: item.fileName },
+                              })
+                            }
                             className="max-w-[285px] text-left text-primary underline underline-offset-4 transition-opacity hover:opacity-80"
                             title={item.fileName}
                           >
@@ -1572,12 +1576,7 @@ function ParseStatusSummaryBadge({
   status: DocumentStatus;
 }) {
   return (
-    <span
-      className={cn(
-        "inline-flex h-7 items-center rounded-full border px-2.5 text-[12px] font-medium",
-        DOCUMENT_STATUS_STYLES[status],
-      )}
-    >
+    <span className={cn("inline-flex h-7 items-center rounded-full border px-2 text-[12px]", DOCUMENT_STATUS_STYLES[status])}>
       {label}
       <span className="ml-1 tabular-nums">{count}</span>
     </span>
