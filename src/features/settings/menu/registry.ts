@@ -190,26 +190,15 @@ export const BUILTIN_MENU: Record<string, BuiltinMenuEntry> = {
   },
 };
 
-const kgChildren: MenuNode[] = [
-  builtinNode("kg.graphs"),
-  builtinNode("kg.metadata"),
-  builtinNode("kg.import"),
-  builtinNode("kg.analysis"),
-  builtinNode("kg.visualization"),
-  builtinNode("kg.async-tasks"),
-  builtinNode("kg.computer"),
-  builtinNode("kg.ai"),
-  builtinNode("kg.ai-graph"),
-  builtinNode("kg.admin"),
-  builtinNode("kg.help"),
-];
-
 const knowledgeCenterChildren: MenuNode[] = [
   builtinNode("knowledge-center.knowledge-bases"),
-  builtinNode("knowledge-center.documents"),
   builtinNode("knowledge-center.reports"),
-  builtinNode("knowledge-center.permissions"),
 ];
+
+const ALLOWED_MENU_KEYS = new Set([
+  "knowledge-center.knowledge-bases",
+  "knowledge-center.reports",
+]);
 
 const DEPRECATED_MENU_KEYS = new Set(["knowledge-center.vectors"]);
 
@@ -250,12 +239,15 @@ export function cloneMenuConfig(config: MenuConfig): MenuConfig {
 }
 
 export function normalizeMenuConfig(config: MenuConfig): MenuConfig {
+  const defaults = createDefaultRootNodes();
+  const source = removeDeprecatedBuiltinNodes(flattenLegacySections(config.root));
+
   return {
     ...config,
     version: 2,
     root: mergeMissingBuiltinNodes(
-      removeDeprecatedBuiltinNodes(flattenLegacySections(config.root)),
-      createDefaultRootNodes(),
+      restrictToKnowledgeCenter(source),
+      defaults,
     ),
   };
 }
@@ -299,14 +291,20 @@ function removeDeprecatedBuiltinNodes(nodes: MenuNode[]): MenuNode[] {
 }
 
 function createDefaultRootNodes(): MenuNode[] {
+  return [builtinNode("knowledge-center", knowledgeCenterChildren)];
+}
+
+function restrictToKnowledgeCenter(nodes: MenuNode[]): MenuNode[] {
+  const knowledgeCenter = findBuiltinNode(nodes, "knowledge-center");
+  if (!knowledgeCenter) return [];
+
   return [
-    builtinNode("kg", kgChildren),
-    builtinNode("knowledge-center", knowledgeCenterChildren),
-    builtinNode("data-source"),
-    builtinNode("agents"),
-    builtinNode("workflow"),
-    builtinNode("insights"),
-    builtinNode("settings"),
+    {
+      ...knowledgeCenter,
+      children: (knowledgeCenter.children ?? []).filter(
+        (node) => node.builtinRouteKey && ALLOWED_MENU_KEYS.has(node.builtinRouteKey),
+      ),
+    },
   ];
 }
 

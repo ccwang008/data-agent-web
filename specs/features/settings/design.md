@@ -104,6 +104,7 @@ export interface MenuConfig {
   }
   ```
 - `Sidebar.tsx` 读取 `useMenuStore.config` 渲染, 不直接拉 mock
+- 当前精简分支在 `normalizeMenuConfig` 统一应用菜单白名单，因此默认配置和旧浏览器中的 `data-agent.menu` 都只保留“知识中心 → 知识库 / 分析报表”。
 
 ## 组件分解 · Component Tree
 - `SettingsLayout` (左侧 sub-nav + outlet)

@@ -21,6 +21,7 @@
 - [ ] **T-settings-13 MenuCustomizerPage 骨架**: 路由 `/settings/menu` + 树形可拖拽编辑器(zh-CN/en-US 双输入 / 显隐切换 / 重排 / 嵌套 / 自定义分组) + 右侧 Sidebar 预览(与 `T-kg-G-07` 并行, 走 ADR-0008)
 - [ ] **T-settings-14 useMenuStore + mock 端点**: `/api/settings/menu/{get,save,reset,validate}` + Zustand 持久化 + Sidebar 读取
 - [ ] T-settings-15 `MenuRegistry` 内置路由 key 清单(由 features/*/routes.tsx 注册, 含 KG 10 子模块)
+- [x] T-settings-22 精简菜单: Sidebar 与旧缓存配置统一只保留“知识中心 → 知识库 / 分析报表”
 
 ## P2 · 增强体验 · Polish
 - [ ] T-settings-10 FlagsPage: 功能开关
