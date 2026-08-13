@@ -15,6 +15,13 @@ export type AssetType =
 
 export type CatalogStatus = "normal" | "sourceAbnormal" | "retiring" | "retired" | "archived";
 
+export interface BusinessDomain {
+  id: string;
+  name: string;
+  parentId: string | null;
+  order: number;
+}
+
 export const ASSET_TYPE_LABEL: Record<AssetType, string> = {
   table: "数据表", dataset: "数据集", metric: "指标", tag: "标签", service: "数据服务",
   json: "JSON", xml: "XML", log: "日志", message: "消息数据", document: "文档",
@@ -535,6 +542,7 @@ export interface ManagementReport {
 
 export interface DataAssetState {
   catalog: {
+    domains: BusinessDomain[];
     assets: Asset[];
     assetVersions: AssetVersion[];
     scanTasks: ScanTask[];

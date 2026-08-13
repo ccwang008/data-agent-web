@@ -6,6 +6,7 @@
 - [x] T-data-lake-02 结构化/非结构化对象管理页面
 - [x] T-data-lake-03 湖表建模、Schema 和版本交互
 - [x] T-data-lake-04 分层容量统计与生命周期策略交互
+- [x] T-data-lake-10 按存储拓扑、Schema 工作台和容量趋势重构三页信息架构，移除通用指标列表模板
 
 ## 待完成 · TODO
 

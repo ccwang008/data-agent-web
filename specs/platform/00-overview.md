@@ -24,7 +24,7 @@
 | `data-asset` | 数据资产运营 | 🔨 SQLite 持久化 mock | `/data-asset/*` |
 | `data-development` | 数据开发 | 🔨 SQLite 持久化 mock | `/data-development/*` |
 | `ops-monitor` | 运维与监控 | 🔨 SQLite 持久化 mock | `/ops-monitor/*` |
-| `data-security` | 数据安全 | 🔨 SQLite 持久化 mock | `/data-security/*` |
+| `data-security` | 数据安全 | 🔨 基础分类/脱敏 SQLite mock；合规增强设计完成 | `/data-security/*` |
 | `knowledge-center` | 知识中心 | 🔨 前端 mock | `/knowledge-center/*` |
 | `knowledge-graph` | 知识图谱 | 🔨 hub + 子模块 | `/knowledge-graph/*` |
 | `agents` / `workflow` / `insights` / `settings` | AI 与平台扩展 | 🚧 基础页面或占位 | 对应 feature 路由 |

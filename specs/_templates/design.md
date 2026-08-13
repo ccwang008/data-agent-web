@@ -18,6 +18,18 @@ flowchart LR
 
 注册位置: `src/features/{{feature-key}}/routes.tsx`,导出 `RouteObject[]`,由 `src/app/router.tsx` 组合。
 
+## 页面信息架构 · Page Information Architecture
+
+> 必填。不得把“顶部通用指标卡 + 筛选 + CRUD 列表/表格”作为默认页面模板。指标和列表仅在直接服务当前任务时作为局部组件使用。
+
+| Page / Route | 核心用户任务 | 主结构 | 关键决策信息 | 与相邻页面的布局差异 |
+|---|---|---|---|---|
+| `/{{feature-key}}` | TODO | TODO：工作台 / 拓扑 / 向导 / 看板 / 时间线 / 预览对比 / 报告编制等 | TODO | TODO |
+
+- 可复用按钮、面板、筛选器、状态徽标、反馈等交互原语。
+- 不得创建只需替换标题、指标和列定义即可生成多个业务页的整页通用壳。
+- 如果页面确实以批量扫描为核心而需要列表，说明列表为何是主任务，并设计与业务匹配的详情、上下文或操作区域。
+
 ## 数据模型 · Data Model
 ```ts
 export interface Xxx {

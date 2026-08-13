@@ -1,4 +1,4 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 
 import { useUIStore } from "@/stores/useUIStore";
 
@@ -8,12 +8,14 @@ import { TopBar } from "./TopBar";
 export function AppShell() {
   const sidebarHidden = useUIStore((s) => s.sidebarHidden);
   const topbarHidden = useUIStore((s) => s.topbarHidden);
+  const location = useLocation();
+  const isCompanyLanding = location.pathname === "/" || location.pathname === "/solutions";
 
   return (
     <div className="flex min-h-screen w-screen bg-background text-foreground">
-      {!sidebarHidden && <Sidebar />}
+      {!isCompanyLanding && !sidebarHidden && <Sidebar />}
       <div className="flex min-w-0 flex-1 flex-col">
-        {!topbarHidden && <TopBar />}
+        {!isCompanyLanding && !topbarHidden && <TopBar />}
         <main className="flex-1 bg-background">
           <Outlet />
         </main>

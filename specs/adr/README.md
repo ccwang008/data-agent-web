@@ -17,7 +17,8 @@ ADR (Architecture Decision Record) 是对一次架构选择的简短书面记录
 | [0009](./0009-dcmm-readiness-not-certification.md) | DCMM 就绪度而非认证结论 | Accepted | — |
 | [0010](./0010-ai-proposes-regulated-data-levels.md) | AI 只提议重要数据和核心数据等级 | Accepted | — |
 | [0011](./0011-security-audit-references-source-evidence.md) | 安全审计引用来源域证据 | Accepted | — |
-| 0010 | 数据库 Connector 凭证存储策略 | 🚧 Proposed (真实连接器接入前待写) | 生产化前 |
+| 0012 | 数据库 Connector 凭证存储策略 | 🚧 Proposed (真实连接器接入前待写) | 生产化前 |
+| [0013](./0013-quantitative-dashboard-as-top-level-product.md) | 量化看板作为一级跨域产品 | Accepted | — |
 
 ## 编号 · Numbering
 - 4 位递增数字, 文件名 `NNNN-kebab-title.md`

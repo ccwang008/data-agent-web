@@ -19,7 +19,7 @@
 | 数据资产运营 | `data-asset` / `/data-asset/*` | SQLite 持久化 mock；资产目录复用数据源注册表 |
 | 数据开发 | `data-development` / `/data-development/*` | ETL/SQL/Notebook 专业工作台 P0，SQLite 持久化 mock |
 | 运维与监控 | `ops-monitor` / `/ops-monitor/*` | SQLite 持久化 mock |
-| 数据安全 | `data-security` / `/data-security/*` | SQLite 持久化 mock |
+| 数据安全 | `data-security` / `/data-security/*` | 25 个功能页、六分域 SQLite mock 与三级菜单 |
 
 知识中心、知识图谱、智能体、工作流和洞察分析是现有 AI/语义扩展能力。产品范围详见 [`specs/platform/07-data-platform-product-scope.md`](specs/platform/07-data-platform-product-scope.md)。
 
@@ -77,13 +77,19 @@
 | 调度引擎 | `/scheduler/tasks`、`/scheduler/editor`、`/scheduler/monitor` |
 | 数据资产运营 | `/data-asset/catalog`、`/data-asset/ownership`、`/data-asset/value`、`/data-asset/service`、`/data-asset/audit`、`/data-asset/reports` |
 | 运维与监控 | `/ops-monitor/tasks`、`/ops-monitor/lineage`、`/ops-monitor/quality`、`/ops-monitor/resource` |
-| 数据安全 | `/data-security/classification`、`/data-security/masking` |
+| 数据安全 | `/data-security/overview`、`/data-security/compliance/*`、`/data-security/classification/*`、`/data-security/{cross-border,protection,access-control,masking,encryption,watermark,risk}`、`/data-security/audit/*`、`/data-security/incidents/*` |
 | 知识中心 | `/knowledge-center/*` |
 | 知识图谱 | `/knowledge-graph/*` |
 | AI 与平台扩展 | `/agents`、`/workflow`、`/insights`、`/settings/*` |
 
 没有实际页面和 mock 数据前，不要伪造规划中模块的已上线路由。
 
+数据安全采用一级“数据安全”、六个二级能力域和 25 个三级功能页；完整菜单、路由和持久化模型见 `specs/features/data-security/design.md`。旧 `/classification`、`/masking` 路径与稳定菜单 key 保持兼容。
+
 ## 视觉与交互
 
 使用 Classic Light SaaS 设计：浅色工作区、白色面板、蓝色主色、紧凑表格和清晰状态反馈。避免紫色渐变、营销页 hero、过大圆角、feature 内部颜色 token 以及与产品无关的测试中心视觉。
+
+新增或重构业务页面时，禁止把“顶部通用指标卡 + 筛选栏 + 下方 CRUD 列表/表格”作为默认页面模板，也不得只替换标题、指标数字和表格列来制造页面差异。页面必须先根据用户的核心任务、业务对象关系和决策路径设计信息架构，例如主从工作台、拓扑/血缘图、编辑器、流程向导、审批看板、时间线、资源调度视图、预览对比或报告编制区。指标和列表只能在确有量化判断或批量浏览需求时作为局部组件使用。
+
+每个新增页面在实现前必须在对应 `design.md` 的“页面信息架构”中记录核心任务、主结构、关键决策信息以及与同模块其他页面的布局差异；无法说明差异时不得进入实现。可以复用按钮、面板、状态徽标、筛选器等交互原语，但不得复用会固定整页结构的通用业务页面壳。

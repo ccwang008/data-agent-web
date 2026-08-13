@@ -82,6 +82,8 @@ interface MenuNode {
 
 默认菜单由 `src/features/settings/menu/registry.ts` 的稳定 `builtinRouteKey` 清单定义，`public/menu.config.json` 保存可编辑的默认展示配置。当前根节点覆盖数据资产运营、数据集成、数据湖、数据治理、数据开发、调度引擎、运维与监控、数据安全、知识中心、知识图谱和系统设置；每个有子路由的产品域以树形 children 展示。产品矩阵、行业解决方案、智能体、编排流水线和洞察分析不再进入菜单。
 
+数据安全已注册一级“数据安全”→ 六个二级能力域 → 25 个三级功能页的递归菜单；`/data-security` 默认进入 `/overview`，旧 `classification`、`masking` 路径和稳定 key 保持兼容。完整映射见 [`features/data-security/design.md`](../features/data-security/design.md)。
+
 SQLite scope `data-agent.settings.menu` 保存用户提交后的菜单配置；旧浏览器中的 `data-agent.menu` 仅作为迁移回退，并会通过 `normalizeMenuConfig` 补齐新增内置路由、移除废弃节点。自动化测试 `src/app/route-menu-consistency.test.tsx` 保证每个菜单目标都有实际路由。
 
 ### 展开 / 折叠状态持久化

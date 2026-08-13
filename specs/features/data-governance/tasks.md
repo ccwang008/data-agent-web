@@ -6,6 +6,7 @@
 - [x] T-data-governance-02 元数据详情、责任信息和血缘视图
 - [x] T-data-governance-03 质量规则 CRUD、评分和状态反馈
 - [x] T-data-governance-04 术语、指标和标准审批视图
+- [x] T-data-governance-10 按数据地图、质量闭环和标准审批重构三页信息架构
 
 ## 待完成 · TODO
 

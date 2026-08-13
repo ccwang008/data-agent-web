@@ -119,14 +119,14 @@ export default function SolutionsHomePage() {
               <Database className="h-5 w-5" strokeWidth={2.2} />
             </span>
             <span>
-              <span className="block text-[15px] font-bold tracking-tight text-slate-900">东方金信</span>
-              <span className="block text-[10px] font-medium uppercase tracking-[0.18em] text-slate-400">DONGFANG JINXIN</span>
+              <span className="block text-[15px] font-bold tracking-tight text-slate-900">Data Stack</span>
+              <span className="block text-[10px] font-medium uppercase tracking-[0.18em] text-slate-400">DATA STACK</span>
             </span>
           </Link>
           <nav className="hidden items-center gap-6 text-[13px] text-slate-500 md:flex">
             <Link to="/" className="transition hover:text-slate-900">产品矩阵</Link>
             <Link to="/solutions" className="font-semibold text-blue-700">解决方案</Link>
-            <Link to="/#about" className="transition hover:text-slate-900">关于东方金信</Link>
+            <Link to="/#about" className="transition hover:text-slate-900">关于 Data Stack</Link>
           </nav>
           <div className="ml-auto">
             <Link
@@ -244,7 +244,7 @@ export default function SolutionsHomePage() {
         <footer className="mt-9 flex flex-col justify-between gap-3 border-t border-slate-200 pt-5 text-[11px] text-slate-400 sm:flex-row sm:items-center">
           <div className="flex items-center gap-2" id="about">
             <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
-            东方金信 · 让数据驱动业务，让智能创造价值
+            Data Stack · 让数据驱动业务，让智能创造价值
           </div>
           <div className="flex items-center gap-4">
             <span>行业方案 · 产品矩阵 · 数据智能</span>

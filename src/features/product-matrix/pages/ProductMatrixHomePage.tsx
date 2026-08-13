@@ -407,14 +407,14 @@ export default function ProductMatrixHomePage() {
               <Database className="h-5 w-5" strokeWidth={2.2} />
             </span>
             <span>
-              <span className="block text-[15px] font-bold tracking-tight text-slate-900">东方金信</span>
-              <span className="block text-[10px] font-medium uppercase tracking-[0.18em] text-slate-400">DONGFANG JINXIN</span>
+              <span className="block text-[15px] font-bold tracking-tight text-slate-900">Data Stack</span>
+              <span className="block text-[10px] font-medium uppercase tracking-[0.18em] text-slate-400">DATA STACK</span>
             </span>
           </Link>
           <nav className="hidden items-center gap-6 text-[13px] text-slate-500 md:flex">
             <a href="#products" className="font-semibold text-blue-700">产品矩阵</a>
             <a href="/solutions" className="transition hover:text-slate-900">解决方案</a>
-            <a href="#about" className="transition hover:text-slate-900">关于东方金信</a>
+            <a href="#about" className="transition hover:text-slate-900">关于 Data Stack</a>
           </nav>
           <div className="ml-auto flex items-center gap-3">
             <div className="hidden h-9 w-56 items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 text-slate-400 lg:flex">
@@ -448,10 +448,10 @@ export default function ProductMatrixHomePage() {
                 PRODUCT MATRIX
               </div>
               <h1 className="text-3xl font-bold tracking-[-0.04em] text-slate-950 sm:text-4xl">
-                东方金信产品矩阵
+                Data Stack 产品矩阵
               </h1>
               <p className="mt-3 max-w-2xl text-[14px] leading-6 text-slate-500">
-                面向行业客户打造业务应用、AI 平台、数据产品与基础设施，选择一个产品类型，探索东方金信的产品能力。
+                面向行业客户打造业务应用、AI 平台、数据产品与基础设施，选择一个产品类型，探索 Data Stack 的产品能力。
               </p>
             </div>
             <div className="grid grid-cols-3 gap-2 sm:gap-3">
@@ -540,7 +540,7 @@ export default function ProductMatrixHomePage() {
         <footer className="mt-9 flex flex-col justify-between gap-3 border-t border-slate-200 pt-5 text-[11px] text-slate-400 sm:flex-row sm:items-center">
           <div className="flex items-center gap-2" id="about">
             <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
-            东方金信 · 让数据驱动业务，让智能创造价值
+            Data Stack · 让数据驱动业务，让智能创造价值
           </div>
           <div className="flex items-center gap-4">
             <span>数据资产 · 智能应用 · 基础设施</span>

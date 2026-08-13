@@ -54,6 +54,43 @@ describe("route and menu consistency", () => {
     expect(collectMenuKeys(normalizedPublic)).toEqual(expectedKeys);
     expect(collectMenuKeys(stale)).toEqual(expectedKeys);
   });
+
+  it("reparents legacy data-security leaves into the new third-level groups without duplicates", () => {
+    const normalized = normalizeMenuConfig({
+      version: 2,
+      updatedAt: "2026-08-13T00:00:00.000Z",
+      root: [
+        {
+          id: "data-security",
+          builtinRouteKey: "data-security",
+          label: { "zh-CN": "数据安全", "en-US": "Data Security" },
+          visible: true,
+          children: [
+            {
+              id: "data-security.classification",
+              builtinRouteKey: "data-security.classification",
+              label: { "zh-CN": "分级分类", "en-US": "Classification" },
+              visible: true,
+            },
+            {
+              id: "data-security.masking",
+              builtinRouteKey: "data-security.masking",
+              label: { "zh-CN": "脱敏与加密", "en-US": "Masking & Encryption" },
+              visible: true,
+            },
+          ],
+        },
+      ],
+    });
+    const security = normalized.root.find((node) => node.builtinRouteKey === "data-security");
+    const directKeys = security?.children?.map((node) => node.builtinRouteKey) ?? [];
+    const allKeys = collectMenuKeys(normalized);
+
+    expect(directKeys).not.toContain("data-security.classification");
+    expect(directKeys).not.toContain("data-security.masking");
+    expect(allKeys.filter((key) => key === "data-security.classification")).toHaveLength(1);
+    expect(allKeys.filter((key) => key === "data-security.masking")).toHaveLength(1);
+  });
 });
 
 function collectRoutePaths(routes: RouteObject[], parent = ""): Set<string> {

@@ -27,7 +27,7 @@ specs/
 | 数据开发 | `data-development` | ✅ ETL/SQL/Notebook 专业工作台 P0 | `/data-development/*` |
 | 调度引擎 | `scheduler` | 🔨 SQLite 持久化 mock | `/scheduler/*` |
 | 运维与监控 | `ops-monitor` | 🔨 SQLite 持久化 mock | `/ops-monitor/*` |
-| 数据安全 | `data-security` | 🔨 SQLite 持久化 mock | `/data-security/*` |
+| 数据安全 | `data-security` | 🔨 基础分类/脱敏 SQLite mock；DCMM 4 合规增强设计完成 | `/data-security/*` |
 
 产品矩阵首页是统一产品发现入口：`product-matrix` / `/`，详见 [feature spec](./features/product-matrix/README.md)。
 
@@ -44,7 +44,7 @@ specs/
 | Scheduler | `src/features/scheduler/` | `/scheduler/*` | 🔨 调度任务、任务画布、任务监控 | [README](./features/scheduler/README.md) · [Req](./features/scheduler/requirements.md) · [Design](./features/scheduler/design.md) · [Tasks](./features/scheduler/tasks.md) |
 | Data Asset | `src/features/data-asset/` | `/data-asset/*` | 🔨 目录、权属、估值、运营、审计、报告 | [README](./features/data-asset/README.md) · [Req](./features/data-asset/requirements.md) · [Design](./features/data-asset/design.md) · [Tasks](./features/data-asset/tasks.md) |
 | Ops Monitor | `src/features/ops-monitor/` | `/ops-monitor/*` | 🔨 任务、链路、质量、资源监控 | [README](./features/ops-monitor/README.md) · [Req](./features/ops-monitor/requirements.md) · [Design](./features/ops-monitor/design.md) · [Tasks](./features/ops-monitor/tasks.md) |
-| Data Security | `src/features/data-security/` | `/data-security/*` | 🔨 分级分类、脱敏与加密 | [README](./features/data-security/README.md) · [Req](./features/data-security/requirements.md) · [Design](./features/data-security/design.md) · [Tasks](./features/data-security/tasks.md) |
+| Data Security | `src/features/data-security/` | `/data-security/*` | 🔨 基础两页已实现；合规、分类、防护、审计、事件响应与三级菜单待实现 | [README](./features/data-security/README.md) · [Req](./features/data-security/requirements.md) · [Design](./features/data-security/design.md) · [Tasks](./features/data-security/tasks.md) |
 | Knowledge Center | `src/features/knowledge-center/` | `/knowledge-center/*` | 🔨 前端 mock | [README](./features/knowledge-center/README.md) · [Req](./features/knowledge-center/requirements.md) · [Design](./features/knowledge-center/design.md) · [Tasks](./features/knowledge-center/tasks.md) |
 | Knowledge Graph | `src/features/knowledge-graph/` | `/knowledge-graph/*` | 🔨 hub + 子模块 | [README](./features/knowledge-graph/README.md) · [Req](./features/knowledge-graph/requirements.md) · [Design](./features/knowledge-graph/design.md) · [Tasks](./features/knowledge-graph/tasks.md) |
 | Agents | `src/features/agents/` | `/agents` | 🚧 基础页面/占位 | [README](./features/agents/README.md) · [Req](./features/agents/requirements.md) · [Design](./features/agents/design.md) · [Tasks](./features/agents/tasks.md) |

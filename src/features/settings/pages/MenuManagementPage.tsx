@@ -336,7 +336,7 @@ function MenuPreviewPanel({ config, locale }: { config: MenuConfig; locale: Loca
             DA
           </div>
           <span className="truncate text-[13px] font-semibold text-foreground">
-            东方金信
+            Data Stack
           </span>
         </div>
         <PreviewNodes nodes={config.root} locale={locale} depth={0} />

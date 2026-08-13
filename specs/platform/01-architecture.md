@@ -18,7 +18,7 @@ src/
 │   ├── scheduler/         # 任务列表、任务画布、任务监控
 │   ├── data-asset/        # 资产目录、权属、价值、运营与审计
 │   ├── ops-monitor/       # 任务、链路、质量与资源监控
-│   └── data-security/     # 分级分类、脱敏与加密
+│   └── data-security/     # 合规、分类分级、防护、审计与事件响应（基础两页已实现）
 ├── stores/        # 全局 Zustand store (UI / locale)
 ├── lib/           # 工具: cn / i18n / mock-client
 ├── locales/       # 全局 namespace `common`

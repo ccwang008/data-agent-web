@@ -6,7 +6,7 @@
 
 ## DCMM 4 级建设基线
 
-本系统以 **GB/T 36073—2025《数据管理能力成熟度评估模型》DCMM 4 级（量化管理级）**作为产品实现和验收标准，以通过 DCMM 4 级评估认证为建设目标。产品规划、需求、设计、开发和验收均应对照该标准建立能力映射与评估证据，不能只完成页面展示或基础流程。
+本系统以 **GB/T 36073—2025《数据管理能力成熟度评估模型》DCMM 4 级（量化管理级）**作为产品实现和验收参考，以提升组织的 DCMM 第4级就绪度和举证能力为建设目标。产品规划、需求、设计、开发和验收均应对照该标准建立能力映射与评估证据，不能只完成页面展示或基础流程；软件功能不自动构成认证结论或通过保证。
 
 - 具备 DCMM 3 级要求的组织级统一制度、职责、流程和管理能力，并在此基础上实现 4 级要求的量化管理。
 - 为关键管理过程设置可计算的量化指标，支持目标值、实际值、趋势、异常和改进措施的持续跟踪。
@@ -26,7 +26,7 @@
 | 数据开发 | ETL 画布、SQL 编辑器、Notebook 单元格工作台 | 专业工作台 P0 与 SQLite mock 已实现 |
 | 调度引擎 | 画布编排、节点管理、运行结果、任务监控 | SQLite 持久化 mock 已实现 |
 | 运维与监控 | 任务、数据链路、数据质量、计算资源监控 | SQLite 持久化 mock 已实现 |
-| 数据安全 | 分级分类、脱敏、加密 | SQLite 持久化 mock 已实现 |
+| 数据安全 | 安全总览、合规、分类分级、防护、脱敏、加密、水印、出境评估、审计和事件响应 | 25 个功能页、六分域 SQLite mock 与三级菜单已实现 |
 
 平台还保留知识中心和知识图谱能力，作为数据资产面向 AI 使用的扩展能力。
 
@@ -41,7 +41,7 @@
 | 数据开发 | `/data-development` | `/etl`、`/sql`、`/notebook` 列表及 `/new`、`/:id` 专业编辑器 |
 | 调度引擎 | `/scheduler` | `/tasks` 调度任务、`/editor` 任务画布、`/monitor` 任务监控 |
 | 运维与监控 | `/ops-monitor` | `/tasks` 任务、`/lineage` 链路、`/quality` 质量、`/resource` 资源监控 |
-| 数据安全 | `/data-security` | `/classification` 分级分类、`/masking` 脱敏与加密策略 |
+| 数据安全 | `/data-security` | 默认 `/overview`；合规、分类、防护、审计、事件响应共 25 个页面，完整路由见 [data-security spec](./specs/features/data-security/README.md) |
 | 知识中心 | `/knowledge-center` | 知识库、文档、分析报表、知识权限 |
 | 知识图谱 | `/knowledge-graph` | 图实例、元数据、导入、分析、可视化、异步任务等 |
 | 系统设置 | `/settings` | 菜单管理等平台配置能力；菜单调整保存到 SQLite `data-agent.settings.menu` |
@@ -89,7 +89,7 @@ src/
     scheduler/             # 调度引擎：任务列表、任务画布、任务监控
     data-asset/           # 数据资产：目录、权属、估值、运营、审计、报告
     ops-monitor/          # 运维与监控：任务、链路、质量、资源
-    data-security/        # 数据安全：分级分类、脱敏与加密
+    data-security/        # 数据安全：DCMM4 就绪度、合规、防护、审计与事件响应 SQLite mock
     knowledge-center/     # 知识资产与向量能力
     knowledge-graph/       # 知识图谱能力
     settings/             # 系统管理

@@ -1,6 +1,6 @@
 /** Data Asset · mock 目录数据：资产、版本、扫描任务、变更记录。 */
 
-import type { Asset, AssetField, AssetVersion, ChangeRecord, ScanLogLine, ScanTask } from "../types";
+import type { Asset, AssetField, AssetVersion, BusinessDomain, ChangeRecord, ScanLogLine, ScanTask } from "../types";
 
 function tableExt(database: string, schema: string, table: string, fields: AssetField[], rowCount?: number) {
   return { database, schema, table, fields, rowCount };
@@ -371,4 +371,16 @@ export const defaultChanges: ChangeRecord[] = [
     after: "状态：待退役",
     reason: "来源数据库已正式删除，需先下线关联产品并处理授权",
   },
+];
+
+export const defaultDomains: BusinessDomain[] = [
+  { id: "domain-customer", name: "客户运营", parentId: null, order: 1 },
+  { id: "domain-customer-master", name: "客户主数据", parentId: "domain-customer", order: 1 },
+  { id: "domain-customer-tag", name: "客户标签与画像", parentId: "domain-customer", order: 2 },
+  { id: "domain-trade", name: "交易", parentId: null, order: 2 },
+  { id: "domain-risk", name: "风控", parentId: null, order: 3 },
+  { id: "domain-risk-model", name: "风险模型", parentId: "domain-risk", order: 1 },
+  { id: "domain-risk-judicial", name: "司法风险", parentId: "domain-risk", order: 2 },
+  { id: "domain-ops", name: "经营分析", parentId: null, order: 4 },
+  { id: "domain-uncategorized", name: "未分类", parentId: null, order: 99 },
 ];

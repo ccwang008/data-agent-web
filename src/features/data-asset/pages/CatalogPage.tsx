@@ -1,8 +1,8 @@
 import { useMemo, useState } from "react";
 import {
   AlertTriangle, Archive, Boxes, CheckCircle2, ChevronDown, ChevronRight,
-  Database, FilePlus, FileText, Folder, Play, RotateCcw, Search,
-  ShieldCheck, Tags, X, XCircle,
+  Database, Edit2, FilePlus, FileText, Folder, Play, Plus, RotateCcw, Search,
+  ShieldCheck, Tags, Trash2, X, XCircle,
 } from "lucide-react";
 
 import { useDataAssetState } from "../store";
@@ -13,7 +13,7 @@ import {
 import {
   ASSET_TYPE_LABEL, CATALOG_STATUS_LABEL, MOCK_NOW, SCAN_TASK_STATUS_LABEL, uid,
   type Asset, type AssetType, type AssetExt, type AssetField, type Authorization,
-  type CatalogStatus, type DataProduct, type ScanTask, type ScanTaskStatus,
+  type BusinessDomain, type CatalogStatus, type DataProduct, type ScanTask, type ScanTaskStatus,
 } from "../api/types";
 import {
   Badge, EmptyState, Field, Input, KpiCard, Modal, PageHeader, PrimaryButton,
@@ -89,50 +89,149 @@ export default function CatalogPage() {
   const [busyTaskId, setBusyTaskId] = useState<string | null>(null);
   const [scanLogsOpen, setScanLogsOpen] = useState<ScanTask | null>(null);
 
-  const [leftGroupBy, setLeftGroupBy] = useState<"domain" | "type" | "source">("domain");
-  const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
-  const [selectedGroup, setSelectedGroup] = useState<{ kind: "domain" | "type" | "source"; value: string } | null>(null);
+  const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set(["domain-customer", "domain-risk"]));
+  const [selectedGroup, setSelectedGroup] = useState<string | null>(null);
+  const [domainModal, setDomainModal] = useState<{ id: string; name: string; parentId: string | null; order: number } | null>(null);
+  const [deleteDomainConfirm, setDeleteDomainConfirm] = useState<{ domain: BusinessDomain; hasChildren: boolean; assetCount: number } | null>(null);
 
   const [batchMode, setBatchMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [batchOwner, setBatchOwner] = useState("");
 
+  const domainNameMap = useMemo(() => {
+    const m = new Map<string, string>();
+    state.catalog.domains.forEach((d) => m.set(d.id, d.name));
+    return m;
+  }, [state.catalog.domains]);
+
+  const domainChildrenMap = useMemo(() => {
+    const m = new Map<string, BusinessDomain[]>();
+    state.catalog.domains.forEach((d) => {
+      const key = d.parentId ?? "__root__";
+      if (!m.has(key)) m.set(key, []);
+      m.get(key)!.push(d);
+    });
+    m.forEach((arr) => arr.sort((a, b) => a.order - b.order));
+    return m;
+  }, [state.catalog.domains]);
+
+  const domainCounts = useMemo(() => {
+    const map = new Map<string, number>();
+    state.catalog.assets.forEach((a) => {
+      const domainId = state.catalog.domains.find((d) => d.name === a.businessDomain)?.id ?? "domain-uncategorized";
+      map.set(domainId, (map.get(domainId) ?? 0) + 1);
+    });
+    return map;
+  }, [state.catalog.assets, state.catalog.domains]);
+
+  const domainWithChildrenCount = useMemo(() => {
+    const m = new Map<string, number>();
+    const countRecursive = (id: string): number => {
+      const direct = domainCounts.get(id) ?? 0;
+      const children = domainChildrenMap.get(id) ?? [];
+      const total = direct + children.reduce((sum, c) => sum + countRecursive(c.id), 0);
+      m.set(id, total);
+      return total;
+    };
+    state.catalog.domains.forEach((d) => countRecursive(d.id));
+    return m;
+  }, [domainCounts, domainChildrenMap, state.catalog.domains]);
+
+  const domainChildMap = useMemo(() => {
+    const m = new Map<string, number>();
+    state.catalog.domains.forEach((d) => {
+      if (d.parentId) m.set(d.parentId, (m.get(d.parentId) ?? 0) + 1);
+    });
+    return m;
+  }, [state.catalog.domains]);
+
   const filtered = useMemo(() => {
     const keyword = search.trim().toLowerCase();
+    const selectedId = selectedGroup;
+    const collectDescendants = (id: string): string[] => {
+      const result = [id];
+      const children = domainChildrenMap.get(id) ?? [];
+      children.forEach((c) => result.push(...collectDescendants(c.id)));
+      return result;
+    };
+    const allowedNames = selectedId ? new Set(collectDescendants(selectedId).map((id) => domainNameMap.get(id)).filter(Boolean) as string[]) : null;
     return state.catalog.assets.filter((asset) => {
       const k = !keyword || `${asset.name} ${asset.id} ${asset.businessDomain} ${asset.owner} ${asset.tags.join(" ")}`.toLowerCase().includes(keyword);
       const t = typeFilter === "all" || asset.type === typeFilter;
       const s = statusFilter === "all" || asset.catalogStatus === statusFilter;
-      if (selectedGroup) {
-        const g =
-          (selectedGroup.kind === "domain" && asset.businessDomain === selectedGroup.value) ||
-          (selectedGroup.kind === "type" && asset.type === selectedGroup.value) ||
-          (selectedGroup.kind === "source" && asset.sourceSystem === selectedGroup.value);
-        return k && t && s && g;
-      }
-      return k && t && s;
+      const g = !allowedNames || allowedNames.has(asset.businessDomain);
+      return k && t && s && g;
     });
-  }, [search, state.catalog.assets, statusFilter, typeFilter, selectedGroup]);
+  }, [search, state.catalog.assets, statusFilter, typeFilter, selectedGroup, domainNameMap, domainChildrenMap]);
 
   const pendingCount = state.catalog.assets.filter((a) => { const d = computeDimensionStates(state, a); return a.catalogStatus === "normal" && d.ownership === "待登记"; }).length;
   const sourceAbnormalCount = state.catalog.assets.filter((a) => a.catalogStatus === "sourceAbnormal").length;
   const retiringCount = state.catalog.assets.filter((a) => a.catalogStatus === "retiring").length;
   const updateTimely = 92;
 
-  const groups = useMemo(() => {
-    const map = new Map<string, number>();
-    state.catalog.assets.forEach((a) => {
-      const key = leftGroupBy === "domain" ? a.businessDomain : leftGroupBy === "type" ? ASSET_TYPE_LABEL[a.type] : a.sourceSystem;
-      map.set(key, (map.get(key) ?? 0) + 1);
-    });
-    return Array.from(map.entries()).sort((a, b) => a[0].localeCompare(b[0]));
-  }, [state.catalog.assets, leftGroupBy]);
-
-  const toggleGroup = (key: string) => {
+  const toggleGroup = (id: string) => {
     const next = new Set(expandedGroups);
-    if (next.has(key)) next.delete(key);
-    else next.add(key);
+    if (next.has(id)) next.delete(id);
+    else next.add(id);
     setExpandedGroups(next);
+  };
+
+  const openAddDomain = (parentId: string | null = null) => {
+    setDomainModal({ id: "", name: "", parentId, order: state.catalog.domains.filter((d) => d.parentId === parentId).length + 1 });
+  };
+
+  const saveDomain = () => {
+    if (!domainModal || !domainModal.name.trim()) return;
+    const name = domainModal.name.trim();
+    const exists = state.catalog.domains.some((d) => d.name === name && d.id !== domainModal.id);
+    if (exists) return;
+    if (domainModal.id) {
+      const oldName = state.catalog.domains.find((d) => d.id === domainModal.id)?.name;
+      update((c) => ({
+        ...c,
+        catalog: {
+          ...c.catalog,
+          domains: c.catalog.domains.map((d) => d.id === domainModal.id ? { ...d, name, parentId: domainModal.parentId, order: domainModal.order } : d),
+          assets: c.catalog.assets.map((a) => (oldName && a.businessDomain === oldName) ? { ...a, businessDomain: name } : a),
+        },
+      }));
+    } else {
+      const newDomain: BusinessDomain = { id: uid("domain"), name, parentId: domainModal.parentId, order: domainModal.order };
+      update((c) => ({ ...c, catalog: { ...c.catalog, domains: [...c.catalog.domains, newDomain] } }));
+    }
+    setDomainModal(null);
+  };
+
+  const confirmDeleteDomain = (domain: BusinessDomain) => {
+    const childCount = domainChildMap.get(domain.id) ?? 0;
+    const assetCount = domainCounts.get(domain.id) ?? 0;
+    if (childCount > 0 || assetCount > 0) {
+      setDeleteDomainConfirm({ domain, hasChildren: childCount > 0, assetCount });
+    } else {
+      update((c) => ({ ...c, catalog: { ...c.catalog, domains: c.catalog.domains.filter((d) => d.id !== domain.id) } }));
+      if (selectedGroup === domain.id) setSelectedGroup(null);
+    }
+  };
+
+  const doDeleteDomain = (domain: BusinessDomain) => {
+    const fallbackName = state.catalog.domains.find((d) => d.id === "domain-uncategorized")?.name ?? "未分类";
+    const idsToDelete = new Set<string>();
+    const collectIds = (id: string) => {
+      idsToDelete.add(id);
+      (domainChildrenMap.get(id) ?? []).forEach((c) => collectIds(c.id));
+    };
+    collectIds(domain.id);
+    const namesToReassign = new Set(state.catalog.domains.filter((d) => idsToDelete.has(d.id)).map((d) => d.name));
+    update((c) => ({
+      ...c,
+      catalog: {
+        ...c.catalog,
+        domains: c.catalog.domains.filter((d) => !idsToDelete.has(d.id)),
+        assets: c.catalog.assets.map((a) => namesToReassign.has(a.businessDomain) ? { ...a, businessDomain: fallbackName } : a),
+      },
+    }));
+    if (selectedGroup && idsToDelete.has(selectedGroup)) setSelectedGroup(null);
+    setDeleteDomainConfirm(null);
   };
 
   const scanFiltered = useMemo(() => {
@@ -258,20 +357,25 @@ export default function CatalogPage() {
             >
               <div className="grid gap-0 lg:grid-cols-[220px_1fr]">
                 <aside className="border-b border-border px-4 py-3 lg:border-b-0 lg:border-r">
-                  <div className="mb-2 flex items-center gap-2">
-                    <span className="text-[11px] text-muted-foreground">分组</span>
-                    <Select value={leftGroupBy} onChange={(v) => { setLeftGroupBy(v as "domain" | "type" | "source"); setSelectedGroup(null); setExpandedGroups(new Set()); }} options={[{ value: "domain", label: "业务域" }, { value: "type", label: "资产类型" }, { value: "source", label: "来源系统" }]} className="flex-1" />
+                  <div className="mb-2 flex items-center justify-between">
+                    <span className="text-[11px] text-muted-foreground">业务域</span>
+                    <button type="button" onClick={() => openAddDomain(null)} className="grid h-6 w-6 place-items-center rounded text-muted-foreground hover:bg-surface-raised hover:text-primary" title="新增根业务域"><Plus className="h-3.5 w-3.5" /></button>
                   </div>
                   <TreeItem label="全部" count={state.catalog.assets.length} active={selectedGroup === null} onClick={() => setSelectedGroup(null)} />
-                  {groups.map(([key, count]) => {
-                    const children = leftGroupBy !== "type"
-                      ? state.catalog.assets.filter((a) => (leftGroupBy === "domain" ? a.businessDomain === key : a.sourceSystem === key))
-                          .reduce((acc, a) => { acc.set(a.type, (acc.get(a.type) ?? 0) + 1); return acc; }, new Map<string, number>())
-                      : undefined;
-                    return (
-                      <TreeItemGroup key={key} label={key} count={count} expanded={expandedGroups.has(key)} onToggle={() => toggleGroup(key)} onSelect={() => setSelectedGroup({ kind: leftGroupBy, value: key })} active={selectedGroup?.value === key} children={children} />
-                    );
-                  })}
+                  <DomainTreeNodes
+                    domains={domainChildrenMap.get("__root__") ?? []}
+                    level={0}
+                    expanded={expandedGroups}
+                    selected={selectedGroup}
+                    counts={domainWithChildrenCount}
+                    childrenMap={domainChildrenMap}
+                    onToggle={toggleGroup}
+                    onSelect={setSelectedGroup}
+                    onAddChild={(pid: string) => openAddDomain(pid)}
+                    onEdit={(d) => setDomainModal({ id: d.id, name: d.name, parentId: d.parentId, order: d.order })}
+                    onDelete={confirmDeleteDomain}
+                    protectedIds={new Set(["domain-uncategorized"])}
+                  />
                 </aside>
 
                 <div className="flex min-w-0 flex-col">
@@ -297,14 +401,14 @@ export default function CatalogPage() {
                       <thead>
                         <tr className="text-[12px] font-medium text-slate-600">
                           {batchMode && <th className="w-8 border-b border-border py-3 pl-4"><input type="checkbox" className="h-3.5 w-3.5" checked={selectedIds.size === filtered.length && filtered.length > 0} onChange={(e) => setSelectedIds(e.target.checked ? new Set(filtered.map((a) => a.id)) : new Set())} /></th>}
-                          {["资产名称", "资产 ID", "类型", "来源系统", "业务域", "负责人", "目录状态", "版本", "更新时间", "操作"].map((l) => <th key={l} className="border-b border-border py-3 pr-4">{l}</th>)}
+                          {["资产名称", "资产 ID", "类型", "来源系统", "业务域", "负责人", "目录状态", "版本", "更新时间", "操作"].map((l, idx) => <th key={l} className={`border-b border-border py-3 pr-4 ${idx === 0 ? "pl-4" : ""}`}>{l}</th>)}
                         </tr>
                       </thead>
                       <tbody>
                         {filtered.map((asset) => (
                           <tr key={asset.id} className="text-[13px] text-foreground hover:bg-surface-raised/60">
                             {batchMode && <td className="border-b border-border py-3.5 pl-4"><input type="checkbox" className="h-3.5 w-3.5" checked={selectedIds.has(asset.id)} onChange={(e) => { const next = new Set(selectedIds); if (e.target.checked) next.add(asset.id); else next.delete(asset.id); setSelectedIds(next); }} /></td>}
-                            <td className="border-b border-border py-3.5 pr-4">
+                            <td className="border-b border-border py-3.5 pl-4 pr-4">
                               <button type="button" onClick={() => setSelected(asset)} className="text-left font-medium text-primary hover:underline">{asset.name}</button>
                               {asset.voided && <Badge tone="red" className="ml-2">已作废</Badge>}
                               <div className="mt-0.5 text-[11px] text-muted-foreground">{asset.description}</div>
@@ -461,6 +565,38 @@ export default function CatalogPage() {
           setAddModal(null);
         }} />
       )}
+
+      {domainModal && (
+        <Modal title={domainModal.id ? "编辑业务域" : "新增业务域"} onClose={() => setDomainModal(null)} footer={<>
+          <SecondaryButton onClick={() => setDomainModal(null)}>取消</SecondaryButton>
+          <PrimaryButton disabled={!domainModal.name.trim()} onClick={saveDomain}>保存</PrimaryButton>
+        </>}>
+          <div className="space-y-4">
+            <Field label="名称" required><Input value={domainModal.name} onChange={(v) => setDomainModal({ ...domainModal, name: v })} /></Field>
+            <Field label="父级">
+              <Select
+                value={domainModal.parentId ?? ""}
+                onChange={(v) => setDomainModal({ ...domainModal, parentId: v || null })}
+                options={[{ value: "", label: "— 根级 —" }, ...state.catalog.domains.filter((d) => !domainModal.id || d.id !== domainModal.id).map((d) => ({ value: d.id, label: d.name }))]}
+              />
+            </Field>
+            <Field label="排序"><Input type="number" value={String(domainModal.order)} onChange={(v) => setDomainModal({ ...domainModal, order: Number(v) || 99 })} /></Field>
+          </div>
+        </Modal>
+      )}
+
+      {deleteDomainConfirm && (
+        <Modal title="删除业务域" description={
+          deleteDomainConfirm.hasChildren
+            ? `业务域「${deleteDomainConfirm.domain.name}」下还有子业务域，删除将级联删除全部子域并将 ${deleteDomainConfirm.assetCount} 项资产归入「未分类」`
+            : `业务域「${deleteDomainConfirm.domain.name}」下有 ${deleteDomainConfirm.assetCount} 项资产，删除后将自动归入「未分类」`
+        } onClose={() => setDeleteDomainConfirm(null)} footer={<>
+          <SecondaryButton onClick={() => setDeleteDomainConfirm(null)}>取消</SecondaryButton>
+          <PrimaryButton onClick={() => doDeleteDomain(deleteDomainConfirm.domain)}>确认删除</PrimaryButton>
+        </>}>
+          <WarnNote text="删除操作不可恢复，但不会删除资产本身，只会将其业务域归属调整为未分类" />
+        </Modal>
+      )}
     </div>
   );
 }
@@ -482,41 +618,78 @@ function TodoBlock({ label, count, color, bg, assets, onOpen }: { label: string;
   );
 }
 
+function DomainTreeNodes({
+  domains, level, expanded, selected, counts, childrenMap,
+  onToggle, onSelect, onAddChild, onEdit, onDelete, protectedIds,
+}: {
+  domains: BusinessDomain[];
+  level: number;
+  expanded: Set<string>;
+  selected: string | null;
+  counts: Map<string, number>;
+  childrenMap: Map<string, BusinessDomain[]>;
+  onToggle: (id: string) => void;
+  onSelect: (id: string) => void;
+  onAddChild: (parentId: string) => void;
+  onEdit: (d: BusinessDomain) => void;
+  onDelete: (d: BusinessDomain) => void;
+  protectedIds: Set<string>;
+}) {
+  return (
+    <>
+      {domains.map((d) => {
+        const children = childrenMap.get(d.id) ?? [];
+        const hasChildren = children.length > 0;
+        const isExpanded = expanded.has(d.id);
+        const isActive = selected === d.id;
+        const count = counts.get(d.id) ?? 0;
+        return (
+          <div key={d.id}>
+            <div className="group flex items-center" style={{ paddingLeft: level * 12 }}>
+              <button type="button" onClick={() => hasChildren && onToggle(d.id)} className="grid h-6 w-5 shrink-0 place-items-center text-muted-foreground hover:text-foreground disabled:opacity-30" disabled={!hasChildren}>
+                {hasChildren ? (isExpanded ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />) : <span className="h-3 w-3" />}
+              </button>
+              <button type="button" onClick={() => onSelect(d.id)} className={`flex min-w-0 flex-1 items-center justify-between rounded px-2 py-1 text-[12px] ${isActive ? "bg-primary/10 text-primary" : "text-foreground hover:bg-surface-raised"}`}>
+                <span className="truncate">{d.name}</span>
+                <span className="ml-1 rounded bg-muted px-1.5 py-0.5 text-[10px] tabular-nums">{count}</span>
+              </button>
+              <div className="ml-0.5 hidden items-center gap-0.5 group-hover:flex">
+                <button type="button" onClick={() => onAddChild(d.id)} className="grid h-5 w-5 place-items-center rounded text-muted-foreground hover:bg-surface-raised hover:text-primary" title="添加子域"><Plus className="h-3 w-3" /></button>
+                <button type="button" onClick={() => onEdit(d)} className="grid h-5 w-5 place-items-center rounded text-muted-foreground hover:bg-surface-raised hover:text-primary" title="编辑"><Edit2 className="h-3 w-3" /></button>
+                {!protectedIds.has(d.id) && (
+                  <button type="button" onClick={() => onDelete(d)} className="grid h-5 w-5 place-items-center rounded text-muted-foreground hover:bg-red-50 hover:text-red-600" title="删除"><Trash2 className="h-3 w-3" /></button>
+                )}
+              </div>
+            </div>
+            {hasChildren && isExpanded && (
+              <DomainTreeNodes
+                domains={children}
+                level={level + 1}
+                expanded={expanded}
+                selected={selected}
+                counts={counts}
+                childrenMap={childrenMap}
+                onToggle={onToggle}
+                onSelect={onSelect}
+                onAddChild={onAddChild}
+                onEdit={onEdit}
+                onDelete={onDelete}
+                protectedIds={protectedIds}
+              />
+            )}
+          </div>
+        );
+      })}
+    </>
+  );
+}
+
 function TreeItem({ label, count, active, onClick }: { label: string; count: number; active: boolean; onClick: () => void }) {
   return (
     <button type="button" onClick={onClick} className={`flex w-full items-center justify-between rounded px-2 py-1 text-[12px] ${active ? "bg-primary/10 text-primary" : "text-foreground hover:bg-surface-raised"}`}>
       <span className="flex items-center gap-1.5"><Folder className="h-3.5 w-3.5" />{label}</span>
       <span className="rounded bg-muted px-1.5 py-0.5 text-[10px] tabular-nums">{count}</span>
     </button>
-  );
-}
-
-function TreeItemGroup({ label, count, expanded, onToggle, onSelect, active, children }: {
-  label: string; count: number; expanded: boolean; onToggle: () => void; onSelect: () => void; active: boolean;
-  children?: Map<string, number>;
-}) {
-  return (
-    <div>
-      <div className="flex items-center">
-        <button type="button" onClick={onToggle} className="grid h-6 w-5 place-items-center text-muted-foreground hover:text-foreground">
-          {expanded ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
-        </button>
-        <button type="button" onClick={onSelect} className={`flex flex-1 items-center justify-between rounded px-2 py-1 text-[12px] ${active ? "bg-primary/10 text-primary" : "text-foreground hover:bg-surface-raised"}`}>
-          <span>{label}</span>
-          <span className="rounded bg-muted px-1.5 py-0.5 text-[10px] tabular-nums">{count}</span>
-        </button>
-      </div>
-      {expanded && children && children.size > 0 && (
-        <div className="ml-5 space-y-0.5 border-l border-border pl-2">
-          {Array.from(children.entries()).map(([sub, subCount]) => (
-            <div key={sub} className="flex items-center justify-between text-[11px] text-muted-foreground">
-              <span>{ASSET_TYPE_LABEL[sub as AssetType] ?? sub}</span>
-              <span className="tabular-nums">{subCount}</span>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
   );
 }
 

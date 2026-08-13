@@ -5,6 +5,7 @@ import {
   defaultAssets,
   defaultAssetVersions,
   defaultChanges,
+  defaultDomains,
   defaultScanTasks,
 } from "./mock-data/catalog";
 import {
@@ -27,6 +28,7 @@ import { clone } from "./types";
 export function createDefaultState(): DataAssetState {
   return {
     catalog: {
+      domains: clone(defaultDomains),
       assets: clone(defaultAssets),
       assetVersions: clone(defaultAssetVersions),
       scanTasks: clone(defaultScanTasks),
