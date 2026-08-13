@@ -1,26 +1,17 @@
-# Data Sources · Tasks
+# Data Integration · Tasks
 
-> ID 规范: `T-data-source-NN`。完成后将 `[ ]` 改为 `[x]` 并附 PR/Commit 链接。
+## 已完成 · Done
 
-## P0 · 基础脚手架 · Bootstrap
-- [ ] T-data-source-01 创建 `pages/DataSourcePage.tsx`, 替换当前 `routes.tsx` 中的 `ModulePlaceholder`
-- [ ] T-data-source-02 创建 `api/mock.ts`, 注册 `/api/data-source/list` fixture
-- [ ] T-data-source-03 在 `src/lib/i18n.ts` 注册命名空间 `data-source`, 补 zh-CN / en-US 最小文案
-- [ ] T-data-source-04 在 `src/components/layout/Sidebar.tsx` 把 `data-source` 项状态从 `todo` 改为 `ready`
+- [x] T-data-source-01 数据源、同步、交换三组路由
+- [x] T-data-source-02 数据源 CRUD 与连接测试交互
+- [x] T-data-source-03 全量/增量/CDC/实时同步任务交互
+- [x] T-data-source-04 API/文件/库表/消息共享交换交互
+- [x] T-data-source-05 列表状态、进度、空态和错误反馈
 
-## P1 · 核心能力 · Core
-- [ ] T-data-source-05 TODO 列表渲染 + 状态徽标
-- [ ] T-data-source-06 TODO 详情面板 / Drawer
-- [ ] T-data-source-07 TODO Schema 预览
+## 待完成 · TODO
 
-## P2 · 增强体验 · Polish
-- [ ] T-data-source-08 TODO 列表搜索与过滤
-- [ ] T-data-source-09 TODO 同步状态可视化时间线
-
-## 持续项 · Ongoing
-- [ ] 单元测试覆盖关键纯函数
-- [ ] a11y: 关键交互可键盘操作
-- [ ] i18n 文案 review
-
-## 历史 · Changelog
-- 2026-05-12 · 初始化占位 spec
+- [x] T-data-source-06 接入 `useSqliteState` 与可持久化 mock 数据模型
+- [ ] T-data-source-07 对接真实连接器注册中心和凭证服务
+- [ ] T-data-source-08 对接同步/交换执行引擎、重试和运行日志
+- [ ] T-data-source-09 补充数据血缘、审计和与调度引擎的任务关联
+- [ ] T-data-source-10 增加 API、文件、库表、消息交换的权限审批闭环

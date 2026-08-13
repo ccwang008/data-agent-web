@@ -10,7 +10,7 @@
 | 最近一次重写 · Last Rewrite | 2026-05-13 |
 
 ## 定位 · Positioning
-对标 **Apache HugeGraph Hubble** 的 KG 工作空间(功能 1:1 克隆), 并向外扩展整合 HugeGraph 生态其他组件 (loader / computer / ai / website / tool) 的前端交互面, 作为 Data Agent 平台的图能力中心。
+对标 **Apache HugeGraph Hubble** 的 KG 工作空间(功能 1:1 克隆), 并向外扩展整合 HugeGraph 生态其他组件 (loader / computer / ai / website / tool) 的前端交互面, 作为大数数据平台的知识图谱与语义能力中心。
 
 > **视觉与功能的边界**: Hubble 视觉(无论浅色 / 深色)整体不沿用; 本项目视觉方向已收敛为 **Classic Light SaaS Admin** — 浅灰工作区 + 白色面板 + 蓝色主色 + 紧凑导航 + IBM Plex Mono 数据字体。功能、模块划分、layout、控件类型、流程与 Hubble 1:1 对齐("Hubble 的骨, 本项目的皮")。
 
@@ -43,7 +43,7 @@ KG 各子模块**作为全局 Sidebar 树菜单**的二级节点存在, KG hub �
 > **Client SDK** (Java / Python) 不出现在前端规格中。
 
 ## 当前实现 · Current Implementation
-`src/features/knowledge-graph/` 仅有 P0 脚手架: 单页 `KnowledgeGraphPage` + 一个 mock 端点 `/api/knowledge-graph/overview` + i18n 命名空间 `knowledge-graph`。本次 spec 重写 **不改动任何代码**, 子模块实现由 `tasks.md` 的 M0–M5 里程碑分批落地。
+`src/features/knowledge-graph/` 已实现全局 Hub 和图实例、元数据、导入、分析、可视化、异步任务、图计算、图 AI、AI 图谱、管理与帮助路由。页面通过 `mockClient` 提供确定性的演示执行语义，已有可变 fixture 通过 Local JSON Store 镜像到 SQLite；真实图数据库、计算和 AI 后端仍未接入。高级交互与生产化差距继续由 `tasks.md` 跟踪。
 
 ## 关联文档 · Related Docs
 - [需求 · Requirements](./requirements.md) — 顶层 US / Personas / 跨模块 EARS
@@ -54,7 +54,7 @@ KG 各子模块**作为全局 Sidebar 树菜单**的二级节点存在, KG hub �
 
 ## 关键决策 · Key Decisions
 - **重写动因**: 把抽象规格换成基于 Hubble 的结构化 1:1 规格, 同时把 HugeGraph 生态其他组件纳入子模块清单, 避免后期"碎片化新增"
-- **视觉方向重定**: 不沿用 Hubble 视觉, 走 Classic Light SaaS Admin; **ADR-0007** 用于记录当前浅色 SaaS token 与组件约定
-- **导航 IA 重塑**: KG 子模块作为全局 Sidebar 树菜单二级节点; 用户可在 `/settings/menu` 自定义菜单展示, 起 **ADR-0008** 界定"展示 vs 路由"边界
+- **视觉方向重定**: 不沿用 Hubble 视觉, 走 Classic Light SaaS Admin; 见 [ADR-0007](../../adr/0007-classic-light-saas-direction.md)
+- **导航 IA 重塑**: KG 子模块作为全局 Sidebar 树菜单二级节点; 用户可在 `/settings/menu` 自定义菜单展示, 见 [ADR-0008](../../adr/0008-tree-menu-and-user-customization.md)
 - **库选型一律 TBD**: 图渲染库 / 代码编辑器 / 文件上传组件 / 数据库 Connector 凭证存储 → 走独立 ADR(0003–0008), 截止时间锁死在 `tasks.md`
 - **竞品强项纳入**: Perspectives / Visual Query Builder / Multi-Layout / Quick Actions / Property Panel / Style Mapping / Multi-format Export / Shareable URL, 见 `requirements.md` 顶层 US 与各子模块 spec

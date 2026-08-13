@@ -1,4 +1,5 @@
 import { registerMockRoute } from "@/lib/mock-client";
+import { cloneJson, readLocalJson, writeLocalJson } from "@/lib/local-json-store";
 
 import { buildKnowledgeCenterReport, type ReportRange } from "./report-data";
 
@@ -104,8 +105,9 @@ export interface RecallTestResponse {
 }
 
 const now = "2026/6/10 10:30:00";
+const VECTOR_RECORDS_STORAGE_KEY = "data-agent.mock.knowledge-center.vector-records";
 
-let vectorRecords: VectorRecord[] = [
+const defaultVectorRecords: VectorRecord[] = [
   {
     id: "vec-chunk-pg-001",
     type: "chunk",
@@ -405,8 +407,16 @@ let vectorRecords: VectorRecord[] = [
   },
 ];
 
+function readVectorRecords() {
+  return readLocalJson(VECTOR_RECORDS_STORAGE_KEY, defaultVectorRecords);
+}
+
+function writeVectorRecords(records: VectorRecord[]) {
+  return writeLocalJson(VECTOR_RECORDS_STORAGE_KEY, records);
+}
+
 function cloneRecords() {
-  return structuredClone(vectorRecords);
+  return cloneJson(readVectorRecords());
 }
 
 function scoreRecord(record: VectorRecord, query: string) {
@@ -594,21 +604,22 @@ registerMockRoute("GET", "/api/knowledge-center/reports", (_body, params) => {
 
 registerMockRoute("POST", "/api/knowledge-center/vector-records/delete", (body) => {
   const ids = new Set(((body as { ids?: string[] })?.ids ?? []));
+  const vectorRecords = readVectorRecords();
   const before = vectorRecords.length;
-  vectorRecords = vectorRecords.filter((record) => !ids.has(record.id));
+  const next = writeVectorRecords(vectorRecords.filter((record) => !ids.has(record.id)));
 
-  return { ok: true, affected: before - vectorRecords.length } satisfies VectorOperationResult;
+  return { ok: true, affected: before - next.length } satisfies VectorOperationResult;
 });
 
 registerMockRoute("POST", "/api/knowledge-center/vector-records/revectorize", (body) => {
   const ids = new Set(((body as { ids?: string[] })?.ids ?? []));
   let affected = 0;
 
-  vectorRecords = vectorRecords.map((record) => {
+  writeVectorRecords(readVectorRecords().map((record) => {
     if (!ids.has(record.id)) return record;
     affected += 1;
     return { ...record, status: "ready", updatedAt: now };
-  });
+  }));
 
   return { ok: true, affected } satisfies VectorOperationResult;
 });

@@ -1,13 +1,16 @@
-import * as pdfjsLib from "pdfjs-dist";
+let pdfjsPromise: Promise<typeof import("pdfjs-dist")> | null = null;
 
-let _workerReady = false;
-function ensureWorker() {
-  if (_workerReady) return;
-  _workerReady = true;
-  pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
-    "pdfjs-dist/build/pdf.worker.min.mjs",
-    import.meta.url,
-  ).href;
+function loadPdfJs() {
+  if (!pdfjsPromise) {
+    pdfjsPromise = import("pdfjs-dist").then((pdfjsLib) => {
+      pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
+        "pdfjs-dist/build/pdf.worker.min.mjs",
+        import.meta.url,
+      ).href;
+      return pdfjsLib;
+    });
+  }
+  return pdfjsPromise;
 }
 
 export interface ParsedDoc {
@@ -17,7 +20,7 @@ export interface ParsedDoc {
 }
 
 export async function parsePdf(file: File): Promise<ParsedDoc> {
-  ensureWorker();
+  const pdfjsLib = await loadPdfJs();
   const buf = await file.arrayBuffer();
   const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
   const pages = await Promise.all(

@@ -1,35 +1,46 @@
-# Data Sources · Requirements
+# Data Integration · Requirements
 
-> 关注 **WHAT**: 模块解决什么业务问题、谁来用、达到什么程度才算"完成"。HOW 留给 [design.md](./design.md)。
-
-## 概述 · Overview
-注册、连接、监控企业内外的数据源(数据库 / 对象存储 / 流式 / API / 文件),作为 KG / Agents / Workflow 的数据入口。
+> 关注 **WHAT**：模块解决什么业务问题、谁来用、达到什么程度才算完成。
 
 ## 目标用户 · Personas
-| 角色 · Role | 场景 · Scenario | 期望产出 · Outcome |
+
+| 角色 | 场景 | 期望产出 |
 |---|---|---|
-| TODO | TODO | TODO |
+| 数据工程师 | 接入数据库、文件、消息队列或 API | 可测试、可复用的数据源连接 |
+| 数据集成开发者 | 配置全量、增量、CDC 或实时同步 | 可运行、可重试、可追踪的同步任务 |
+| 数据交换管理员 | 对外或跨域交换数据 | 可审批、可审计的交换通道 |
+| 平台运维人员 | 观察连接和任务状态 | 快速定位失败和延迟 |
 
 ## 用户故事 · User Stories
-- **US-01** 作为 _<角色>_, 我希望 _<能力>_, 以便 _<业务价值>_。
-- **US-02** TODO
 
-## 验收标准 · Acceptance Criteria (EARS)
-- **AC-01** 当 TODO 时, 系统应当 TODO。
-- **AC-02** TODO
+- **US-01** 作为数据工程师，我希望按类型管理数据源并进行连接测试，以便确认数据入口可用。
+- **US-02** 作为集成开发者，我希望配置同步模式、源端、目标端和调度策略，以便稳定搬运数据。
+- **US-03** 作为交换管理员，我希望选择 API、文件、库表或消息交换方式，以便为不同消费方提供合适的传输通道。
+- **US-04** 作为运维人员，我希望查看任务状态、进度、耗时和错误信息，以便处理失败和重试。
 
-## 范围 · In Scope
-- TODO
+## 验收标准 · Acceptance Criteria
+
+- **AC-01** 数据源列表应显示名称、类型、连接状态、负责人和更新时间，并支持搜索、筛选及 CRUD 交互。
+- **AC-02** 创建/编辑数据源时应根据类型展示对应配置字段，并提供连接测试反馈；凭证不得明文展示。
+- **AC-03** 同步任务应支持 `full`、`incremental`、`cdc`、`realtime` 四类模式，并展示源、目标、状态、进度和最近运行结果。
+- **AC-04** 共享交换应覆盖 API、文件、库表、消息四类方式，并保留交换状态、失败原因和审计关联。
+- **AC-05** 页面交互应通过可替换的 mock/API 边界组织，不能把真实连接逻辑写入通用 UI 组件。
+
+## 范围 · Scope
+
+- 数据源注册、查看、编辑、删除、连接测试和状态管理
+- 全量、增量、CDC、实时同步任务配置和运行信息
+- API、文件、库表、消息交换配置和状态
+- 前端 mock 数据模型、错误态、空态和加载态
 
 ## 非目标 · Out of Scope
-- TODO
+
+- 真实数据库、消息队列、对象存储、API 网关和文件传输执行器
+- 凭证、密钥和连接串的生产级保管
+- 生产级 CDC/实时计算引擎和跨地域容灾
 
 ## 依赖 · Dependencies
-- 上游 · Upstream: TODO (企业内部数据库 / 对象存储 / 消息系统)
-- 下游 · Downstream: `knowledge-graph` (图谱构建源)、`agents` (智能体读写)、`workflow` (流水线节点输入)
-- 外部 · External: TODO
 
-## 风险与未决 · Risks & Open Questions
-- ❓ 连接凭证安全性: 前端是否触碰凭证, 还是只显示已注册的 connection id
-- ❓ 支持哪些数据源类型作为 MVP
-- ❓ schema 预览是否需要分页 / 懒加载
+- 上游：企业数据库、文件系统、消息系统、外部 API
+- 下游：`data-lake`、`data-governance`、`scheduler`、未来的 `data-asset` 与 `data-development`
+- 平台边界：[`07-data-platform-product-scope.md`](../../platform/07-data-platform-product-scope.md)

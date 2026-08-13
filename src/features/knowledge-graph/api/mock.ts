@@ -1,4 +1,5 @@
 import { registerMockRoute } from "@/lib/mock-client";
+import { readLocalJson, writeLocalJson } from "@/lib/local-json-store";
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
@@ -194,12 +195,27 @@ export interface DomainTemplate {
 
 // ── Fixtures ───────────────────────────────────────────────────────────────
 
-const graphs: GraphInstance[] = [
+const GRAPH_STORAGE_KEY = "data-agent.mock.knowledge-graph.graphs";
+const PROPERTY_KEYS_STORAGE_KEY = "data-agent.mock.knowledge-graph.property-keys";
+const VERTEX_LABELS_STORAGE_KEY = "data-agent.mock.knowledge-graph.vertex-labels";
+const EDGE_LABELS_STORAGE_KEY = "data-agent.mock.knowledge-graph.edge-labels";
+const INDEX_LABELS_STORAGE_KEY = "data-agent.mock.knowledge-graph.index-labels";
+const ASYNC_TASKS_STORAGE_KEY = "data-agent.mock.knowledge-graph.async-tasks";
+const IMPORT_JOBS_STORAGE_KEY = "data-agent.mock.knowledge-graph.import-jobs";
+const AI_GRAPH_DOCS_STORAGE_KEY = "data-agent.mock.knowledge-graph.ai-graph.documents";
+const AI_GRAPH_EXTRACTIONS_STORAGE_KEY = "data-agent.mock.knowledge-graph.ai-graph.extractions";
+const AI_GRAPH_CHUNKS_STORAGE_KEY = "data-agent.mock.knowledge-graph.ai-graph.chunks";
+
+type StoredAiGraphExtraction = AiGraphExtraction & { _startedAt: number };
+
+const defaultGraphs: GraphInstance[] = [
   { id: "hugegraph-demo", name: "供应链知识图谱", host: "localhost", port: 8080, status: "healthy", createdAt: "2026-04-01", updatedAt: "2026-05-13" },
   { id: "risk-graph",     name: "风险关系图谱",   host: "10.0.0.2",  port: 8080, status: "warning", createdAt: "2026-03-15", updatedAt: "2026-05-10" },
 ];
 
-const propertyKeys: PropertyKey[] = [
+let graphs = readLocalJson(GRAPH_STORAGE_KEY, defaultGraphs);
+
+const defaultPropertyKeys: PropertyKey[] = [
   { id: "pk-name",      name: "name",      dataType: "TEXT",    cardinality: "single" },
   { id: "pk-age",       name: "age",       dataType: "INT",     cardinality: "single" },
   { id: "pk-role",      name: "role",      dataType: "TEXT",    cardinality: "single" },
@@ -214,7 +230,9 @@ const propertyKeys: PropertyKey[] = [
   { id: "pk-desc",      name: "description", dataType: "TEXT",  cardinality: "single" },
 ];
 
-const vertexLabels: VertexLabel[] = [
+let propertyKeys = readLocalJson(PROPERTY_KEYS_STORAGE_KEY, defaultPropertyKeys);
+
+const defaultVertexLabels: VertexLabel[] = [
   {
     id: "vl-person", name: "Person", idStrategy: "primaryKey", primaryKeys: ["name"],
     propertyKeys: ["name", "age", "role", "region"],
@@ -235,19 +253,25 @@ const vertexLabels: VertexLabel[] = [
   },
 ];
 
-const edgeLabels: EdgeLabel[] = [
+let vertexLabels = readLocalJson(VERTEX_LABELS_STORAGE_KEY, defaultVertexLabels);
+
+const defaultEdgeLabels: EdgeLabel[] = [
   { id: "el-works-at",         name: "works_at",         sourceLabel: "Person",  targetLabel: "Company", frequency: "single",   propertyKeys: ["startedAt", "role"],   style: { color: "#6366f1", thickness: 1, arrow: "end" } },
   { id: "el-invests-in",       name: "invests_in",       sourceLabel: "Company", targetLabel: "Company", frequency: "multiple", propertyKeys: ["amount", "startedAt"], style: { color: "#dc2626", thickness: 2, arrow: "end" } },
   { id: "el-produces",         name: "produces",         sourceLabel: "Company", targetLabel: "Product", frequency: "single",   propertyKeys: ["startedAt"],            style: { color: "#d97706", thickness: 1, arrow: "end" } },
   { id: "el-collaborates-with", name: "collaborates_with", sourceLabel: "Company", targetLabel: "Company", frequency: "multiple", propertyKeys: ["weight", "startedAt"], style: { color: "#0891b2", thickness: 1, arrow: "both" } },
 ];
 
-const indexLabels: IndexLabel[] = [
+let edgeLabels = readLocalJson(EDGE_LABELS_STORAGE_KEY, defaultEdgeLabels);
+
+const defaultIndexLabels: IndexLabel[] = [
   { id: "il-person-name",    name: "personByName",     baseType: "vertex", baseLabel: "Person",  indexType: "secondary", fields: ["name"],     status: "ready" },
   { id: "il-company-industry", name: "companyByIndustry", baseType: "vertex", baseLabel: "Company", indexType: "secondary", fields: ["industry"], status: "ready" },
   { id: "il-company-region", name: "companyByRegion",  baseType: "vertex", baseLabel: "Company", indexType: "secondary", fields: ["region"],   status: "building" },
   { id: "il-product-name",   name: "productSearch",    baseType: "vertex", baseLabel: "Product", indexType: "search",    fields: ["name"],     status: "ready" },
 ];
+
+let indexLabels = readLocalJson(INDEX_LABELS_STORAGE_KEY, defaultIndexLabels);
 
 // Vertices for the seed graph (~20 sample)
 const vertices: Vertex[] = [
@@ -287,7 +311,7 @@ const edges: Edge[] = [
   { id: "e16", label: "collaborates_with", sourceId: "v6",  targetId: "v7",  properties: { weight: 0.9, startedAt: "2022-03-01" } },
 ];
 
-const asyncTasks: AsyncTask[] = [
+const defaultAsyncTasks: AsyncTask[] = [
   {
     id: "task-import-001", graphId: "hugegraph-demo", type: "import", status: "success", progress: 100,
     parameters: { connector: "local", file: "supply_chain.csv", rows: 45000 },
@@ -347,7 +371,9 @@ const asyncTasks: AsyncTask[] = [
   },
 ];
 
-const importJobs: ImportJob[] = [
+let asyncTasks = readLocalJson(ASYNC_TASKS_STORAGE_KEY, defaultAsyncTasks);
+
+const defaultImportJobs: ImportJob[] = [
   {
     id: "job-001", graphId: "hugegraph-demo",
     schemaSelection: { vertexLabels: ["Person", "Company"], edgeLabels: ["works_at"] },
@@ -371,6 +397,55 @@ const importJobs: ImportJob[] = [
     totalRows: 8000, processedRows: 1200,
   },
 ];
+
+let importJobs = readLocalJson(IMPORT_JOBS_STORAGE_KEY, defaultImportJobs);
+
+function persistGraphs(next: GraphInstance[]) {
+  graphs = writeLocalJson(GRAPH_STORAGE_KEY, next);
+  return graphs;
+}
+
+function persistPropertyKeys(next: PropertyKey[]) {
+  propertyKeys = writeLocalJson(PROPERTY_KEYS_STORAGE_KEY, next);
+  return propertyKeys;
+}
+
+function persistVertexLabels(next: VertexLabel[]) {
+  vertexLabels = writeLocalJson(VERTEX_LABELS_STORAGE_KEY, next);
+  return vertexLabels;
+}
+
+function persistEdgeLabels(next: EdgeLabel[]) {
+  edgeLabels = writeLocalJson(EDGE_LABELS_STORAGE_KEY, next);
+  return edgeLabels;
+}
+
+function persistIndexLabels(next: IndexLabel[]) {
+  indexLabels = writeLocalJson(INDEX_LABELS_STORAGE_KEY, next);
+  return indexLabels;
+}
+
+function persistAsyncTasks(next: AsyncTask[]) {
+  asyncTasks = writeLocalJson(ASYNC_TASKS_STORAGE_KEY, next);
+  return asyncTasks;
+}
+
+function persistImportJobs(next: ImportJob[]) {
+  importJobs = writeLocalJson(IMPORT_JOBS_STORAGE_KEY, next);
+  return importJobs;
+}
+
+function upsertById<T extends { id: string }>(items: T[], next: T) {
+  return items.some((item) => item.id === next.id)
+    ? items.map((item) => (item.id === next.id ? next : item))
+    : [next, ...items];
+}
+
+function deleteByBody<T extends { id: string; name?: string }>(items: T[], body: unknown) {
+  const payload = body as Partial<T> | undefined;
+  if (!payload?.id && !payload?.name) return items;
+  return items.filter((item) => item.id !== payload.id && item.name !== payload.name);
+}
 
 const algorithms: AlgorithmDescriptor[] = [
   {
@@ -508,13 +583,17 @@ function overviewStats(graphId: string): GraphOverviewStats {
 
 // Graphs
 registerMockRoute("GET", "/api/knowledge-graph/graphs/list", () => graphs);
-for (const g of graphs) {
-  registerMockRoute("GET", `/api/knowledge-graph/graphs/${g.id}/detail`, () => g);
-  registerMockRoute("GET", `/api/knowledge-graph/graphs/${g.id}/overview-stats`, () => overviewStats(g.id));
-}
+registerMockRoute("GET", "/api/knowledge-graph/graphs/:id/detail", (_body, params) =>
+  graphs.find((g) => g.id === params!.id) ?? null,
+);
+registerMockRoute("GET", "/api/knowledge-graph/graphs/:id/overview-stats", (_body, params) =>
+  overviewStats(params!.id),
+);
 registerMockRoute("POST", "/api/knowledge-graph/graphs", (_body) => {
   const b = _body as Partial<GraphInstance>;
-  return { id: `graph-${Date.now()}`, name: b.name ?? "New Graph", host: b.host ?? "localhost", port: b.port ?? 8080, status: "healthy", createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() } satisfies GraphInstance;
+  const graph = { id: `graph-${Date.now()}`, name: b.name ?? "New Graph", host: b.host ?? "localhost", port: b.port ?? 8080, status: "healthy", createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() } satisfies GraphInstance;
+  persistGraphs([graph, ...graphs]);
+  return graph;
 });
 
 // Perspectives
@@ -522,21 +601,69 @@ registerMockRoute("GET", "/api/knowledge-graph/perspectives/list", () => perspec
 
 // Metadata
 registerMockRoute("GET", "/api/knowledge-graph/metadata/vertexlabels", () => vertexLabels);
-registerMockRoute("POST", "/api/knowledge-graph/metadata/vertexlabels", (body) => ({ ...body as object, id: `vl-${Date.now()}` }));
-registerMockRoute("PUT", "/api/knowledge-graph/metadata/vertexlabels", (body) => body);
-registerMockRoute("DELETE", "/api/knowledge-graph/metadata/vertexlabels", () => ({ ok: true }));
+registerMockRoute("POST", "/api/knowledge-graph/metadata/vertexlabels", (body) => {
+  const resource = { ...(body as Omit<VertexLabel, "id">), id: `vl-${Date.now()}` } as VertexLabel;
+  persistVertexLabels(upsertById(vertexLabels, resource));
+  return resource;
+});
+registerMockRoute("PUT", "/api/knowledge-graph/metadata/vertexlabels", (body) => {
+  const resource = body as VertexLabel;
+  persistVertexLabels(upsertById(vertexLabels, resource));
+  return resource;
+});
+registerMockRoute("DELETE", "/api/knowledge-graph/metadata/vertexlabels", (body, params) => {
+  const before = vertexLabels.length;
+  persistVertexLabels(deleteByBody(vertexLabels, body ?? params));
+  return { ok: true, affected: before - vertexLabels.length };
+});
 registerMockRoute("GET", "/api/knowledge-graph/metadata/edgelabels", () => edgeLabels);
-registerMockRoute("POST", "/api/knowledge-graph/metadata/edgelabels", (body) => ({ ...body as object, id: `el-${Date.now()}` }));
-registerMockRoute("PUT", "/api/knowledge-graph/metadata/edgelabels", (body) => body);
-registerMockRoute("DELETE", "/api/knowledge-graph/metadata/edgelabels", () => ({ ok: true }));
+registerMockRoute("POST", "/api/knowledge-graph/metadata/edgelabels", (body) => {
+  const resource = { ...(body as Omit<EdgeLabel, "id">), id: `el-${Date.now()}` } as EdgeLabel;
+  persistEdgeLabels(upsertById(edgeLabels, resource));
+  return resource;
+});
+registerMockRoute("PUT", "/api/knowledge-graph/metadata/edgelabels", (body) => {
+  const resource = body as EdgeLabel;
+  persistEdgeLabels(upsertById(edgeLabels, resource));
+  return resource;
+});
+registerMockRoute("DELETE", "/api/knowledge-graph/metadata/edgelabels", (body, params) => {
+  const before = edgeLabels.length;
+  persistEdgeLabels(deleteByBody(edgeLabels, body ?? params));
+  return { ok: true, affected: before - edgeLabels.length };
+});
 registerMockRoute("GET", "/api/knowledge-graph/metadata/propertykeys", () => propertyKeys);
-registerMockRoute("POST", "/api/knowledge-graph/metadata/propertykeys", (body) => ({ ...body as object, id: `pk-${Date.now()}` }));
-registerMockRoute("PUT", "/api/knowledge-graph/metadata/propertykeys", (body) => body);
-registerMockRoute("DELETE", "/api/knowledge-graph/metadata/propertykeys", () => ({ ok: true }));
+registerMockRoute("POST", "/api/knowledge-graph/metadata/propertykeys", (body) => {
+  const resource = { ...(body as Omit<PropertyKey, "id">), id: `pk-${Date.now()}` } as PropertyKey;
+  persistPropertyKeys(upsertById(propertyKeys, resource));
+  return resource;
+});
+registerMockRoute("PUT", "/api/knowledge-graph/metadata/propertykeys", (body) => {
+  const resource = body as PropertyKey;
+  persistPropertyKeys(upsertById(propertyKeys, resource));
+  return resource;
+});
+registerMockRoute("DELETE", "/api/knowledge-graph/metadata/propertykeys", (body, params) => {
+  const before = propertyKeys.length;
+  persistPropertyKeys(deleteByBody(propertyKeys, body ?? params));
+  return { ok: true, affected: before - propertyKeys.length };
+});
 registerMockRoute("GET", "/api/knowledge-graph/metadata/indexlabels", () => indexLabels);
-registerMockRoute("POST", "/api/knowledge-graph/metadata/indexlabels", (body) => ({ ...body as object, id: `il-${Date.now()}` }));
-registerMockRoute("PUT", "/api/knowledge-graph/metadata/indexlabels", (body) => body);
-registerMockRoute("DELETE", "/api/knowledge-graph/metadata/indexlabels", () => ({ ok: true }));
+registerMockRoute("POST", "/api/knowledge-graph/metadata/indexlabels", (body) => {
+  const resource = { ...(body as Omit<IndexLabel, "id">), id: `il-${Date.now()}` } as IndexLabel;
+  persistIndexLabels(upsertById(indexLabels, resource));
+  return resource;
+});
+registerMockRoute("PUT", "/api/knowledge-graph/metadata/indexlabels", (body) => {
+  const resource = body as IndexLabel;
+  persistIndexLabels(upsertById(indexLabels, resource));
+  return resource;
+});
+registerMockRoute("DELETE", "/api/knowledge-graph/metadata/indexlabels", (body, params) => {
+  const before = indexLabels.length;
+  persistIndexLabels(deleteByBody(indexLabels, body ?? params));
+  return { ok: true, affected: before - indexLabels.length };
+});
 registerMockRoute("GET", "/api/knowledge-graph/metadata/schema-graph", () => ({ vertices: vertexLabels, edges: edgeLabels }));
 registerMockRoute("POST", "/api/knowledge-graph/metadata/schema-graph/commit", () => ({ ok: true, appliedChanges: 3 }));
 
@@ -602,18 +729,46 @@ registerMockRoute("POST", "/api/knowledge-graph/visualization/pattern-search", (
 // Async Tasks
 registerMockRoute("GET", "/api/knowledge-graph/async-tasks/list", () => asyncTasks);
 registerMockRoute("GET", "/api/knowledge-graph/async-tasks/subscribe", () => []);
-for (const t of asyncTasks) {
-  registerMockRoute("GET", `/api/knowledge-graph/async-tasks/${t.id}/detail`, () => t);
-  registerMockRoute("POST", `/api/knowledge-graph/async-tasks/${t.id}/cancel`, () => ({ ok: true }));
-  registerMockRoute("POST", `/api/knowledge-graph/async-tasks/${t.id}/retry`, () => ({ ...t, id: `${t.id}-retry-${Date.now()}`, status: "pending", progress: 0 }));
-}
+registerMockRoute("GET", "/api/knowledge-graph/async-tasks/:id/detail", (_body, params) =>
+  asyncTasks.find((t) => t.id === params!.id) ?? null,
+);
+registerMockRoute("POST", "/api/knowledge-graph/async-tasks/:id/cancel", (_body, params) => {
+  persistAsyncTasks(asyncTasks.map((task) =>
+    task.id === params!.id
+      ? { ...task, status: "cancelled", progress: task.progress, finishedAt: new Date().toISOString() }
+      : task,
+  ));
+  return { ok: true };
+});
+registerMockRoute("POST", "/api/knowledge-graph/async-tasks/:id/retry", (_body, params) => {
+  const task = asyncTasks.find((item) => item.id === params!.id);
+  const newTask = {
+    ...(task ?? asyncTasks[0]),
+    id: `${params!.id}-retry-${Date.now()}`,
+    status: "pending",
+    progress: 0,
+    logs: [],
+    createdAt: new Date().toISOString(),
+    startedAt: undefined,
+    finishedAt: undefined,
+    error: undefined,
+  } satisfies AsyncTask;
+  persistAsyncTasks([newTask, ...asyncTasks]);
+  return newTask;
+});
 
 // Import
 registerMockRoute("GET", "/api/knowledge-graph/import/jobs", () => importJobs);
-registerMockRoute("POST", "/api/knowledge-graph/import/jobs", (body) => ({
-  ...body as object, id: `job-${Date.now()}`, status: "pending", progress: 0,
-  createdAt: new Date().toISOString(),
-}));
+registerMockRoute("POST", "/api/knowledge-graph/import/jobs", (body) => {
+  const job = {
+    ...(body as Omit<ImportJob, "id" | "status" | "progress">),
+    id: `job-${Date.now()}`,
+    status: "pending",
+    progress: 0,
+  } satisfies ImportJob;
+  persistImportJobs([job, ...importJobs]);
+  return job;
+});
 registerMockRoute("POST", "/api/knowledge-graph/import/connectors/local/preview", () =>
   Array.from({ length: 5 }, (_, i) => ({ row: i, values: { name: `Entity_${i}`, type: "Person", age: 20 + i } }))
 );
@@ -633,6 +788,17 @@ registerMockRoute("GET", "/api/knowledge-graph/computer/algorithms", () => algor
 registerMockRoute("POST", "/api/knowledge-graph/computer/jobs", (body) => {
   const b = body as { algorithmKey?: string };
   const taskId = `task-olap-${b.algorithmKey}-${Date.now()}`;
+  const task: AsyncTask = {
+    id: taskId,
+    graphId: "hugegraph-demo",
+    type: "olap-algorithm",
+    status: "pending",
+    progress: 0,
+    parameters: { algorithmKey: b.algorithmKey },
+    logs: [{ at: new Date().toISOString(), level: "info", message: "算法任务已创建" }],
+    createdAt: new Date().toISOString(),
+  };
+  persistAsyncTasks([task, ...asyncTasks]);
   return { taskId };
 });
 
@@ -667,7 +833,21 @@ registerMockRoute("POST", "/api/knowledge-graph/ai/kg-build/preview", () => ({
     { sourceName: "李总", targetName: "新能源集团", label: "works_at", properties: { role: "CEO" } },
   ],
 }));
-registerMockRoute("POST", "/api/knowledge-graph/ai/kg-build/commit", () => ({ taskId: `task-ai-kgbuild-${Date.now()}` }));
+registerMockRoute("POST", "/api/knowledge-graph/ai/kg-build/commit", () => {
+  const taskId = `task-ai-kgbuild-${Date.now()}`;
+  const task: AsyncTask = {
+    id: taskId,
+    graphId: "hugegraph-demo",
+    type: "ai-kg-build",
+    status: "pending",
+    progress: 0,
+    parameters: {},
+    logs: [{ at: new Date().toISOString(), level: "info", message: "AI 建图任务已创建" }],
+    createdAt: new Date().toISOString(),
+  };
+  persistAsyncTasks([task, ...asyncTasks]);
+  return { taskId };
+});
 registerMockRoute("GET", "/api/knowledge-graph/ai/ml-models", () => [
   { key: "gcn",       family: "embedding",           description: "图卷积网络" },
   { key: "gat",       family: "embedding",           description: "图注意力网络" },
@@ -681,10 +861,26 @@ registerMockRoute("GET", "/api/knowledge-graph/admin/backups", () => [
   { id: "bk-001", graphId: "hugegraph-demo", size: 128 * 1024 * 1024, vertexCount: 186000, edgeCount: 524000, schemaSnapshot: { vertexLabels: 3, edgeLabels: 4 }, createdAt: "2026-05-10 03:00:00", createdBy: "admin" },
   { id: "bk-002", graphId: "hugegraph-demo", size: 98 * 1024 * 1024,  vertexCount: 150000, edgeCount: 410000, schemaSnapshot: { vertexLabels: 3, edgeLabels: 3 }, createdAt: "2026-04-30 03:00:00", createdBy: "admin" },
 ]);
-registerMockRoute("POST", "/api/knowledge-graph/admin/backup",     () => ({ taskId: `task-backup-${Date.now()}` }));
-registerMockRoute("POST", "/api/knowledge-graph/admin/restore",    () => ({ taskId: `task-restore-${Date.now()}` }));
-registerMockRoute("POST", "/api/knowledge-graph/admin/clear-data", () => ({ taskId: `task-clear-${Date.now()}` }));
-registerMockRoute("POST", "/api/knowledge-graph/admin/clear-all",  () => ({ taskId: `task-clear-all-${Date.now()}` }));
+function createAdminTask(kind: string) {
+  const taskId = `task-${kind}-${Date.now()}`;
+  const task: AsyncTask = {
+    id: taskId,
+    graphId: "hugegraph-demo",
+    type: "large-export",
+    status: "pending",
+    progress: 0,
+    parameters: { kind },
+    logs: [{ at: new Date().toISOString(), level: "info", message: `管理任务已创建: ${kind}` }],
+    createdAt: new Date().toISOString(),
+  };
+  persistAsyncTasks([task, ...asyncTasks]);
+  return { taskId };
+}
+
+registerMockRoute("POST", "/api/knowledge-graph/admin/backup",     () => createAdminTask("backup"));
+registerMockRoute("POST", "/api/knowledge-graph/admin/restore",    () => createAdminTask("restore"));
+registerMockRoute("POST", "/api/knowledge-graph/admin/clear-data", () => createAdminTask("clear"));
+registerMockRoute("POST", "/api/knowledge-graph/admin/clear-all",  () => createAdminTask("clear-all"));
 registerMockRoute("GET", "/api/knowledge-graph/admin/history", () => [
   { id: "ah-001", graphId: "hugegraph-demo", kind: "backup", status: "success", parameters: {}, effects: { vertexDelta: 0, edgeDelta: 0, schemaDelta: 0 }, taskId: "task-import-001", performedBy: "admin", performedAt: "2026-05-10 03:00:00" },
 ]);
@@ -855,7 +1051,7 @@ const _prevExtraction: AiGraphExtraction = {
   tokenUsage: { prompt: 14210, completion: 3640, estimatedUsd: 0.142 },
 };
 
-const aiGraphDocsStore: AiGraphDocument[] = [{
+const defaultAiGraphDocs: AiGraphDocument[] = [{
   id: "doc-fixture-001", graphId: "hugegraph-demo",
   filename: "supply-chain-report-2025.pdf", mimeType: "application/pdf",
   sizeBytes: 2516582, charCount: 38420,
@@ -863,10 +1059,27 @@ const aiGraphDocsStore: AiGraphDocument[] = [{
   status: "extracted", extractionCount: 1, uploadedAt: "2026-05-10 09:30:00",
 }];
 
-const aiGraphExtractionsStore = new Map<string, AiGraphExtraction & { _startedAt: number }>([
-  [_fixtureExtraction.id, { ..._fixtureExtraction, _startedAt: 0 }],
-  [_prevExtraction.id,    { ..._prevExtraction,    _startedAt: 0 }],
-]);
+let aiGraphDocsStore = readLocalJson(AI_GRAPH_DOCS_STORAGE_KEY, defaultAiGraphDocs);
+
+const defaultAiGraphExtractions: StoredAiGraphExtraction[] = [
+  { ..._fixtureExtraction, _startedAt: 0 },
+  { ..._prevExtraction, _startedAt: 0 },
+];
+
+let aiGraphExtractionsStore = new Map<string, StoredAiGraphExtraction>(
+  readLocalJson(AI_GRAPH_EXTRACTIONS_STORAGE_KEY, defaultAiGraphExtractions).map((item) => [item.id, item]),
+);
+
+function persistAiGraphDocs(next: AiGraphDocument[]) {
+  aiGraphDocsStore = writeLocalJson(AI_GRAPH_DOCS_STORAGE_KEY, next);
+  return aiGraphDocsStore;
+}
+
+function persistAiGraphExtractions() {
+  const items = writeLocalJson(AI_GRAPH_EXTRACTIONS_STORAGE_KEY, [...aiGraphExtractionsStore.values()]);
+  aiGraphExtractionsStore = new Map(items.map((item) => [item.id, item]));
+  return aiGraphExtractionsStore;
+}
 
 const domainTemplates: DomainTemplate[] = [
   { key: "general",  label: { "zh-CN": "通用",   "en-US": "General"  }, suggestedVertexLabels: ["Entity", "Concept", "Person", "Org"],             suggestedEdgeLabels: ["related_to", "part_of", "works_at"],          fewShotCount: 3 },
@@ -897,7 +1110,7 @@ registerMockRoute("POST", "/api/knowledge-graph/ai-graph/documents", (_b) => {
     sizeBytes: b.sizeBytes ?? 0, charCount: b.charCount, textPreview: b.textPreview,
     status: "parsed", extractionCount: 0, uploadedAt: new Date().toISOString(),
   };
-  aiGraphDocsStore.push(doc);
+  persistAiGraphDocs([...aiGraphDocsStore, doc]);
   return doc;
 });
 registerMockRoute("GET",  "/api/knowledge-graph/ai-graph/templates",  () => domainTemplates);
@@ -917,7 +1130,10 @@ registerMockRoute("POST", "/api/knowledge-graph/ai-graph/extractions", (_b) => {
     createdAt: new Date().toISOString(), _startedAt: Date.now(),
   };
   aiGraphExtractionsStore.set(ext.id, ext);
-  b.docIds.forEach(id => { const d = aiGraphDocsStore.find(x => x.id === id); if (d) d.status = "extracting"; });
+  persistAiGraphDocs(aiGraphDocsStore.map((doc) =>
+    b.docIds.includes(doc.id) ? { ...doc, status: "extracting" } : doc,
+  ));
+  persistAiGraphExtractions();
   return ext as AiGraphExtraction;
 });
 // Pattern routes (matched by mock-client wildcard logic)
@@ -974,14 +1190,18 @@ registerMockRoute("GET",    "/api/knowledge-graph/ai-graph/extractions/:id", (_b
       finishedAt: new Date().toISOString(),
     };
     aiGraphExtractionsStore.set(stored.id, updated);
-    stored.docIds.forEach(id => { const d = aiGraphDocsStore.find(x => x.id === id); if (d) { d.status = "extracted"; d.extractionCount += 1; } });
+    persistAiGraphDocs(aiGraphDocsStore.map((doc) =>
+      stored.docIds.includes(doc.id)
+        ? { ...doc, status: "extracted", extractionCount: doc.extractionCount + 1 }
+        : doc,
+    ));
+    persistAiGraphExtractions();
     return updated as AiGraphExtraction;
   }
   return stored as AiGraphExtraction;
 });
 registerMockRoute("DELETE", "/api/knowledge-graph/ai-graph/documents/:id", (_b, params) => {
-  const idx = aiGraphDocsStore.findIndex(d => d.id === params!.id);
-  if (idx !== -1) aiGraphDocsStore.splice(idx, 1);
+  persistAiGraphDocs(aiGraphDocsStore.filter((doc) => doc.id !== params!.id));
   return { ok: true };
 });
 // ── v2 GraphRAG routes ───────────────────────────────────────────────────
@@ -1051,9 +1271,19 @@ const embeddingModels = [
   { key: "local-minilm",           label: "MiniLM 本地小模型",            family: "local",     dimensions: 384  },
 ];
 
-const aiGraphChunksStore = new Map<string, DocumentChunk[]>([
+const defaultAiGraphChunks: Array<[string, DocumentChunk[]]> = [
   ["doc-fixture-001", _fixtureChunks],
-]);
+];
+
+let aiGraphChunksStore = new Map<string, DocumentChunk[]>(
+  readLocalJson(AI_GRAPH_CHUNKS_STORAGE_KEY, defaultAiGraphChunks),
+);
+
+function persistAiGraphChunks() {
+  const items = writeLocalJson(AI_GRAPH_CHUNKS_STORAGE_KEY, [...aiGraphChunksStore.entries()]);
+  aiGraphChunksStore = new Map(items);
+  return aiGraphChunksStore;
+}
 
 registerMockRoute("POST",   "/api/knowledge-graph/ai-graph/documents/:id/chunks", (_b, params) => {
   const cfg = _b as { strategy?: ChunkStrategy; chunkSize?: number; overlap?: number };
@@ -1077,8 +1307,12 @@ registerMockRoute("POST",   "/api/knowledge-graph/ai-graph/documents/:id/chunks"
     if (end >= charCount) break;
   }
   aiGraphChunksStore.set(doc.id, chunks);
-  doc.chunkCount = chunks.length;
-  doc.chunkingStrategy = cfg.strategy ?? "token";
+  persistAiGraphChunks();
+  persistAiGraphDocs(aiGraphDocsStore.map((item) =>
+    item.id === doc.id
+      ? { ...item, chunkCount: chunks.length, chunkingStrategy: cfg.strategy ?? "token" }
+      : item,
+  ));
   return { chunks, strategy: cfg.strategy ?? "token", chunkSize, overlap };
 });
 
@@ -1100,6 +1334,7 @@ registerMockRoute("POST",   "/api/knowledge-graph/ai-graph/extractions/:id/reclu
             : r <= 0.7 ? _fixtureCommunitiesByResolution.coarse
             :            _fixtureCommunitiesByResolution.default;
   stored.communities = next;
+  persistAiGraphExtractions();
   return next;
 });
 
@@ -1110,7 +1345,10 @@ registerMockRoute("GET",    "/api/knowledge-graph/ai-graph/extractions/:id/repor
 
 registerMockRoute("POST",   "/api/knowledge-graph/ai-graph/extractions/:id/reports/generate", (_b, params) => {
   const stored = aiGraphExtractionsStore.get(params!.id);
-  if (stored) stored.reports = _fixtureReports;
+  if (stored) {
+    stored.reports = _fixtureReports;
+    persistAiGraphExtractions();
+  }
   return _fixtureReports;
 });
 
@@ -1119,6 +1357,7 @@ registerMockRoute("PATCH",  "/api/knowledge-graph/ai-graph/extractions/:id/repor
   const patch = _b as Partial<CommunityReport>;
   if (stored?.reports) {
     stored.reports = stored.reports.map(r => r.id === params!.rid ? { ...r, ...patch, generatedAt: new Date().toISOString() } : r);
+    persistAiGraphExtractions();
     return stored.reports.find(r => r.id === params!.rid) ?? null;
   }
   return null;
@@ -1134,6 +1373,7 @@ registerMockRoute("PATCH",  "/api/knowledge-graph/ai-graph/extractions/:id/claim
   const patch = _b as Partial<ExtractedClaim>;
   if (stored?.claims) {
     stored.claims = stored.claims.map(c => c.id === params!.cid ? { ...c, ...patch } : c);
+    persistAiGraphExtractions();
     return stored.claims.find(c => c.id === params!.cid) ?? null;
   }
   return null;
@@ -1202,22 +1442,27 @@ registerMockRoute("POST",   "/api/knowledge-graph/ai-graph/extractions/:id/commi
     stored.status = "committed";
     if (b.vertices) stored.vertices = b.vertices;
     if (b.edges) stored.edges = b.edges;
-    stored.docIds.forEach(id => { const d = aiGraphDocsStore.find(x => x.id === id); if (d) d.status = "committed"; });
+    persistAiGraphDocs(aiGraphDocsStore.map((doc) =>
+      stored.docIds.includes(doc.id) ? { ...doc, status: "committed" } : doc,
+    ));
+    persistAiGraphExtractions();
   }
   const taskId = `task-ai-graph-commit-${Date.now()}`;
   const importJobId = `job-ai-graph-${Date.now()}`;
-  asyncTasks.push({
+  const task: AsyncTask = {
     id: taskId, graphId: stored?.graphId ?? "hugegraph-demo", type: "ai-graph-commit",
     status: "pending", progress: 0,
     parameters: { extractionId: params!.id, vertexCount: b.vertices?.length ?? 0, edgeCount: b.edges?.length ?? 0 },
     logs: [{ at: new Date().toISOString(), level: "info", message: "AI 图谱入图任务已创建" }],
     createdAt: new Date().toISOString(),
-  });
-  importJobs.push({
+  };
+  const importJob: ImportJob = {
     id: importJobId, graphId: stored?.graphId ?? "hugegraph-demo",
     schemaSelection: { vertexLabels: [...new Set(b.vertices?.map(v => v.label) ?? [])], edgeLabels: [...new Set(b.edges?.map(e => e.label) ?? [])] },
     connector: { kind: "local" }, status: "pending", progress: 0,
-  });
+  };
+  persistAsyncTasks([task, ...asyncTasks]);
+  persistImportJobs([importJob, ...importJobs]);
   return { taskId, importJobId };
 });
 

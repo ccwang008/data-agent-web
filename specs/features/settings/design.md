@@ -19,9 +19,9 @@ flowchart LR
 ## 路由 · Routes
 | Path | Page Component | 说明 |
 |---|---|---|
-| `/settings` | `SettingsLayout` | 多 tab 入口, 默认重定向 `/settings/preferences` |
+| `/settings` | `SettingsLayout` | 多 tab 入口, 默认重定向 `/settings/menu` |
 | `/settings/preferences` | `PreferencesPage` | 个人偏好(语言 / 通知) |
-| `/settings/menu` | `MenuCustomizerPage` | **菜单自定义(P1, 本期重点)** |
+| `/settings/menu` | `MenuManagementPage` | 完整产品菜单管理 |
 | `/settings/users` | `UsersPage` | 用户与角色 (P1) |
 | `/settings/permissions` | `PermissionsPage` | 权限策略 (P1) |
 | `/settings/audit` | `AuditPage` | 审计日志 (P1) |
@@ -59,7 +59,7 @@ export interface MenuNode {
   label: { 'zh-CN': string; 'en-US': string };
   icon?: string;                  // lucide icon key
   children?: MenuNode[];
-  hidden?: boolean;
+  visible: boolean;
   customGroup?: boolean;          // true = 用户自建分组(无路由)
 }
 
@@ -71,45 +71,36 @@ export interface MenuConfig {
 ```
 
 约束:
-- `builtinRouteKey` 由代码侧 `MenuRegistry` 注册, 用户不可编辑或删除对应节点(只能 `hidden: true`)
+- `builtinRouteKey` 由代码侧 `MenuRegistry` 注册, 用户不可编辑或删除对应节点(只能切换 `visible`)
 - 任何代码侧的 sub-nav / breadcrumb / programmatic navigation 必须**只用 `builtinRouteKey`**, 不用用户 `label`
 - 切换语言时按 `label[currentLocale]` 渲染
 
-## Mock API · Endpoints
-| Method | Path | Response | 说明 |
-|---|---|---|---|
-| GET | `/api/settings/users` | `User[]` | 用户列表 |
-| GET | `/api/settings/roles` | `Role[]` | 角色与权限 |
-| GET | `/api/settings/audit` | `AuditEvent[]` | 审计日志 |
-| GET | `/api/settings/flags` | `FeatureFlag[]` | 功能开关 |
-| GET | `/api/settings/menu/get` | `MenuConfig` | 取菜单配置(默认 + 用户覆盖合并) |
-| POST | `/api/settings/menu/save` | `{ ok: boolean }` | 保存菜单配置 (body: `MenuConfig`) |
-| POST | `/api/settings/menu/reset` | `MenuConfig` | 重置为默认结构 |
-| POST | `/api/settings/menu/validate` | `{ ok: boolean; issues?: string[] }` | 校验配置(builtinRouteKey 完整性 / 循环引用) |
+## 持久化边界 · Persistence Boundary
 
-注册位置: `src/features/settings/api/mock.ts`。
+菜单配置由 `useMenuStore` 管理，SQLite scope 为 `data-agent.settings.menu`，默认结构来自 `public/menu.config.json` 并由代码侧注册表归一化。SQLite 是菜单配置的主持久化来源；已有浏览器 `data-agent.menu` 仅作为迁移兼容回退，不能替代数据库保存。菜单仍是全局 UI 偏好，不承载业务数据；各产品域的业务状态继续使用 SQLite。
 
 ## 状态管理 · State (Zustand)
 - 偏好设置直接复用全局 `useLocaleStore` / `useUIStore`, **不在本模块再起 store**
 - 子页面内部 state 用 React local state
-- **菜单自定义状态**: 新增 `useMenuStore`(持久化 key `data-agent.menu`), 字段:
+- **菜单自定义状态**: `useMenuStore` 使用 `data-agent.settings.menu` SQLite scope 保存提交后的配置, 字段:
   ```ts
   interface MenuStoreState {
     config: MenuConfig;                  // 当前生效配置
     draft: MenuConfig | null;            // 编辑中的草稿
     setDraft: (config: MenuConfig) => void;
-    commitDraft: () => Promise<void>;     // 调用 /api/settings/menu/save
+    commitDraft: () => Promise<void>;
     resetDraft: () => void;
     resetToDefault: () => Promise<void>;
   }
   ```
 - `Sidebar.tsx` 读取 `useMenuStore.config` 渲染, 不直接拉 mock
-- 当前精简分支在 `normalizeMenuConfig` 统一应用菜单白名单，因此默认配置和旧浏览器中的 `data-agent.menu` 都只保留“知识中心 → 知识库 / 分析报表”。
+- `normalizeMenuConfig` 以内置路由注册表为基线，因此默认配置、SQLite 配置和旧浏览器中的 `data-agent.menu` 都会补齐 README 声明的产品入口，同时保留受支持的名称、显隐和排序覆盖。
+- 菜单管理页点击保存或重置默认时先写入 `/api/sqlite/state`；写入成功后才更新当前 Sidebar 配置，失败时保留草稿并提示重试。
 
 ## 组件分解 · Component Tree
 - `SettingsLayout` (左侧 sub-nav + outlet)
   - `PreferencesPage`
-  - `MenuCustomizerPage` (P1 本期重点)
+  - `MenuManagementPage`
     - `MenuTreeEditor` (可拖拽树形组件)
       - 节点拖拽改顺序 / 嵌套
       - 行内重命名(zh-CN + en-US 双输入框)
@@ -136,9 +127,9 @@ export interface MenuConfig {
 - 未授权进入任意设置路由时, 页面主体显示居中的门禁卡片; 验证成功后保持当前 URL 并原位展示对应设置子页
 
 ## 验证策略 · Verification
-- 仓库当前未安装自动化测试框架, 不新增 `test` script。
-- 通过 `npm run typecheck`, `npm run lint`, `npm run build` 验证静态质量和构建。
-- 浏览器验证错误密码、正确密码、直接访问子路由、刷新、关闭后重新打开浏览器、Markdown 加载失败六条路径。
+- `src/app/route-menu-consistency.test.tsx` 校验内置菜单目标与实际 feature 路由一致，并覆盖旧缓存迁移。
+- 通过 `npm test`、`npm run typecheck`、`npm run lint` 和 `npm run build` 验证。
+- 浏览器验证错误密码、正确密码、直接访问子路由、刷新和 Markdown 加载失败路径。
 
 ## i18n · Namespaces
 - 命名空间: `settings`
@@ -150,5 +141,5 @@ export interface MenuConfig {
 - TODO
 
 ## 开放问题 · Open Questions
-- ❓ 偏好是否包含暗/亮主题切换 (当前强制 dark)
+- ❓ 偏好是否包含主题切换 (当前为经典浅色 SaaS，暂不提供主题切换)
 - ❓ 审计日志的查询粒度 (天 / 小时 / 分钟)

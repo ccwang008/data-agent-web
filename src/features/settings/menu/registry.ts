@@ -1,22 +1,33 @@
 import type { LucideIcon } from "lucide-react";
 import {
   BookOpen,
+  Boxes,
   Brain,
   BrainCog,
+  Calculator,
+  Cloud,
+  Code2,
   Database,
   FileInput,
   FileText,
   GitBranch,
+  Handshake,
   HelpCircle,
   LineChart,
   Network,
+  NotebookTabs,
+  Rocket,
+  Route,
+  ServerCog,
   Settings,
   ShieldAlert,
   ShieldCheck,
-  Sparkles,
   SquareCode,
+  Table2,
+  Tags,
   Timer,
   Workflow,
+  Wrench,
 } from "lucide-react";
 
 import type { Locale } from "@/lib/i18n";
@@ -152,33 +163,223 @@ export const BUILTIN_MENU: Record<string, BuiltinMenuEntry> = {
     icon: ShieldCheck,
     defaultLabel: { "zh-CN": "知识权限", "en-US": "Knowledge Permissions" },
   },
+  "data-asset": {
+    key: "data-asset",
+    matchPrefix: "/data-asset",
+    icon: Database,
+    status: "ready",
+    defaultLabel: { "zh-CN": "数据资产运营", "en-US": "Data Assets" },
+  },
+  "data-asset.catalog": {
+    key: "data-asset.catalog",
+    to: "/data-asset/catalog",
+    icon: Boxes,
+    defaultLabel: { "zh-CN": "资产目录", "en-US": "Asset Catalog" },
+  },
+  "data-asset.ownership": {
+    key: "data-asset.ownership",
+    to: "/data-asset/ownership",
+    icon: Handshake,
+    defaultLabel: { "zh-CN": "权属登记", "en-US": "Ownership" },
+  },
+  "data-asset.value": {
+    key: "data-asset.value",
+    to: "/data-asset/value",
+    icon: Calculator,
+    defaultLabel: { "zh-CN": "价值评估", "en-US": "Valuation" },
+  },
+  "data-asset.service": {
+    key: "data-asset.service",
+    to: "/data-asset/service",
+    icon: Rocket,
+    defaultLabel: { "zh-CN": "资产运营", "en-US": "Service" },
+  },
+  "data-asset.audit": {
+    key: "data-asset.audit",
+    to: "/data-asset/audit",
+    icon: ShieldAlert,
+    defaultLabel: { "zh-CN": "使用审计", "en-US": "Audit" },
+  },
+  "data-asset.reports": {
+    key: "data-asset.reports",
+    to: "/data-asset/reports",
+    icon: LineChart,
+    defaultLabel: { "zh-CN": "量化报告", "en-US": "Reports" },
+  },
   "data-source": {
     key: "data-source",
-    to: "/data-source",
+    matchPrefix: "/data-source",
     icon: Database,
-    status: "todo",
-    defaultLabel: { "zh-CN": "数据源", "en-US": "Data Source" },
+    status: "ready",
+    defaultLabel: { "zh-CN": "数据集成", "en-US": "Data Integration" },
   },
-  agents: {
-    key: "agents",
-    to: "/agents",
-    icon: Sparkles,
-    status: "todo",
-    defaultLabel: { "zh-CN": "智能体", "en-US": "Agents" },
+  "data-source.sources": {
+    key: "data-source.sources",
+    to: "/data-source/sources",
+    icon: Database,
+    defaultLabel: { "zh-CN": "数据源", "en-US": "Data Sources" },
   },
-  workflow: {
-    key: "workflow",
-    to: "/workflow",
+  "data-source.sync": {
+    key: "data-source.sync",
+    to: "/data-source/sync",
     icon: Workflow,
-    status: "todo",
-    defaultLabel: { "zh-CN": "编排流水线", "en-US": "Workflow" },
+    defaultLabel: { "zh-CN": "数据同步", "en-US": "Data Sync" },
   },
-  insights: {
-    key: "insights",
-    to: "/insights",
+  "data-source.exchange": {
+    key: "data-source.exchange",
+    to: "/data-source/exchange",
+    icon: Route,
+    defaultLabel: { "zh-CN": "共享交换", "en-US": "Data Exchange" },
+  },
+  "data-lake": {
+    key: "data-lake",
+    matchPrefix: "/data-lake",
+    icon: Cloud,
+    status: "ready",
+    defaultLabel: { "zh-CN": "数据湖", "en-US": "Data Lake" },
+  },
+  "data-lake.storage": {
+    key: "data-lake.storage",
+    to: "/data-lake/storage",
+    icon: Cloud,
+    defaultLabel: { "zh-CN": "统一存储", "en-US": "Storage" },
+  },
+  "data-lake.tables": {
+    key: "data-lake.tables",
+    to: "/data-lake/tables",
+    icon: Table2,
+    defaultLabel: { "zh-CN": "湖表管理", "en-US": "Lake Tables" },
+  },
+  "data-lake.capacity": {
+    key: "data-lake.capacity",
+    to: "/data-lake/capacity",
     icon: LineChart,
-    status: "todo",
-    defaultLabel: { "zh-CN": "洞察分析", "en-US": "Insights" },
+    defaultLabel: { "zh-CN": "分层与容量", "en-US": "Capacity" },
+  },
+  "data-governance": {
+    key: "data-governance",
+    matchPrefix: "/data-governance",
+    icon: ShieldCheck,
+    status: "ready",
+    defaultLabel: { "zh-CN": "数据治理", "en-US": "Data Governance" },
+  },
+  "data-governance.metadata": {
+    key: "data-governance.metadata",
+    to: "/data-governance/metadata",
+    icon: Database,
+    defaultLabel: { "zh-CN": "元数据", "en-US": "Metadata" },
+  },
+  "data-governance.quality": {
+    key: "data-governance.quality",
+    to: "/data-governance/quality",
+    icon: ShieldCheck,
+    defaultLabel: { "zh-CN": "数据质量", "en-US": "Data Quality" },
+  },
+  "data-governance.standards": {
+    key: "data-governance.standards",
+    to: "/data-governance/standards",
+    icon: Tags,
+    defaultLabel: { "zh-CN": "数据标准", "en-US": "Data Standards" },
+  },
+  "data-development": {
+    key: "data-development",
+    matchPrefix: "/data-development",
+    icon: Code2,
+    status: "ready",
+    defaultLabel: { "zh-CN": "数据开发", "en-US": "Data Development" },
+  },
+  "data-development.etl": {
+    key: "data-development.etl",
+    to: "/data-development/etl",
+    icon: Workflow,
+    defaultLabel: { "zh-CN": "可视化 ETL", "en-US": "Visual ETL" },
+  },
+  "data-development.sql": {
+    key: "data-development.sql",
+    to: "/data-development/sql",
+    icon: SquareCode,
+    defaultLabel: { "zh-CN": "SQL 开发", "en-US": "SQL Development" },
+  },
+  "data-development.notebook": {
+    key: "data-development.notebook",
+    to: "/data-development/notebook",
+    icon: NotebookTabs,
+    defaultLabel: { "zh-CN": "Notebook", "en-US": "Notebook" },
+  },
+  scheduler: {
+    key: "scheduler",
+    matchPrefix: "/scheduler",
+    icon: Timer,
+    status: "ready",
+    defaultLabel: { "zh-CN": "调度引擎", "en-US": "Scheduler" },
+  },
+  "scheduler.tasks": {
+    key: "scheduler.tasks",
+    to: "/scheduler/tasks",
+    icon: Timer,
+    defaultLabel: { "zh-CN": "调度任务", "en-US": "Tasks" },
+  },
+  "scheduler.editor": {
+    key: "scheduler.editor",
+    to: "/scheduler/editor",
+    icon: Workflow,
+    defaultLabel: { "zh-CN": "任务画布", "en-US": "Task Editor" },
+  },
+  "scheduler.monitor": {
+    key: "scheduler.monitor",
+    to: "/scheduler/monitor",
+    icon: LineChart,
+    defaultLabel: { "zh-CN": "任务监控", "en-US": "Monitor" },
+  },
+  "ops-monitor": {
+    key: "ops-monitor",
+    matchPrefix: "/ops-monitor",
+    icon: ServerCog,
+    status: "ready",
+    defaultLabel: { "zh-CN": "运维与监控", "en-US": "Operations" },
+  },
+  "ops-monitor.tasks": {
+    key: "ops-monitor.tasks",
+    to: "/ops-monitor/tasks",
+    icon: Timer,
+    defaultLabel: { "zh-CN": "任务监控", "en-US": "Task Monitoring" },
+  },
+  "ops-monitor.lineage": {
+    key: "ops-monitor.lineage",
+    to: "/ops-monitor/lineage",
+    icon: GitBranch,
+    defaultLabel: { "zh-CN": "链路监控", "en-US": "Lineage Monitoring" },
+  },
+  "ops-monitor.quality": {
+    key: "ops-monitor.quality",
+    to: "/ops-monitor/quality",
+    icon: ShieldCheck,
+    defaultLabel: { "zh-CN": "质量监控", "en-US": "Quality Monitoring" },
+  },
+  "ops-monitor.resource": {
+    key: "ops-monitor.resource",
+    to: "/ops-monitor/resource",
+    icon: ServerCog,
+    defaultLabel: { "zh-CN": "资源监控", "en-US": "Resource Monitoring" },
+  },
+  "data-security": {
+    key: "data-security",
+    matchPrefix: "/data-security",
+    icon: ShieldAlert,
+    status: "ready",
+    defaultLabel: { "zh-CN": "数据安全", "en-US": "Data Security" },
+  },
+  "data-security.classification": {
+    key: "data-security.classification",
+    to: "/data-security/classification",
+    icon: Tags,
+    defaultLabel: { "zh-CN": "分级分类", "en-US": "Classification" },
+  },
+  "data-security.masking": {
+    key: "data-security.masking",
+    to: "/data-security/masking",
+    icon: Wrench,
+    defaultLabel: { "zh-CN": "脱敏与加密", "en-US": "Masking & Encryption" },
   },
   settings: {
     key: "settings",
@@ -190,17 +391,81 @@ export const BUILTIN_MENU: Record<string, BuiltinMenuEntry> = {
   },
 };
 
-const knowledgeCenterChildren: MenuNode[] = [
-  builtinNode("knowledge-center.knowledge-bases"),
-  builtinNode("knowledge-center.reports"),
+const kgChildren: MenuNode[] = [
+  builtinNode("kg.graphs"),
+  builtinNode("kg.metadata"),
+  builtinNode("kg.import"),
+  builtinNode("kg.analysis"),
+  builtinNode("kg.visualization"),
+  builtinNode("kg.async-tasks"),
+  builtinNode("kg.computer"),
+  builtinNode("kg.ai"),
+  builtinNode("kg.ai-graph"),
+  builtinNode("kg.admin"),
+  builtinNode("kg.help"),
 ];
 
-const ALLOWED_MENU_KEYS = new Set([
-  "knowledge-center.knowledge-bases",
-  "knowledge-center.reports",
-]);
+const knowledgeCenterChildren: MenuNode[] = [
+  builtinNode("knowledge-center.knowledge-bases"),
+  builtinNode("knowledge-center.documents"),
+  builtinNode("knowledge-center.reports"),
+  builtinNode("knowledge-center.permissions"),
+];
 
-const DEPRECATED_MENU_KEYS = new Set(["knowledge-center.vectors"]);
+const dataAssetChildren: MenuNode[] = [
+  builtinNode("data-asset.catalog"),
+  builtinNode("data-asset.ownership"),
+  builtinNode("data-asset.value"),
+  builtinNode("data-asset.service"),
+  builtinNode("data-asset.audit"),
+  builtinNode("data-asset.reports"),
+];
+
+const dataSourceChildren = [
+  builtinNode("data-source.sources"),
+  builtinNode("data-source.sync"),
+  builtinNode("data-source.exchange"),
+];
+const dataLakeChildren = [
+  builtinNode("data-lake.storage"),
+  builtinNode("data-lake.tables"),
+  builtinNode("data-lake.capacity"),
+];
+const dataGovernanceChildren = [
+  builtinNode("data-governance.metadata"),
+  builtinNode("data-governance.quality"),
+  builtinNode("data-governance.standards"),
+];
+const dataDevelopmentChildren = [
+  builtinNode("data-development.etl"),
+  builtinNode("data-development.sql"),
+  builtinNode("data-development.notebook"),
+];
+const schedulerChildren = [
+  builtinNode("scheduler.tasks"),
+  builtinNode("scheduler.editor"),
+  builtinNode("scheduler.monitor"),
+];
+const opsMonitorChildren = [
+  builtinNode("ops-monitor.tasks"),
+  builtinNode("ops-monitor.lineage"),
+  builtinNode("ops-monitor.quality"),
+  builtinNode("ops-monitor.resource"),
+];
+const dataSecurityChildren = [
+  builtinNode("data-security.classification"),
+  builtinNode("data-security.masking"),
+];
+
+const DEPRECATED_MENU_KEYS = new Set([
+  "product-matrix",
+  "solutions",
+  "agents",
+  "workflow",
+  "insights",
+  "knowledge-center.vectors",
+  "data-asset.scan-tasks",
+]);
 
 export function builtinNode(key: string, children?: MenuNode[]): MenuNode {
   const entry = BUILTIN_MENU[key];
@@ -245,10 +510,7 @@ export function normalizeMenuConfig(config: MenuConfig): MenuConfig {
   return {
     ...config,
     version: 2,
-    root: mergeMissingBuiltinNodes(
-      restrictToKnowledgeCenter(source),
-      defaults,
-    ),
+    root: mergeMissingBuiltinNodes(source, defaults),
   };
 }
 
@@ -291,20 +553,18 @@ function removeDeprecatedBuiltinNodes(nodes: MenuNode[]): MenuNode[] {
 }
 
 function createDefaultRootNodes(): MenuNode[] {
-  return [builtinNode("knowledge-center", knowledgeCenterChildren)];
-}
-
-function restrictToKnowledgeCenter(nodes: MenuNode[]): MenuNode[] {
-  const knowledgeCenter = findBuiltinNode(nodes, "knowledge-center");
-  if (!knowledgeCenter) return [];
-
   return [
-    {
-      ...knowledgeCenter,
-      children: (knowledgeCenter.children ?? []).filter(
-        (node) => node.builtinRouteKey && ALLOWED_MENU_KEYS.has(node.builtinRouteKey),
-      ),
-    },
+    builtinNode("data-asset", dataAssetChildren),
+    builtinNode("data-source", dataSourceChildren),
+    builtinNode("data-lake", dataLakeChildren),
+    builtinNode("data-governance", dataGovernanceChildren),
+    builtinNode("data-development", dataDevelopmentChildren),
+    builtinNode("scheduler", schedulerChildren),
+    builtinNode("ops-monitor", opsMonitorChildren),
+    builtinNode("data-security", dataSecurityChildren),
+    builtinNode("knowledge-center", knowledgeCenterChildren),
+    builtinNode("kg", kgChildren),
+    builtinNode("settings"),
   ];
 }
 

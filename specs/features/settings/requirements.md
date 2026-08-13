@@ -20,7 +20,7 @@
 - **US-05 设置访问门禁** 作为工作区使用者, 我希望系统设置需要输入约定密码后才能查看, 以减少普通用户误入管理页面。
 
 ## 验收标准 · Acceptance Criteria (EARS)
-- **AC-01** 当用户进入 `/settings` 时, 系统应当显示子页 sub-nav(Preferences / Users / Permissions / Audit / Menu / Flags), 默认进入 `Preferences`。
+- **AC-01** 当用户进入 `/settings` 时, 系统应当显示子页 sub-nav(Menu / Preferences / Users / Permissions / Audit / Flags), 默认进入 `Menu`。
 - **AC-02 菜单自定义** 当用户在 `/settings/menu` 拖拽菜单节点时, 系统应当: ① 实时预览树结构变化; ② 保存后立即在左侧 Sidebar 反映; ③ **不**改变任何路由地址(对应 KG `AC-G-MENU-CUSTOMIZE`)。
 - **AC-03 菜单内置项保护** 用户**不**能删除内置 feature 路由对应的菜单项, 只能**隐藏**; 隐藏后仍可通过 URL 直接访问对应路由。
 - **AC-04 菜单自定义分组** 用户可创建"自定义分组"(`customGroup: true`) 作为父节点, 仅展示用, 不绑定路由。
@@ -32,7 +32,7 @@
 - **AC-10 密码来源** 设置访问密码只存放在公开静态文件 `public/settings-access.md` 中, TypeScript / TSX 与翻译文件不得包含密码明文。前端运行时读取并解析该文件。
 - **AC-11 长期授权** 密码验证成功后, 系统应当将授权标记持久化到 `localStorage`; 刷新、关闭并重新打开浏览器后仍可访问设置页面。
 - **AC-12 失败处理** 密码错误时系统应显示行内错误且不渲染设置内容; 密码文件加载或解析失败时应拒绝访问并显示可重试的错误状态。
-- **AC-13 精简菜单** 当前分支的 Sidebar 只展示“知识中心 → 知识库 / 分析报表”; 其他路由仍可通过 URL 直接访问。
+- **AC-13 完整产品菜单** Sidebar 应展示产品矩阵、行业方案、八个数据平台产品域、知识中心、知识图谱、AI 扩展和系统设置；旧缓存必须补齐新增内置路由并移除已废弃节点。
 
 ## 范围 · In Scope
 - 用户偏好(语言 / 通知)

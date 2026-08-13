@@ -14,7 +14,7 @@ export function TopBar() {
   const crumbs = pathToCrumbs(location.pathname);
 
   return (
-    <header className="relative flex h-14 shrink-0 items-center gap-4 border-b border-border bg-card px-5 shadow-sm">
+    <header className="sticky top-0 z-20 flex h-14 shrink-0 items-center gap-4 border-b border-border bg-card px-5 shadow-sm">
       {/* Breadcrumb */}
       <div className="flex min-w-0 flex-1 items-center gap-1.5 text-[13px]">
         <span className="text-muted-foreground/40">/</span>

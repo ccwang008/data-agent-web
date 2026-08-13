@@ -2,7 +2,7 @@
 
 | 字段 | 值 |
 |---|---|
-| 状态 · Status | Proposed |
+| 状态 · Status | Superseded by [Knowledge Graph spec](../features/knowledge-graph/) |
 | 日期 · Date | 2026-05-12 |
 | 决策者 · Deciders | 项目发起人 |
 | 关联 · Related | ADR-0001 |

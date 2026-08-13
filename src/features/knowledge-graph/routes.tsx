@@ -1,22 +1,51 @@
+import { lazy } from "react";
 import { Navigate } from "react-router-dom";
 import type { RouteObject } from "react-router-dom";
 
-import { KnowledgeGraphHub } from "./pages/KnowledgeGraphHub";
-import { GraphsListPage } from "./pages/graphs/GraphsListPage";
-import { GraphDetailPage } from "./pages/graphs/GraphDetailPage";
-import { MetadataPage } from "./pages/metadata/MetadataPage";
-import { ImportPage } from "./pages/import/ImportPage";
-import { AnalysisPage } from "./pages/analysis/AnalysisPage";
-import { VisualizationPage } from "./pages/visualization/VisualizationPage";
-import { AsyncTasksPage } from "./pages/async-tasks/AsyncTasksPage";
-import { ComputerPage } from "./pages/computer/ComputerPage";
-import { AiPage } from "./pages/ai/AiPage";
-import { AiGraphPage } from "./pages/ai-graph/AiGraphPage";
-import { AdminPage } from "./pages/admin/AdminPage";
-import { HelpPage } from "./pages/help/HelpPage";
+const KnowledgeGraphHub = lazy(() => withMockRoutes(() =>
+  import("./pages/KnowledgeGraphHub").then((module) => ({ default: module.KnowledgeGraphHub })),
+));
+const GraphsListPage = lazy(() => withMockRoutes(() =>
+  import("./pages/graphs/GraphsListPage").then((module) => ({ default: module.GraphsListPage })),
+));
+const GraphDetailPage = lazy(() => withMockRoutes(() =>
+  import("./pages/graphs/GraphDetailPage").then((module) => ({ default: module.GraphDetailPage })),
+));
+const MetadataPage = lazy(() => withMockRoutes(() =>
+  import("./pages/metadata/MetadataPage").then((module) => ({ default: module.MetadataPage })),
+));
+const ImportPage = lazy(() => withMockRoutes(() =>
+  import("./pages/import/ImportPage").then((module) => ({ default: module.ImportPage })),
+));
+const AnalysisPage = lazy(() => withMockRoutes(() =>
+  import("./pages/analysis/AnalysisPage").then((module) => ({ default: module.AnalysisPage })),
+));
+const VisualizationPage = lazy(() => withMockRoutes(() =>
+  import("./pages/visualization/VisualizationPage").then((module) => ({ default: module.VisualizationPage })),
+));
+const AsyncTasksPage = lazy(() => withMockRoutes(() =>
+  import("./pages/async-tasks/AsyncTasksPage").then((module) => ({ default: module.AsyncTasksPage })),
+));
+const ComputerPage = lazy(() => withMockRoutes(() =>
+  import("./pages/computer/ComputerPage").then((module) => ({ default: module.ComputerPage })),
+));
+const AiPage = lazy(() => withMockRoutes(() =>
+  import("./pages/ai/AiPage").then((module) => ({ default: module.AiPage })),
+));
+const AiGraphPage = lazy(() => withMockRoutes(() =>
+  import("./pages/ai-graph/AiGraphPage").then((module) => ({ default: module.AiGraphPage })),
+));
+const AdminPage = lazy(() => withMockRoutes(() =>
+  import("./pages/admin/AdminPage").then((module) => ({ default: module.AdminPage })),
+));
+const HelpPage = lazy(() => withMockRoutes(() =>
+  import("./pages/help/HelpPage").then((module) => ({ default: module.HelpPage })),
+));
 
-// Side-effect import: registers all mock routes before any page mounts.
-import "./api/mock";
+async function withMockRoutes<T>(loader: () => Promise<T>) {
+  await import("./api/mock");
+  return loader();
+}
 
 export const knowledgeGraphRoutes: RouteObject[] = [
   {

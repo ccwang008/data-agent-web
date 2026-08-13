@@ -3,17 +3,25 @@
   "private": true,
   "version": "0.0.1",
   "type": "module",
-  "description": "AI-native Data Agent Platform — frontend",
+  "packageManager": "npm@10.9.4",
+  "engines": {
+    "node": ">=22"
+  },
+  "description": "大数数据平台 — enterprise data asset and AI data service frontend",
   "scripts": {
-    "dev": "vite",
+    "dev": "node server/dev.mjs",
+    "dev:vite": "vite",
+    "db:inspect": "node server/inspect.mjs",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-tooltip": "^1.1.2",
+    "@xyflow/react": "^12.11.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "i18next": "^23.14.0",
@@ -40,9 +48,11 @@
     "eslint": "^8.57.0",
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-react-refresh": "^0.4.11",
+    "jsdom": "^24.1.3",
     "postcss": "^8.4.45",
     "tailwindcss": "^3.4.11",
     "typescript": "~5.5.4",
-    "vite": "^5.4.5"
+    "vite": "^5.4.5",
+    "vitest": "^2.1.9"
   }
 }

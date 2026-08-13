@@ -9,11 +9,33 @@ src/
 │   ├── ui/        # shadcn 原子组件 (跨 feature 复用)
 │   └── layout/    # AppShell / Sidebar / TopBar / ModulePlaceholder
 ├── features/      # 业务模块, 每个自包含 (pages/store/api/locales/routes)
+│   ├── product-matrix/    # 产品矩阵首页
+│   ├── solutions/         # 行业解决方案
+│   ├── data-source/       # 数据源、同步、共享交换
+│   ├── data-lake/         # 统一存储、湖表、分层与容量
+│   ├── data-governance/   # 元数据、质量、数据标准
+│   ├── data-development/  # ETL、SQL、Notebook
+│   ├── scheduler/         # 任务列表、任务画布、任务监控
+│   ├── data-asset/        # 资产目录、权属、价值、运营与审计
+│   ├── ops-monitor/       # 任务、链路、质量与资源监控
+│   └── data-security/     # 分级分类、脱敏与加密
 ├── stores/        # 全局 Zustand store (UI / locale)
 ├── lib/           # 工具: cn / i18n / mock-client
 ├── locales/       # 全局 namespace `common`
 └── styles/        # 全局 CSS 与 token
 ```
+
+## 产品域分层 · Product Layers
+
+```text
+数据消费层       数据资产目录 / 数据服务 / AI 与业务系统
+治理与运营层     元数据 / 血缘 / 质量 / 标准 / 价值 / 安全 / 运维
+开发与编排层     ETL / SQL / Notebook / 调度任务 / 共享交换
+存储层           数据湖表 / 文件 / 图片 / 视频 / 日志 / 文档
+接入层           数据库 / 文件 / 本地文件 / 消息队列 / API
+```
+
+当前前端已用八个产品域 feature 验证接入、存储、治理、开发、调度、资产运营、运维和安全主链路。所有执行结果仍是 mock 语义，可变状态统一写入项目本地 SQLite；产品边界见 [`07-data-platform-product-scope.md`](./07-data-platform-product-scope.md)。
 
 ## Feature 解剖 · Feature Anatomy
 每个 `src/features/<key>/` 应包含:
@@ -35,13 +57,14 @@ src/
 ## 数据流 · Data Flow
 
 ```
-mockClient (lib/mock-client.ts)
-       ▲
-features/<key>/api/mock.ts (registerMockRoute)
-       ▼
-features/<key>/pages/XxxPage.tsx → useEffect → mockClient.get(...)
-       ▼
-local state / feature store / props
+feature fixture / initial state
+       ↓
+feature page / store
+       ↓
+useSqliteState (lib/sqlite-client.ts) → /api/sqlite/state → data/platform.sqlite
+
+模拟执行、延迟和失败状态可继续使用 mockClient；已有 fixture 的浏览器 fallback
+可通过 local-json-store 镜像写入 SQLite。
 ```
 
 ## 路由组装 · Route Composition

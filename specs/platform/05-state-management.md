@@ -1,7 +1,10 @@
 # Platform · 状态管理 · State Management
 
 ## 框架 · Stack
-**Zustand** + `persist` middleware。无 Redux / Recoil / Jotai。
+
+- **Zustand** + `persist`：全局 UI、语言和菜单展示偏好。
+- **useSqliteState**：可变业务状态，通过 `/api/sqlite/state` 保存到 `data/platform.sqlite`。
+- **local-json-store**：仅兼容已有 mock fixture，并镜像写入 SQLite。
 
 ## 切分原则 · Split Strategy
 
@@ -18,38 +21,29 @@
 
 | Feature | Store | 持久化 |
 |---|---|---|
-| `knowledge-graph` | `useKnowledgeGraphStore` | 否 |
-| (其他 feature 未实现) | — | — |
+| `knowledge-graph` | `useKnowledgeGraphStore` | 页面会话状态 |
+| `data-asset` | `useDataAssetStore` | `useSqliteState("data-agent.data-asset")` |
+| 数据集成、湖、治理、开发、运维、安全 | 页面级 feature state | 各自 `data-agent.<feature>.*` SQLite scope |
 
 ## 持久化键命名 · Persistence Keys
 `data-agent.<scope>` 全小写 dot 分隔:
 - 全局: `data-agent.ui` / `data-agent.locale`
-- Feature: `data-agent.<feature-key>` (如需持久化, 当前 KG 不需要)
+- Feature: `data-agent.<feature-key>.<resource>`
 
-## 模式参考 · Patterns
+## 业务状态模式 · Business State Pattern
 
 ```ts
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { useSqliteState } from "@/lib/sqlite-client";
 
-interface XxxState {
-  value: string;
-  setValue: (v: string) => void;
-}
-
-export const useXxxStore = create<XxxState>()(
-  persist(
-    (set) => ({
-      value: "",
-      setValue: (value) => set({ value }),
-    }),
-    { name: "data-agent.xxx" },
-  ),
+const [items, setItems, meta] = useSqliteState(
+  "data-agent.xxx.items",
+  initialItems,
 );
 ```
 
 ## 反模式 · Anti-Patterns
-- ❌ 服务端数据塞进 store (用 `mockClient` + local state / `useEffect`, 服务端缓存应单独引入 React Query/SWR, 当前不在范围)
+- ❌ 为新业务页面另建 Local Storage 持久化；统一使用 `useSqliteState`
+- ❌ 页面直接调用 SQLite HTTP API；只由共享数据层调用
 - ❌ feature store 出现在 `src/stores/`
 - ❌ 大对象嵌套, 不可序列化的字段(`Map`/`Set`/`Date` 直接放 `persist` 字段会丢类型)
 - ❌ 在 store 里持有 React refs 或 DOM 节点
@@ -57,7 +51,9 @@ export const useXxxStore = create<XxxState>()(
 ## 关联文件 · Files
 - `src/stores/useUIStore.ts`
 - `src/stores/useLocaleStore.ts`
+- `src/lib/sqlite-client.ts`
+- `server/sqlite.mjs`
 - `src/features/knowledge-graph/store.ts`
 
 ## 关联 ADR · Related ADRs
-- TODO: `adr/NNNN-state-library-zustand.md`
+- [ADR-0006 本地 SQLite 状态持久化](../adr/0006-local-sqlite-state-persistence.md)

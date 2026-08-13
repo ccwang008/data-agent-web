@@ -1,71 +1,37 @@
-# Data Sources · Design
+# Data Integration · Design
 
-> 关注 **HOW**: 在 [requirements.md](./requirements.md) 确认的目标下, 如何在代码中落地。
+## 路由与页面 · Routes and Pages
 
-## 架构概览 · Architecture
-TODO
+路由由 `src/features/data-source/routes.tsx` 导出，并由 `src/app/router.tsx` 组合：
 
-```mermaid
-flowchart LR
-  Page --> Store
-  Page --> MockAPI
-```
-
-## 路由 · Routes
-| Path | Page Component | 说明 |
+| Route | Page | Responsibility |
 |---|---|---|
-| `/data-source` | `DataSourcePage` | TODO 列表入口 |
-| `/data-source/:id` | `DataSourceDetailPage` | TODO 详情 (P1) |
+| `/data-source/sources` | `DataSourcesPage` | 数据源列表、筛选、CRUD、连接测试 |
+| `/data-source/sync` | `DataSyncPage` | 同步任务、模式、进度和运行状态 |
+| `/data-source/exchange` | `DataExchangePage` | 交换方式、配置和状态 |
 
-注册位置: `src/features/data-source/routes.tsx`, 当前仅占位 `ModulePlaceholder`。
+`/data-source` 默认重定向到 `/data-source/sources`。
 
 ## 数据模型 · Data Model
+
 ```ts
-// TODO 示例
-// export interface DataSource {
-//   id: string;
-//   name: string;
-//   type: "postgres" | "mysql" | "s3" | "kafka" | "http" | "file";
-//   status: "online" | "offline" | "degraded";
-//   lastSyncAt: string;
-// }
+type DataSourceType = "database" | "file" | "local-file" | "message-queue" | "api";
+type SyncMode = "full" | "incremental" | "cdc" | "realtime";
+type ExchangeType = "api" | "file" | "table" | "message";
 ```
 
-## Mock API · Endpoints
-| Method | Path | Response | 说明 |
-|---|---|---|---|
-| GET | `/api/data-source/list` | `DataSource[]` | TODO |
-| GET | `/api/data-source/:id` | `DataSource` | TODO |
-| GET | `/api/data-source/:id/schema` | `SchemaPreview` | TODO |
+数据源、同步任务和交换任务都应包含 `id`、`name`、`status`、`owner`、`updatedAt`；同步和交换对象额外包含 `sourceId`、`targetId`、`lastRunAt`、`errorMessage` 等可追踪字段。凭证字段只保留引用或脱敏值。
 
-注册位置: `src/features/data-source/api/mock.ts`。
+## I/O 边界 · I/O Boundary
 
-## 状态管理 · State (Zustand)
-```ts
-// TODO
-interface DataSourceState {
-  selectedId: string | null;
-}
-```
-- 持久化键: 无 (会话级)
+页面通过共享 `useSqliteState` 数据层读写项目本地 SQLite，不直接调用 `fetch`。三个页面分别使用 `data-agent.data-source.sources`、`sync`、`exchange` scope；其中数据源 scope 的类型、默认 fixture 和 hook 由 `src/stores/dataSourceRegistry.ts` 统一提供，供资产目录按稳定数据源 ID 引用。真实后端接入时替换共享数据层。
 
-## 组件分解 · Component Tree
-- `DataSourcePage`
-  - `ConnectorList`
-  - `ConnectorDetailDrawer`
+## 状态与反馈 · UX States
 
-## 交互细节 · Interaction Details
-- TODO 列表筛选 (按 type / status)
-- TODO 凭证字段一律遮罩, 不通过前端明文展示
+列表、对话框和任务面板必须覆盖加载、空数据、成功、失败、连接测试中、运行中、失败重试和删除确认等状态。对于实时同步，进度和状态要能被刷新，不要求在当前前端模拟真实数据传输。
 
-## i18n · Namespaces
-- 命名空间: `data-source`
-- 文件: `src/features/data-source/locales/{zh-CN,en-US}.json`
-- 关键 key: TODO
+## 安全约束 · Security
 
-## 性能与可观测性 · Performance & Observability
-- 列表分页或虚拟化 (条目 ≥ 100 时)
-- TODO
-
-## 开放问题 · Open Questions
-- ❓ TODO
+- 不在浏览器明文持久化密码、token、私钥或完整连接串。
+- UI 只展示脱敏后的连接信息和后端生成的连接 ID。
+- 真实授权、审计和密钥轮换由后端权限/密钥服务负责。

@@ -1,7 +1,7 @@
 {
   "app": {
-    "name": "Data Agent",
-    "tagline": "AI-native Data Intelligence"
+    "name": "Dongfang Jinxin",
+    "tagline": "Enterprise Data Product Matrix"
   },
   "nav": {
     "section.workspace": "Workspace",
@@ -25,7 +25,7 @@
     "knowledge-center.vectors": "Knowledge Vectors",
     "knowledge-center.reports": "Analysis Reports",
     "knowledge-center.permissions": "Knowledge Permissions",
-    "data-source": "Data Source",
+    "data-source": "Data Integration",
     "agents": "Agents",
     "workflow": "Workflow",
     "insights": "Insights",
@@ -113,6 +113,9 @@
       "addGroup": "Add group",
       "reset": "Reset default",
       "export": "Export config",
+      "saving": "Saving to the local database…",
+      "saveSuccess": "Menu configuration saved to the local database",
+      "saveFailed": "Save failed. Make sure the local service is running and try again",
       "resetConfirm": "Reset to the default menu structure?",
       "deleteConfirm": "Delete this custom group?",
       "newGroup": "Custom group",

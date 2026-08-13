@@ -1,7 +1,7 @@
 {
   "app": {
-    "name": "Data Agent",
-    "tagline": "AI 原生数据智能平台"
+    "name": "东方金信",
+    "tagline": "企业级数据产品矩阵"
   },
   "nav": {
     "section.workspace": "工作区",
@@ -25,7 +25,7 @@
     "knowledge-center.vectors": "知识向量",
     "knowledge-center.reports": "分析报表",
     "knowledge-center.permissions": "知识权限",
-    "data-source": "数据源",
+    "data-source": "数据集成",
     "agents": "智能体",
     "workflow": "编排流水线",
     "insights": "洞察分析",
@@ -113,6 +113,9 @@
       "addGroup": "添加分组",
       "reset": "重置默认",
       "export": "导出配置",
+      "saving": "正在保存到本地数据库…",
+      "saveSuccess": "菜单配置已保存到本地数据库",
+      "saveFailed": "保存失败，请确认本地服务已启动后重试",
       "resetConfirm": "确定要重置为默认菜单结构吗？",
       "deleteConfirm": "确定要删除该自定义分组吗？",
       "newGroup": "自定义分组",

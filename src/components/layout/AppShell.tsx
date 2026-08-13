@@ -10,11 +10,11 @@ export function AppShell() {
   const topbarHidden = useUIStore((s) => s.topbarHidden);
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-background text-foreground">
+    <div className="flex min-h-screen w-screen bg-background text-foreground">
       {!sidebarHidden && <Sidebar />}
-      <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
+      <div className="flex min-w-0 flex-1 flex-col">
         {!topbarHidden && <TopBar />}
-        <main className="relative flex-1 overflow-hidden bg-background">
+        <main className="flex-1 bg-background">
           <Outlet />
         </main>
       </div>

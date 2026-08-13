@@ -35,3 +35,8 @@ lerna-debug.log*
 *.local
 .eslintcache
 .superpowers/
+
+# local SQLite runtime files
+data/*.sqlite
+data/*.sqlite-shm
+data/*.sqlite-wal

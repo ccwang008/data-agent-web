@@ -1,10 +1,19 @@
+import { lazy } from "react";
 import { Navigate } from "react-router-dom";
 import type { RouteObject } from "react-router-dom";
 
-import { MenuManagementPage } from "./pages/MenuManagementPage";
-import { PreferencesPage } from "./pages/PreferencesPage";
-import { SettingsPasswordGate } from "./pages/SettingsPasswordGate";
-import { SettingsPlaceholderPage } from "./pages/SettingsPlaceholderPage";
+const MenuManagementPage = lazy(() =>
+  import("./pages/MenuManagementPage").then((module) => ({ default: module.MenuManagementPage })),
+);
+const PreferencesPage = lazy(() =>
+  import("./pages/PreferencesPage").then((module) => ({ default: module.PreferencesPage })),
+);
+const SettingsPasswordGate = lazy(() =>
+  import("./pages/SettingsPasswordGate").then((module) => ({ default: module.SettingsPasswordGate })),
+);
+const SettingsPlaceholderPage = lazy(() =>
+  import("./pages/SettingsPlaceholderPage").then((module) => ({ default: module.SettingsPlaceholderPage })),
+);
 
 export const settingsRoutes: RouteObject[] = [
   {

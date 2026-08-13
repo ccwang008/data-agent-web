@@ -3,7 +3,7 @@
 > 关注 **WHAT**: 模块解决什么业务问题、谁来用、达到什么程度才算"完成"。HOW 留给 [design.md](./design.md)。
 
 ## 概述 · Overview
-KG 模块是 Data Agent 平台的图能力中心, 对标 **Apache HugeGraph Hubble** 并向外覆盖 HG 生态其他组件(loader / computer / ai / website / tool) 的前端交互面。功能与 Hubble **1:1 对齐**(模块划分 / layout / 控件类型 / 流程), 视觉与品牌完全由本项目自治, 已选定 **Classic Light SaaS Admin** 方向(浅灰工作区 + 白色面板 + 蓝色主色 + 紧凑导航), 不沿用 Hubble 视觉(无论浅色 / 深色)。
+KG 模块是大数数据平台的图能力中心, 对标 **Apache HugeGraph Hubble** 并向外覆盖 HG 生态其他组件(loader / computer / ai / website / tool) 的前端交互面。功能与 Hubble **1:1 对齐**(模块划分 / layout / 控件类型 / 流程), 视觉与品牌完全由本项目自治, 已选定 **Classic Light SaaS Admin** 方向(浅灰工作区 + 白色面板 + 蓝色主色 + 紧凑导航), 不沿用 Hubble 视觉(无论浅色 / 深色)。
 
 本阶段所有能力以**前端 mock**形式存在, 不接入真实 HugeGraph 服务或 SDK。
 

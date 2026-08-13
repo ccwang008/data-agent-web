@@ -1,14 +1,25 @@
+import { lazy } from "react";
+import { Navigate } from "react-router-dom";
 import type { RouteObject } from "react-router-dom";
 
-import { ModulePlaceholder } from "@/components/layout/ModulePlaceholder";
+const DataSourcesPage = lazy(() =>
+  import("./pages").then((module) => ({ default: module.DataSourcesPage })),
+);
+const DataSyncPage = lazy(() =>
+  import("./pages").then((module) => ({ default: module.DataSyncPage })),
+);
+const DataExchangePage = lazy(() =>
+  import("./pages").then((module) => ({ default: module.DataExchangePage })),
+);
 
-// TODO: implement Data Source module
-// - api/mock.ts: connector list, schema preview
-// - store.ts: selected connector
-// - pages/: list, detail, new
 export const dataSourceRoutes: RouteObject[] = [
   {
     path: "data-source",
-    element: <ModulePlaceholder featureKey="data-source" />,
+    children: [
+      { index: true, element: <Navigate to="sources" replace /> },
+      { path: "sources", element: <DataSourcesPage /> },
+      { path: "sync", element: <DataSyncPage /> },
+      { path: "exchange", element: <DataExchangePage /> },
+    ],
   },
 ];

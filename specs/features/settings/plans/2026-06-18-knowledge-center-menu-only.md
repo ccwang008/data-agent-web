@@ -1,5 +1,7 @@
 # Knowledge Center Menu Only Implementation Plan
 
+> 历史计划：该分支级精简菜单方案已被 README 完整产品菜单和 ADR-0008 取代，仅保留用于追溯。
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Restrict the sidebar and menu editor to Knowledge Center with only Knowledge Base and Analysis Reports, including when a browser contains a stale broader menu configuration.

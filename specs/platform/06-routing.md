@@ -24,11 +24,12 @@ export const router = createBrowserRouter([
     path: "/",
     element: <AppShell />,
     children: [
-      { index: true, element: <Navigate to="/knowledge-graph" replace /> },
+      ...productMatrixRoutes, // index route: /
+      ...solutionsRoutes,
       ...knowledgeGraphRoutes,
       ...dataSourceRoutes,
-      // ... 其他 feature
-      { path: "*", element: <Navigate to="/knowledge-graph" replace /> },
+      // ... 其他 feature routes
+      { path: "*", element: <Navigate to="/" replace /> },
     ],
   },
 ]);
@@ -39,13 +40,14 @@ export const router = createBrowserRouter([
 - 嵌套路由放在 `routes.tsx` 里的 `children` 字段
 - 详情页用动态段: `:id`, 例: `/agents/:id`
 - 操作型: `/agents/:id/trigger`
-- 兜底: 未匹配的路径回到 `/knowledge-graph`
+- 兜底: 未匹配的路径回到产品矩阵首页 `/`
 
 ## 默认路由 · Default Route
-应用首屏重定向到 `/knowledge-graph` (当前唯一已实现入口)。随业务推进调整。
+应用首屏是产品矩阵首页 `/`；行业方案位于 `/solutions`。进入具体产品工作台后显示全局 Sidebar 与 TopBar。
 
-## Mock fixtures 早注册 · Eager Mock Registration
-`routes.tsx` 内 `import "./api/mock"` 顶部副作用 import, 确保路由挂载前 fixture 已注册。这避免了首屏 `mockClient.get` 时 fixture 尚未存在的竞态。
+## Mock fixtures 路由级注册 · Route-scoped Registration
+
+大型 feature 使用 `React.lazy` 拆分页面代码；其 lazy loader 先动态导入 `./api/mock`，再加载页面组件，保证 fixture 在页面 effect 发起 `mockClient` 请求前注册，同时避免把所有 mock 数据打进首屏 bundle。小型 feature 也可使用顶部副作用 import，但必须保持同样的先注册边界。
 
 ## 反模式 · Anti-Patterns
 - ❌ 在 `app/router.tsx` 内直接 import feature 页面 (绕过了 feature 边界)
@@ -61,7 +63,7 @@ export const router = createBrowserRouter([
 - 路由地址永远由代码定义(各 `routes.tsx`); 用户配置只影响 Sidebar 渲染
 - 隐藏的菜单项: URL 仍可直达, 不锁路由
 - 用户的自定义 label 不进入代码逻辑; 任何 sub-nav / breadcrumb / breadcrumbs / programmatic navigation 必须**用 `builtinRouteKey` 作为锚点**, 不用用户 label
-- 详细 ADR: [ADR-0008 树形菜单与用户自定义边界](../adr/0008-tree-menu-and-user-customization.md)(待写)
+- 详细 ADR: [ADR-0008 树形菜单与用户自定义边界](../adr/0008-tree-menu-and-user-customization.md)
 
 ### MenuNode 数据模型
 ```ts
@@ -76,27 +78,11 @@ interface MenuNode {
 }
 ```
 
-### 默认菜单结构 · Default Menu (M0 时)
-```
-Workspace (group, customGroup=false 内置)
-  Knowledge Graph                   /knowledge-graph
-    Graphs                          /knowledge-graph/graphs
-    Metadata                        /knowledge-graph/metadata
-    Import                          /knowledge-graph/import
-    Analysis                        /knowledge-graph/analysis
-    Visualization                   /knowledge-graph/visualization
-    Async Tasks                     /knowledge-graph/async-tasks
-    Computer                        /knowledge-graph/computer
-    AI                              /knowledge-graph/ai
-    Admin                           /knowledge-graph/admin
-    Help                            /knowledge-graph/help
-  Data Sources                      /data-source
-  Agents                            /agents
-  Workflows                         /workflow
-  Insights                          /insights
-Platform (group)
-  Settings                          /settings
-```
+### 默认菜单结构 · Default Menu
+
+默认菜单由 `src/features/settings/menu/registry.ts` 的稳定 `builtinRouteKey` 清单定义，`public/menu.config.json` 保存可编辑的默认展示配置。当前根节点覆盖数据资产运营、数据集成、数据湖、数据治理、数据开发、调度引擎、运维与监控、数据安全、知识中心、知识图谱和系统设置；每个有子路由的产品域以树形 children 展示。产品矩阵、行业解决方案、智能体、编排流水线和洞察分析不再进入菜单。
+
+SQLite scope `data-agent.settings.menu` 保存用户提交后的菜单配置；旧浏览器中的 `data-agent.menu` 仅作为迁移回退，并会通过 `normalizeMenuConfig` 补齐新增内置路由、移除废弃节点。自动化测试 `src/app/route-menu-consistency.test.tsx` 保证每个菜单目标都有实际路由。
 
 ### 展开 / 折叠状态持久化
 `useUIStore.sidebarExpandedKeys: string[]` (持久化 key `data-agent.ui`), 默认 KG 展开。
@@ -112,4 +98,4 @@ Platform (group)
 - `src/features/settings/pages/MenuCustomizerPage.tsx`(新增, M0 + ADR-0008 落地后)
 
 ## 关联 ADR · Related ADRs
-- [ADR-0008 树形菜单与用户自定义边界](../adr/0008-tree-menu-and-user-customization.md)(待写, M0 截止)
+- [ADR-0008 树形菜单与用户自定义边界](../adr/0008-tree-menu-and-user-customization.md)

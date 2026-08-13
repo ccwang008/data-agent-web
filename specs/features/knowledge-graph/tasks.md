@@ -62,7 +62,7 @@
 - [ ] T-kg-metadata-07 双模式草稿与提交边界(S2): List 单条粒度 / Graph 页面粒度 / 切换二次确认
 - [ ] T-kg-metadata-08 "保存为 Perspective"按钮(E1)
 - [ ] T-kg-metadata-09 mock 端点: `/api/knowledge-graph/metadata/schema-graph`
-- [ ] **🔒 截止: ADR-0006 数据库 Connector 凭证存储策略** (本期 mock-only, 真实接入策略待定)
+- [ ] **🔒 截止: ADR-0010 数据库 Connector 凭证存储策略** (本期 mock-only, 真实接入策略待定)
 
 ## M4 · 图计算 + 图 AI + 导入(DB / API)
 - [ ] T-kg-computer-01 AlgorithmCatalog: 三类卡片(中心性 4 / 社区 5 / 路径 2)

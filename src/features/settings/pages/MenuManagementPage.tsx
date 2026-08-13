@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   ArrowDown,
@@ -47,6 +47,7 @@ export function MenuManagementPage() {
   const commitDraft = useMenuStore((s) => s.commitDraft);
   const discardDraft = useMenuStore((s) => s.discardDraft);
   const resetToDefault = useMenuStore((s) => s.resetToDefault);
+  const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const locale = normalizeLocale(i18n.resolvedLanguage || i18n.language);
   const activeConfig = draft ?? config;
 
@@ -61,6 +62,7 @@ export function MenuManagementPage() {
   );
 
   const updateDraftRoot = (root: MenuNode[]) => {
+    setSaveState("idle");
     setDraft({
       ...activeConfig,
       root,
@@ -95,9 +97,26 @@ export function MenuManagementPage() {
     updateDraftRoot(result.root);
   };
 
-  const resetDefault = () => {
+  const resetDefault = async () => {
     if (!window.confirm(t("settings.menu.resetConfirm"))) return;
-    void resetToDefault();
+
+    setSaveState("saving");
+    try {
+      await resetToDefault();
+      setSaveState("saved");
+    } catch {
+      setSaveState("error");
+    }
+  };
+
+  const saveMenu = async () => {
+    setSaveState("saving");
+    try {
+      await commitDraft();
+      setSaveState("saved");
+    } catch {
+      setSaveState("error");
+    }
   };
 
   const exportConfig = () => {
@@ -149,12 +168,19 @@ export function MenuManagementPage() {
             <Button
               type="button"
               size="sm"
-              disabled={!hasChanges}
-              onClick={commitDraft}
+              disabled={!hasChanges || saveState === "saving"}
+              onClick={() => void saveMenu()}
             >
               <Save className="h-3.5 w-3.5" />
               {t("actions.save")}
             </Button>
+          </div>
+          <div className="min-h-4 text-[11px] text-muted-foreground" aria-live="polite">
+            {saveState === "saving" && t("settings.menu.saving")}
+            {saveState === "saved" && t("settings.menu.saveSuccess")}
+            {saveState === "error" && (
+              <span className="text-destructive">{t("settings.menu.saveFailed")}</span>
+            )}
           </div>
         </div>
 
@@ -310,7 +336,7 @@ function MenuPreviewPanel({ config, locale }: { config: MenuConfig; locale: Loca
             DA
           </div>
           <span className="truncate text-[13px] font-semibold text-foreground">
-            Data Agent
+            东方金信
           </span>
         </div>
         <PreviewNodes nodes={config.root} locale={locale} depth={0} />
