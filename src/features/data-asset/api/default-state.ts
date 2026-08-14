@@ -23,10 +23,18 @@ import {
 } from "./mock-data/service";
 import { defaultAnomalies, defaultAuditEvents, defaultRectifications } from "./mock-data/audit";
 import { defaultIndicators, defaultReports } from "./mock-data/reports";
+import {
+  defaultCirculationApplications,
+  defaultIntegrationTasks,
+  defaultUsageRecords,
+} from "./mock-data/circulation";
 import { clone } from "./types";
+
+export const DATA_ASSET_SCHEMA_VERSION = 2;
 
 export function createDefaultState(): DataAssetState {
   return {
+    schemaVersion: DATA_ASSET_SCHEMA_VERSION,
     catalog: {
       domains: clone(defaultDomains),
       assets: clone(defaultAssets),
@@ -49,6 +57,11 @@ export function createDefaultState(): DataAssetState {
       authorizations: clone(defaultAuthorizations),
       downloadTasks: clone(defaultDownloadTasks),
       retention: clone(defaultRetention),
+    },
+    circulation: {
+      applications: clone(defaultCirculationApplications),
+      integrationTasks: clone(defaultIntegrationTasks),
+      usageRecords: clone(defaultUsageRecords),
     },
     audit: {
       events: clone(defaultAuditEvents),

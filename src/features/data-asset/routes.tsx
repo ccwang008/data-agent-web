@@ -5,6 +5,7 @@ import type { RouteObject } from "react-router-dom";
 import { ToastProvider } from "./components/common";
 const AuditPage = lazy(() => import("./pages/AuditPage"));
 const CatalogPage = lazy(() => import("./pages/CatalogPage"));
+const CirculationPage = lazy(() => import("./pages/CirculationPage"));
 const OwnershipPage = lazy(() => import("./pages/OwnershipPage"));
 const ReportsPage = lazy(() => import("./pages/ReportsPage"));
 const ServicePage = lazy(() => import("./pages/ServicePage"));
@@ -21,6 +22,7 @@ export const dataAssetRoutes: RouteObject[] = [
     children: [
       { index: true, element: <Navigate to="catalog" replace /> },
       { path: "catalog", element: <CatalogPage /> },
+      { path: "circulation", element: <CirculationPage /> },
       { path: "ownership", element: <OwnershipPage /> },
       { path: "value", element: <ValuePage /> },
       { path: "service", element: <ServicePage /> },

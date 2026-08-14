@@ -11,7 +11,10 @@ export const MOCK_TODAY = "2026-08-13";
 export type AssetType =
   | "table" | "dataset" | "metric" | "tag" | "service"
   | "json" | "xml" | "log" | "message" | "document"
-  | "image" | "video" | "audio" | "knowledge" | "model";
+  | "image" | "video" | "audio" | "knowledge" | "model" | "standard";
+
+export type StandardKind = "业务术语" | "指标标准" | "数据元标准" | "参考数据标准" | "主数据标准";
+export type StandardGovernanceStatus = "草稿" | "审批中" | "已发布" | "已废止";
 
 export type CatalogStatus = "normal" | "sourceAbnormal" | "retiring" | "retired" | "archived";
 
@@ -25,7 +28,7 @@ export interface BusinessDomain {
 export const ASSET_TYPE_LABEL: Record<AssetType, string> = {
   table: "数据表", dataset: "数据集", metric: "指标", tag: "标签", service: "数据服务",
   json: "JSON", xml: "XML", log: "日志", message: "消息数据", document: "文档",
-  image: "图片", video: "视频", audio: "音频", knowledge: "知识资料", model: "模型",
+  image: "图片", video: "视频", audio: "音频", knowledge: "知识资料", model: "模型", standard: "数据标准",
 };
 
 export const CATALOG_STATUS_LABEL: Record<CatalogStatus, string> = {
@@ -64,6 +67,14 @@ export interface AssetExt {
   framework?: string;
   modelVersion?: string;
   effectMetrics?: string;
+  standardCode?: string;
+  standardKind?: StandardKind;
+  standardDefinition?: string;
+  applicableScope?: string;
+  approvingBody?: string;
+  effectiveFrom?: string;
+  standardVersion?: string;
+  standardStatus?: StandardGovernanceStatus;
 }
 
 export interface Asset {
@@ -420,6 +431,110 @@ export interface RetentionPolicy {
   lastCleanup?: { at: string; by: string; rule: string; count: number; summary: string };
 }
 
+// ---------------------------------------------------------------- 资产流通
+
+export type CirculationDelivery = "API" | "文件下载" | "在线查询" | "标准引用";
+export type CirculationStage = "application" | "approval" | "integration" | "use";
+export type CirculationStatus =
+  | "draft" | "pendingOwner" | "pendingSecurity" | "pendingIntegration"
+  | "integrating" | "inUse" | "returned" | "rejected" | "integrationFailed" | "suspended";
+
+export const CIRCULATION_STATUS_LABEL: Record<CirculationStatus, string> = {
+  draft: "草稿",
+  pendingOwner: "待负责人审批",
+  pendingSecurity: "待安全审批",
+  pendingIntegration: "待对接",
+  integrating: "对接中",
+  inUse: "使用中",
+  returned: "已退回",
+  rejected: "已驳回",
+  integrationFailed: "对接失败",
+  suspended: "已暂停",
+};
+
+export interface CirculationAssetSnapshot {
+  assetId: string;
+  assetName: string;
+  assetType: AssetType;
+  assetVersion: number;
+  securityLevel: string;
+  standardCode?: string;
+  standardVersion?: string;
+}
+
+export interface CirculationApprovalStep {
+  id: string;
+  role: "资产负责人" | "安全审批人";
+  assignee: string;
+  status: "pending" | "approved" | "returned" | "rejected" | "skipped";
+  opinion?: string;
+  processedBy?: string;
+  processedAt?: string;
+}
+
+export interface AssetCirculationApplication {
+  id: string;
+  title: string;
+  asset: CirculationAssetSnapshot;
+  applicant: string;
+  applicantOrg: string;
+  applicantKind: "内部" | "外部";
+  consumerSystem: string;
+  purpose: string;
+  purposeNote: string;
+  requestedScope: string;
+  delivery: CirculationDelivery;
+  effectiveFrom: string;
+  effectiveTo: string;
+  status: CirculationStatus;
+  stage: CirculationStage;
+  requiresSecurity: boolean;
+  submittedAt: string;
+  updatedAt: string;
+  approvals: CirculationApprovalStep[];
+  integrationTaskId?: string;
+  grantNo?: string;
+  lastDecisionReason?: string;
+}
+
+export interface IntegrationChecklistItem {
+  id: string;
+  label: string;
+  status: "pending" | "passed" | "failed";
+  note?: string;
+}
+
+export interface AssetIntegrationTask {
+  id: string;
+  applicationId: string;
+  assetId: string;
+  delivery: CirculationDelivery;
+  owner: string;
+  dueAt: string;
+  status: "pending" | "configuring" | "testing" | "completed" | "failed";
+  configSummary: string;
+  checklist: IntegrationChecklistItem[];
+  lastResult?: string;
+  completedAt?: string;
+  updatedAt: string;
+}
+
+export interface AssetUsageRecord {
+  id: string;
+  applicationId: string;
+  assetId: string;
+  assetName: string;
+  assetVersion: number;
+  consumerSystem: string;
+  purpose: string;
+  delivery: CirculationDelivery;
+  at: string;
+  result: "成功" | "失败" | "拒绝";
+  action: string;
+  volume: string;
+  evidenceNo: string;
+}
+
 // ---------------------------------------------------------------- 使用审计
 
 export type AccessChannel = "API" | "下载" | "在线查询" | "预览";
@@ -541,6 +656,7 @@ export interface ManagementReport {
 // ---------------------------------------------------------------- 全局状态
 
 export interface DataAssetState {
+  schemaVersion: number;
   catalog: {
     domains: BusinessDomain[];
     assets: Asset[];
@@ -563,6 +679,11 @@ export interface DataAssetState {
     authorizations: Authorization[];
     downloadTasks: DownloadTask[];
     retention: RetentionPolicy;
+  };
+  circulation: {
+    applications: AssetCirculationApplication[];
+    integrationTasks: AssetIntegrationTask[];
+    usageRecords: AssetUsageRecord[];
   };
   audit: {
     events: AuditEvent[];

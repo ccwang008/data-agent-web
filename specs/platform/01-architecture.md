@@ -13,12 +13,13 @@ src/
 │   ├── solutions/         # 行业解决方案
 │   ├── data-source/       # 数据源、同步、共享交换
 │   ├── data-lake/         # 统一存储、湖表、分层与容量
-│   ├── data-governance/   # 元数据、质量、数据标准
+│   ├── data-governance/   # 元数据、质量
 │   ├── data-development/  # ETL、SQL、Notebook
 │   ├── scheduler/         # 任务列表、任务画布、任务监控
-│   ├── data-asset/        # 资产目录、权属、价值、运营与审计
+│   ├── data-asset/        # 目录、流通、权属、价值、运营与审计
 │   ├── ops-monitor/       # 任务、链路、质量与资源监控
-│   └── data-security/     # 合规、分类分级、防护、审计与事件响应（基础两页已实现）
+│   ├── data-security/     # 合规、分类分级、防护、审计与事件响应
+│   └── metrics/           # DCMM 九域量化看板
 ├── stores/        # 全局 Zustand store (UI / locale)
 ├── lib/           # 工具: cn / i18n / mock-client
 ├── locales/       # 全局 namespace `common`
@@ -29,13 +30,13 @@ src/
 
 ```text
 数据消费层       数据资产目录 / 数据服务 / AI 与业务系统
-治理与运营层     元数据 / 血缘 / 质量 / 标准 / 价值 / 安全 / 运维
+治理与运营层     元数据 / 血缘 / 质量 / 数据标准 / 价值 / 安全 / 运维
 开发与编排层     ETL / SQL / Notebook / 调度任务 / 共享交换
 存储层           数据湖表 / 文件 / 图片 / 视频 / 日志 / 文档
 接入层           数据库 / 文件 / 本地文件 / 消息队列 / API
 ```
 
-当前前端已用八个产品域 feature 验证接入、存储、治理、开发、调度、资产运营、运维和安全主链路。所有执行结果仍是 mock 语义，可变状态统一写入项目本地 SQLite；产品边界见 [`07-data-platform-product-scope.md`](./07-data-platform-product-scope.md)。
+当前前端已用九个产品域 feature 验证接入、存储、治理、开发、调度、资产运营、运维、安全和量化主链路。目标架构新增独立 `src/features/data-standard/`，权威维护业务术语、本体模型、主数据、参考数据、数据元标准、指标字典和语义层指标模型；该 feature 尚未实现。所有执行结果仍是 mock 语义，可变状态统一写入项目本地 SQLite；产品边界见 [`07-data-platform-product-scope.md`](./07-data-platform-product-scope.md)。
 
 ## Feature 解剖 · Feature Anatomy
 每个 `src/features/<key>/` 应包含:
@@ -90,3 +91,4 @@ main.tsx
 
 ## 关联 ADR · Related ADRs
 - [ADR-0001](../adr/0001-record-architecture-decisions.md)
+- [ADR-0020：最终确认数据标准为一级产品域](../adr/0020-finalize-data-standard-as-top-level-product.md)

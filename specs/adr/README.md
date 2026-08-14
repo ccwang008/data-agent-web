@@ -18,7 +18,14 @@ ADR (Architecture Decision Record) 是对一次架构选择的简短书面记录
 | [0010](./0010-ai-proposes-regulated-data-levels.md) | AI 只提议重要数据和核心数据等级 | Accepted | — |
 | [0011](./0011-security-audit-references-source-evidence.md) | 安全审计引用来源域证据 | Accepted | — |
 | 0012 | 数据库 Connector 凭证存储策略 | 🚧 Proposed (真实连接器接入前待写) | 生产化前 |
-| [0013](./0013-quantitative-dashboard-as-top-level-product.md) | 量化看板作为一级跨域产品 | Accepted | — |
+| [0013](./0013-quantitative-dashboard-as-top-level-product.md) | 量化看板作为一级跨域产品 | Superseded by [0014](./0014-comprehensive-plus-nine-domain-dashboards.md) | — |
+| [0014](./0014-comprehensive-plus-nine-domain-dashboards.md) | 综合看板加九大能力域看板 | Accepted | — |
+| [0015](./0015-data-standard-as-top-level-product.md) | 数据标准作为一级产品域 | Superseded by [0017](./0017-data-standards-as-assets.md) | — |
+| [0016](./0016-data-standard-owns-ontology-and-semantic-layer.md) | 数据标准维护本体模型与语义层 | Superseded by [0017](./0017-data-standards-as-assets.md) | — |
+| [0017](./0017-data-standards-as-assets.md) | 数据标准作为数据资产 | Superseded by [0018](./0018-restore-data-standard-as-top-level-product.md) | — |
+| [0018](./0018-restore-data-standard-as-top-level-product.md) | 恢复数据标准一级产品域 | Superseded by [0019](./0019-finalize-data-standards-as-assets.md) | — |
+| [0019](./0019-finalize-data-standards-as-assets.md) | 最终确认数据标准资产化 | Superseded by [0020](./0020-finalize-data-standard-as-top-level-product.md) | — |
+| [0020](./0020-finalize-data-standard-as-top-level-product.md) | 最终确认数据标准为一级产品域 | Accepted | — |
 
 ## 编号 · Numbering
 - 4 位递增数字, 文件名 `NNNN-kebab-title.md`

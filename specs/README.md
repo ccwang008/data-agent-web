@@ -16,7 +16,7 @@ specs/
 
 ## 产品范围 · Product Scope
 
-大数数据平台的八个产品域、核心对象、调用链、当前前端边界和后续 feature key 见 [07-data-platform-product-scope](./platform/07-data-platform-product-scope.md)。
+大数数据平台的十个产品域、核心对象、调用链、当前前端边界和目标 feature 见 [07-data-platform-product-scope](./platform/07-data-platform-product-scope.md)。
 
 | 产品域 | 当前 feature | 状态 | 入口 |
 |---|---|---|---|
@@ -24,10 +24,12 @@ specs/
 | 数据集成 | `data-source` | 🔨 SQLite 持久化 mock | `/data-source/*` |
 | 数据湖 | `data-lake` | 🔨 SQLite 持久化 mock | `/data-lake/*` |
 | 数据治理 | `data-governance` | 🔨 SQLite 持久化 mock | `/data-governance/*` |
+| 数据标准 | `data-standard` | 📋 规格完成，待实现 | `/data-standard/*`（目标） |
 | 数据开发 | `data-development` | ✅ ETL/SQL/Notebook 专业工作台 P0 | `/data-development/*` |
 | 调度引擎 | `scheduler` | 🔨 SQLite 持久化 mock | `/scheduler/*` |
 | 运维与监控 | `ops-monitor` | 🔨 SQLite 持久化 mock | `/ops-monitor/*` |
 | 数据安全 | `data-security` | 🔨 基础分类/脱敏 SQLite mock；DCMM 4 合规增强设计完成 | `/data-security/*` |
+| 量化看板 | `metrics` | ✅ 九域差异化页面、25 项核心 KPI 与 SQLite mock | `/metrics/*` |
 
 产品矩阵首页是统一产品发现入口：`product-matrix` / `/`，详见 [feature spec](./features/product-matrix/README.md)。
 
@@ -39,12 +41,14 @@ specs/
 | Solutions | `src/features/solutions/` | `/solutions` | 🔨 行业方案首页 | [README](./features/solutions/README.md) · [Req](./features/solutions/requirements.md) · [Design](./features/solutions/design.md) · [Tasks](./features/solutions/tasks.md) |
 | Data Source / Integration | `src/features/data-source/` | `/data-source/*` | 🔨 数据源、同步、共享交换 | [README](./features/data-source/README.md) · [Req](./features/data-source/requirements.md) · [Design](./features/data-source/design.md) · [Tasks](./features/data-source/tasks.md) |
 | Data Lake | `src/features/data-lake/` | `/data-lake/*` | 🔨 统一存储、湖表、分层容量 | [README](./features/data-lake/README.md) · [Req](./features/data-lake/requirements.md) · [Design](./features/data-lake/design.md) · [Tasks](./features/data-lake/tasks.md) |
-| Data Governance | `src/features/data-governance/` | `/data-governance/*` | 🔨 元数据、质量、数据标准 | [README](./features/data-governance/README.md) · [Req](./features/data-governance/requirements.md) · [Design](./features/data-governance/design.md) · [Tasks](./features/data-governance/tasks.md) |
+| Data Governance | `src/features/data-governance/` | `/data-governance/*` | 🔨 元数据、质量 | [README](./features/data-governance/README.md) · [Req](./features/data-governance/requirements.md) · [Design](./features/data-governance/design.md) · [Tasks](./features/data-governance/tasks.md) |
+| Data Standard | `src/features/data-standard/`（目标） | `/data-standard/*`（目标） | 📋 需求、设计与任务完成，代码待实现 | [README](./features/data-standard/README.md) · [Req](./features/data-standard/requirements.md) · [Design](./features/data-standard/design.md) · [Tasks](./features/data-standard/tasks.md) |
 | Data Development | `src/features/data-development/` | `/data-development/*` | 🔨 ETL、SQL、Notebook | [README](./features/data-development/README.md) · [Req](./features/data-development/requirements.md) · [Design](./features/data-development/design.md) · [Tasks](./features/data-development/tasks.md) |
 | Scheduler | `src/features/scheduler/` | `/scheduler/*` | 🔨 调度任务、任务画布、任务监控 | [README](./features/scheduler/README.md) · [Req](./features/scheduler/requirements.md) · [Design](./features/scheduler/design.md) · [Tasks](./features/scheduler/tasks.md) |
-| Data Asset | `src/features/data-asset/` | `/data-asset/*` | 🔨 目录、权属、估值、运营、审计、报告 | [README](./features/data-asset/README.md) · [Req](./features/data-asset/requirements.md) · [Design](./features/data-asset/design.md) · [Tasks](./features/data-asset/tasks.md) |
+| Data Asset | `src/features/data-asset/` | `/data-asset/*` | 🔨 目录、流通、权属、估值、运营、审计、报告 | [README](./features/data-asset/README.md) · [Req](./features/data-asset/requirements.md) · [Design](./features/data-asset/design.md) · [Tasks](./features/data-asset/tasks.md) |
 | Ops Monitor | `src/features/ops-monitor/` | `/ops-monitor/*` | 🔨 任务、链路、质量、资源监控 | [README](./features/ops-monitor/README.md) · [Req](./features/ops-monitor/requirements.md) · [Design](./features/ops-monitor/design.md) · [Tasks](./features/ops-monitor/tasks.md) |
 | Data Security | `src/features/data-security/` | `/data-security/*` | 🔨 基础两页已实现；合规、分类、防护、审计、事件响应与三级菜单待实现 | [README](./features/data-security/README.md) · [Req](./features/data-security/requirements.md) · [Design](./features/data-security/design.md) · [Tasks](./features/data-security/tasks.md) |
+| Metrics | `src/features/metrics/` | `/metrics/*` | ✅ 九域 KPI、能力覆盖、快照与改进闭环 | [README](./features/metrics/README.md) · [Req](./features/metrics/requirements.md) · [Design](./features/metrics/design.md) · [Tasks](./features/metrics/tasks.md) |
 | Knowledge Center | `src/features/knowledge-center/` | `/knowledge-center/*` | 🔨 前端 mock | [README](./features/knowledge-center/README.md) · [Req](./features/knowledge-center/requirements.md) · [Design](./features/knowledge-center/design.md) · [Tasks](./features/knowledge-center/tasks.md) |
 | Knowledge Graph | `src/features/knowledge-graph/` | `/knowledge-graph/*` | 🔨 hub + 子模块 | [README](./features/knowledge-graph/README.md) · [Req](./features/knowledge-graph/requirements.md) · [Design](./features/knowledge-graph/design.md) · [Tasks](./features/knowledge-graph/tasks.md) |
 | Agents | `src/features/agents/` | `/agents` | 🚧 基础页面/占位 | [README](./features/agents/README.md) · [Req](./features/agents/requirements.md) · [Design](./features/agents/design.md) · [Tasks](./features/agents/tasks.md) |
@@ -52,7 +56,7 @@ specs/
 | Insights | `src/features/insights/` | `/insights` | 🚧 基础页面/占位 | [README](./features/insights/README.md) · [Req](./features/insights/requirements.md) · [Design](./features/insights/design.md) · [Tasks](./features/insights/tasks.md) |
 | Settings | `src/features/settings/` | `/settings/*` | 🚧 菜单与系统设置 | [README](./features/settings/README.md) · [Req](./features/settings/requirements.md) · [Design](./features/settings/design.md) · [Tasks](./features/settings/tasks.md) |
 
-以上八个产品域均已建立 feature、路由和 SQLite 持久化 mock；真实连接器、执行器、资源采集和安全控制仍属于后续生产化范围。
+九个现有产品域已建立 feature、路由和 SQLite 持久化 mock；第十个“数据标准”产品域已完成规格但尚未实现。真实连接器、执行器、资源采集和安全控制仍属于后续生产化范围。
 
 ## Platform Specs
 
@@ -65,7 +69,7 @@ specs/
 | [04-mock-api](./platform/04-mock-api.md) | mockClient、Local JSON Store 与真实 API 切换点 |
 | [05-state-management](./platform/05-state-management.md) | Zustand 全局状态与 feature state |
 | [06-routing](./platform/06-routing.md) | 路由组装、菜单身份和导航规则 |
-| [07-data-platform-product-scope](./platform/07-data-platform-product-scope.md) | 大数数据平台八大产品域、对象、边界和验收原则 |
+| [07-data-platform-product-scope](./platform/07-data-platform-product-scope.md) | 大数数据平台十大产品域、对象、边界和验收原则 |
 | [platform/references](./platform/references/README.md) | 外部标准和平台参考原文 |
 
 ## ADR

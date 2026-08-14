@@ -4,7 +4,7 @@
 
 ## 产品定位
 
-大数数据平台是面向企业的数据资产运营与 AI 数据服务平台，覆盖数据集成、数据湖、数据治理、数据开发、调度引擎、运维监控和数据安全。
+大数数据平台是面向企业的数据资产运营与 AI 数据服务平台，覆盖数据集成、数据湖、数据治理、数据标准、数据开发、调度引擎、运维监控、数据安全和 DCMM 量化管理。
 
 当前仓库是本地全栈原型：业务数据和执行结果仍是 mock 语义，但列表、详情、增删改查、运行状态、调度结果、质量评分、服务调用、安全策略和监控指标统一持久化到本地 SQLite，不依赖真实数据源、真实执行引擎或生产级服务。
 
@@ -15,11 +15,13 @@
 | 数据集成 | `data-source` / `/data-source/*` | SQLite 持久化 mock |
 | 数据湖 | `data-lake` / `/data-lake/*` | SQLite 持久化 mock |
 | 数据治理 | `data-governance` / `/data-governance/*` | SQLite 持久化 mock |
+| 数据标准 | `data-standard` / `/data-standard/*` | 需求与设计完成，页面、路由和 SQLite mock 待实现 |
 | 调度引擎 | `scheduler` / `/scheduler/*` | SQLite 持久化 mock |
-| 数据资产运营 | `data-asset` / `/data-asset/*` | SQLite 持久化 mock；资产目录复用数据源注册表 |
+| 数据资产运营 | `data-asset` / `/data-asset/*` | 资产目录、资产流通及 SQLite 持久化 mock；资产目录复用数据源注册表；数据标准不作为资产类型 |
 | 数据开发 | `data-development` / `/data-development/*` | ETL/SQL/Notebook 专业工作台 P0，SQLite 持久化 mock |
 | 运维与监控 | `ops-monitor` / `/ops-monitor/*` | SQLite 持久化 mock |
 | 数据安全 | `data-security` / `/data-security/*` | 25 个功能页、六分域 SQLite mock 与三级菜单 |
+| 量化看板 | `metrics` / `/metrics/*` | 九域 25 项核心 KPI、33 个能力项覆盖与 SQLite mock |
 
 知识中心、知识图谱、智能体、工作流和洞察分析是现有 AI/语义扩展能力。产品范围详见 [`specs/platform/07-data-platform-product-scope.md`](specs/platform/07-data-platform-product-scope.md)。
 
@@ -73,11 +75,12 @@
 | 数据集成 | `/data-source/sources`、`/data-source/sync`、`/data-source/exchange` |
 | 数据湖 | `/data-lake/storage`、`/data-lake/tables`、`/data-lake/capacity` |
 | 数据开发 | `/data-development/{etl,sql,notebook}` 列表及各自的 `/new`、`/:id` 编辑器 |
-| 数据治理 | `/data-governance/metadata`、`/data-governance/quality`、`/data-governance/standards` |
+| 数据治理 | `/data-governance/metadata`、`/data-governance/quality` |
 | 调度引擎 | `/scheduler/tasks`、`/scheduler/editor`、`/scheduler/monitor` |
-| 数据资产运营 | `/data-asset/catalog`、`/data-asset/ownership`、`/data-asset/value`、`/data-asset/service`、`/data-asset/audit`、`/data-asset/reports` |
+| 数据资产运营 | `/data-asset/catalog`、`/data-asset/circulation`、`/data-asset/ownership`、`/data-asset/value`、`/data-asset/service`、`/data-asset/audit`、`/data-asset/reports` |
 | 运维与监控 | `/ops-monitor/tasks`、`/ops-monitor/lineage`、`/ops-monitor/quality`、`/ops-monitor/resource` |
 | 数据安全 | `/data-security/overview`、`/data-security/compliance/*`、`/data-security/classification/*`、`/data-security/{cross-border,protection,access-control,masking,encryption,watermark,risk}`、`/data-security/audit/*`、`/data-security/incidents/*` |
+| 量化看板 | `/metrics` 综合看板、`/metrics/{strategy,governance,architecture,assets,standards,quality,security,lifecycle,application-circulation}` 九域看板 |
 | 知识中心 | `/knowledge-center/*` |
 | 知识图谱 | `/knowledge-graph/*` |
 | AI 与平台扩展 | `/agents`、`/workflow`、`/insights`、`/settings/*` |
@@ -85,6 +88,10 @@
 没有实际页面和 mock 数据前，不要伪造规划中模块的已上线路由。
 
 数据安全采用一级“数据安全”、六个二级能力域和 25 个三级功能页；完整菜单、路由和持久化模型见 `specs/features/data-security/design.md`。旧 `/classification`、`/masking` 路径与稳定菜单 key 保持兼容。
+
+数据标准是独立一级目标产品域，`specs/features/data-standard/` 和 ADR-0020 是后续实现依据。目标路由为 `/data-standard/business-terms`、`/data-standard/master-data`、`/data-standard/reference-data`、`/data-standard/data-element-standards` 和 `/data-standard/metric-dictionary`；没有实际页面前不得列入当前路由。数据标准不作为 `data-asset` 的资产类型，本期不进入资产目录、申请、授权、下发或流通。
+
+量化看板采用一级“量化看板”直接入口，以及“综合看板 + 九域看板”十个路由化 Tab，不配置侧栏子菜单；共享页头不放全局汇总区和时间筛选，各看板在内容区独立配置并保留自己的时间选择。快照、目标、证据和改进事项统一保存在 `data-agent.metrics`。完整规则见 `specs/features/metrics/design.md`。
 
 ## 视觉与交互
 

@@ -108,8 +108,8 @@ export const SECURITY_PAGE_CONFIGS: Record<Exclude<SecurityPageKey, "overview">,
     createLabel: "新建识别任务", runLabel: "执行识别", completedStatus: "识别成功", variant: "classification",
     columns: [{ key: "分类标签", label: "分类标签" }, { key: "监管等级", label: "监管等级" }],
     seedRecords: seeds("class", [
-      { name: "客户域敏感字段识别", summary: "扫描元数据、字段注释和脱敏样例，不保存真实字段值。", status: "识别成功", owner: "王雪", fields: { 分类标签: ["个人信息", "敏感个人信息"], 监管等级: "一般敏感", 置信度: "96%", 覆盖范围: "12 张表 / 86 字段", 规则版本: "CLS-v2.3" }, risk: "中" },
-      { name: "风险域重要数据识别", summary: "对风险评分特征及关联场景形成重要数据候选。", status: "待复核", owner: "周凯", fields: { 分类标签: ["经营数据", "商业秘密"], 监管等级: "重要数据候选", 置信度: "88%", 覆盖范围: "3 个模型 / 41 字段", 规则版本: "CLS-v2.3" }, risk: "严重", evidenceState: "待核验" },
+      { name: "客户域敏感字段识别", summary: "扫描元数据、字段注释和脱敏样例，不保存真实字段值。", status: "识别成功", owner: "王雪", fields: { 分类标签: ["个人信息", "敏感个人信息"], 监管等级: "一般敏感", 置信度: "96%", 覆盖范围: "12 张表 / 86 字段", 规则版本: "CLS-v2.3", 扫描范围: "客户域数据源", 范围类型: "数据源", 识别模式: "增量扫描", 触发方式: "定时 02:00" }, risk: "中" },
+      { name: "风险域重要数据识别", summary: "对风险评分特征及关联场景形成重要数据候选。", status: "待复核", owner: "周凯", fields: { 分类标签: ["经营数据", "商业秘密"], 监管等级: "重要数据候选", 置信度: "88%", 覆盖范围: "3 个模型 / 41 字段", 规则版本: "CLS-v2.3", 扫描范围: "风控业务域", 范围类型: "业务域", 识别模式: "全量扫描", 触发方式: "手动" }, risk: "严重", evidenceState: "待核验" },
     ]),
   }),
   "classification-reviews": page({

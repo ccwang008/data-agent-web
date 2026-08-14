@@ -4,11 +4,12 @@
 
 // ------------------------- 数据源 -------------------------
 
-export type SourceCategory = "database" | "file" | "message" | "api" | "object-store";
+export type SourceCategory = "database" | "file" | "local-file" | "message" | "api" | "object-store";
 
 export const SOURCE_CATEGORY_LABEL: Record<SourceCategory, string> = {
   database: "数据库",
   file: "文件源",
+  "local-file": "本地文件",
   message: "消息队列",
   api: "API 网关",
   "object-store": "对象存储",
@@ -17,6 +18,7 @@ export const SOURCE_CATEGORY_LABEL: Record<SourceCategory, string> = {
 export type SourceSubtype =
   | "postgresql" | "mysql" | "oracle" | "sqlserver" | "dameng"
   | "csv" | "excel" | "json" | "parquet" | "sftp"
+  | "local-csv" | "local-excel" | "local-json" | "local-parquet"
   | "kafka" | "rocketmq" | "pulsar"
   | "rest" | "grpc" | "soap"
   | "s3" | "minio" | "oss";
@@ -25,6 +27,7 @@ export const SOURCE_SUBTYPE_LABEL: Record<SourceSubtype, string> = {
   postgresql: "PostgreSQL", mysql: "MySQL", oracle: "Oracle",
   sqlserver: "SQL Server", dameng: "达梦",
   csv: "CSV", excel: "Excel", json: "JSON", parquet: "Parquet", sftp: "SFTP",
+  "local-csv": "本地 CSV", "local-excel": "本地 Excel", "local-json": "本地 JSON", "local-parquet": "本地 Parquet",
   kafka: "Kafka", rocketmq: "RocketMQ", pulsar: "Pulsar",
   rest: "RESTful API", grpc: "gRPC", soap: "SOAP",
   s3: "AWS S3", minio: "MinIO", oss: "阿里云 OSS",

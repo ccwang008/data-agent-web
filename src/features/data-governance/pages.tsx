@@ -1,12 +1,12 @@
 import { useState } from "react";
 import {
-  Activity, ArrowRight, BookOpen, CheckCircle2, ChevronRight, CircleAlert,
-  Database, GitBranch, Layers3, Network, Play, Plus, RefreshCw, Search,
-  ShieldCheck, Sparkles, Target, TrendingDown, TrendingUp, Users,
+  Activity, ChevronRight, CircleAlert,
+  Database, Layers3, Network, Play, Plus, RefreshCw, Search,
+  Sparkles, Target, TrendingDown, TrendingUp,
 } from "lucide-react";
 
 import {
-  ActionButton, InlineNotice, MiniStat, PageTitle, Panel, Pill, ProgressBar,
+  ActionButton, InlineNotice, PageTitle, Panel, Pill, ProgressBar,
   WorkspacePage,
 } from "@/components/data-platform/WorkspacePrimitives";
 import { statusTone } from "@/components/data-platform/workspace-utils";
@@ -23,11 +23,6 @@ type QualityRule = {
   score: string; owner: string; status: string; updatedAt: string;
 };
 
-type DataStandard = {
-  id: string; name: string; kind: string; version: string; scope: string;
-  approver: string; owner: string; status: string; updatedAt: string;
-};
-
 const metadataRecords: MetadataObject[] = [
   { id: "meta-001", name: "客户主数据表", objectType: "湖表", system: "CRM → 数据湖", lineage: "12 上游 / 8 下游", domain: "客户域", owner: "陈晨", status: "已同步", updatedAt: "2026-08-13 09:08" },
   { id: "meta-002", name: "月度交易额指标", objectType: "指标", system: "指标平台", lineage: "4 上游 / 6 下游", domain: "交易域", owner: "张敏", status: "已同步", updatedAt: "2026-08-13 08:30" },
@@ -42,14 +37,6 @@ const qualityRecords: QualityRule[] = [
   { id: "quality-003", name: "事件入湖及时性", dimension: "及时性", target: "dwd_customer_event", threshold: "≤ 5 min", score: "97.2", owner: "李浩", status: "执行中", updatedAt: "刚刚" },
   { id: "quality-004", name: "客户主键唯一性", dimension: "唯一性", target: "dwd_customer_profile.customer_id", threshold: "= 100%", score: "100", owner: "王雪", status: "通过", updatedAt: "2026-08-13 08:00" },
   { id: "quality-005", name: "客户等级一致性", dimension: "一致性", target: "dws_customer_level", threshold: "≥ 99%", score: "96.4", owner: "陈晨", status: "整改中", updatedAt: "2026-08-13 06:30" },
-];
-
-const standardRecords: DataStandard[] = [
-  { id: "standard-001", name: "活跃客户", kind: "业务术语", version: "v3", scope: "客户域", approver: "数据治理委员会", owner: "陈晨", status: "已发布", updatedAt: "2026-08-12 16:20" },
-  { id: "standard-002", name: "月度交易额", kind: "指标标准", version: "v7", scope: "交易域", approver: "经营分析部", owner: "张敏", status: "审批中", updatedAt: "2026-08-13 08:18" },
-  { id: "standard-003", name: "风险客户等级", kind: "数据标准", version: "v2", scope: "风险域", approver: "风险管理部", owner: "周凯", status: "草稿", updatedAt: "2026-08-12 14:05" },
-  { id: "standard-004", name: "客户生命周期阶段", kind: "业务术语", version: "v4", scope: "客户域", approver: "数据治理委员会", owner: "赵宁", status: "已发布", updatedAt: "2026-08-11 12:10" },
-  { id: "standard-005", name: "订单成功率", kind: "指标标准", version: "v2", scope: "交易域", approver: "经营分析部", owner: "张敏", status: "待复核", updatedAt: "2026-08-13 07:55" },
 ];
 
 const metadataIcons: Record<string, typeof Database> = { 湖表: Database, 指标: Target, 数据服务: Layers3, 任务: Activity, 数据源: Database };
@@ -115,46 +102,6 @@ export function DataQualityPage() {
         <Panel title="规则运行面板" description="失败和整改规则置顶"><div className="divide-y divide-border">{[...rules].sort((a, b) => (/失败|整改/.test(a.status) ? -1 : 1) - (/失败|整改/.test(b.status) ? -1 : 1)).map((rule) => <div key={rule.id} className="grid gap-3 px-4 py-3 md:grid-cols-[1.2fr_.9fr_.55fr_.55fr_auto] md:items-center"><div><div className="text-[11px] font-semibold text-foreground">{rule.name}</div><div className="mt-0.5 font-mono text-[9px] text-muted-foreground">{rule.target}</div></div><div className="text-[10px] text-muted-foreground"><span className="text-foreground">{rule.dimension}</span> · {rule.threshold}</div><div className="text-[16px] font-semibold tabular-nums text-foreground">{rule.score}</div><Pill tone={statusTone(rule.status)}>{rule.status}</Pill><ActionButton icon={Play} onClick={() => runRule(rule.id)} disabled={rule.status === "执行中"}>执行</ActionButton></div>)}</div></Panel>
         <Panel title="问题与整改" description="按责任闭环而非仅展示失败数"><div className="space-y-3 p-4">{rules.filter((rule) => /失败|整改/.test(rule.status)).map((rule) => <div key={rule.id} className="rounded-lg border border-amber-200 bg-amber-50/70 p-3"><div className="flex items-center justify-between"><span className="text-[11px] font-semibold text-amber-900">{rule.name}</span><Pill tone="amber">{rule.status}</Pill></div><div className="mt-2 text-[10px] leading-5 text-amber-800">负责人：{rule.owner}<br />目标：{rule.threshold}，当前得分 {rule.score}<br />复检截止：2026-08-15</div></div>)}<div className="rounded-lg border border-dashed border-border p-3 text-[10px] leading-5 text-muted-foreground">质量结论来自本地 mock 执行结果，不替代生产质量引擎或正式审计结论。</div></div></Panel>
       </div>
-    </WorkspacePage>
-  );
-}
-
-export function DataStandardsPage() {
-  const [standards, setStandards, meta] = useSqliteState<DataStandard[]>("data-agent.data-governance.standards", standardRecords);
-  const [kind, setKind] = useState("业务术语");
-  const filtered = standards.filter((standard) => standard.kind === kind);
-  const [selectedId, setSelectedId] = useState(standards[0]?.id ?? "");
-  const selected = standards.find((standard) => standard.id === selectedId && standard.kind === kind) ?? filtered[0];
-  const categories = [
-    { name: "业务术语", icon: BookOpen, description: "统一业务语言" },
-    { name: "指标标准", icon: Target, description: "统一计算口径" },
-    { name: "数据标准", icon: ShieldCheck, description: "统一字段规范" },
-  ];
-
-  function createStandard() {
-    const next: DataStandard = { id: `standard-${Date.now()}`, name: `新${kind} ${filtered.length + 1}`, kind, version: "v1", scope: "待定义", approver: "待指定", owner: "待指定", status: "草稿", updatedAt: "刚刚" };
-    setStandards((current) => [next, ...current]);
-    setSelectedId(next.id);
-  }
-
-  function submit() {
-    if (!selected) return;
-    setStandards((current) => current.map((standard) => standard.id === selected.id ? { ...standard, status: "审批中", updatedAt: "刚刚" } : standard));
-  }
-
-  return (
-    <WorkspacePage>
-      <PageTitle eyebrow="Governance / Business Semantics" title="数据标准工作台" description="按标准目录组织术语、指标和数据规范，在详情中查看定义、版本和审批链路。" actions={<ActionButton primary icon={Plus} onClick={createStandard}>新建{kind}</ActionButton>} />
-      <InlineNotice error={meta.error} loading={!meta.hydrated} />
-      <div className="grid min-h-[650px] gap-4 xl:grid-cols-[240px_330px_minmax(0,1fr)]">
-        <Panel title="标准目录" description="按语义资产类型浏览"><div className="p-2">{categories.map((category) => { const Icon = category.icon; const count = standards.filter((standard) => standard.kind === category.name).length; return <button key={category.name} type="button" onClick={() => { setKind(category.name); const first = standards.find((standard) => standard.kind === category.name); if (first) setSelectedId(first.id); }} className={cn("mb-1 flex w-full items-center gap-3 rounded-md p-3 text-left transition", kind === category.name ? "bg-primary text-primary-foreground" : "hover:bg-muted")}><Icon className="h-4 w-4" /><span className="min-w-0 flex-1"><span className="block text-[11px] font-semibold">{category.name}</span><span className={cn("mt-0.5 block text-[9px]", kind === category.name ? "text-primary-foreground/70" : "text-muted-foreground")}>{category.description}</span></span><span className={cn("text-[10px] tabular-nums", kind === category.name ? "text-primary-foreground/80" : "text-muted-foreground")}>{count}</span></button>; })}</div><div className="border-t border-border p-4"><div className="text-[10px] text-muted-foreground">治理覆盖率</div><div className="mt-1 text-[20px] font-semibold text-foreground">86%</div><ProgressBar value={86} tone="green" className="mt-2" /></div></Panel>
-        <Panel title={kind} description={`${filtered.length} 项标准`}><div className="divide-y divide-border">{filtered.map((standard) => <button key={standard.id} type="button" onClick={() => setSelectedId(standard.id)} className={cn("w-full p-4 text-left transition hover:bg-muted/30", selected?.id === standard.id && "bg-blue-50/70")}><div className="flex items-start justify-between gap-2"><span className="text-[12px] font-semibold text-foreground">{standard.name}</span><Pill tone={statusTone(standard.status)}>{standard.status}</Pill></div><div className="mt-2 flex items-center gap-2 text-[10px] text-muted-foreground"><span className="font-mono">{standard.version}</span><span>·</span><span>{standard.scope}</span></div><div className="mt-2 flex items-center gap-1 text-[9px] text-muted-foreground"><Users className="h-3 w-3" />{standard.owner}</div></button>)}</div></Panel>
-        {selected && <div className="space-y-4">
-          <Panel><div className="p-5"><div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between"><div><div className="text-[10px] font-semibold uppercase tracking-wider text-primary">{selected.kind} · {selected.version}</div><h2 className="mt-1 text-[19px] font-semibold text-foreground">{selected.name}</h2><div className="mt-1 text-[10px] text-muted-foreground">适用范围：{selected.scope} · 负责人：{selected.owner}</div></div><div className="flex gap-2"><ActionButton>创建新版本</ActionButton><ActionButton primary onClick={submit} disabled={selected.status === "审批中"}>{selected.status === "审批中" ? "审批中" : "提交审批"}</ActionButton></div></div><div className="mt-5 rounded-lg border border-border bg-muted/20 p-4"><div className="text-[10px] text-muted-foreground">标准定义</div><p className="mt-2 text-[12px] leading-6 text-foreground">{selected.name} 是 {selected.scope} 范围内统一使用的{selected.kind}。所有关联的数据模型、指标计算和数据服务必须引用当前已发布版本，并在变更时保留版本历史。</p></div><div className="mt-4 grid gap-3 sm:grid-cols-3">{[["英文名称", selected.name.replace(/\s+/g, "_").toLowerCase()], ["责任部门", selected.approver], ["最近更新", selected.updatedAt]].map(([label, value]) => <div key={label} className="rounded-md border border-border p-3"><div className="text-[9px] text-muted-foreground">{label}</div><div className="mt-1 text-[10px] font-medium text-foreground">{value}</div></div>)}</div></div></Panel>
-          <div className="grid gap-4 lg:grid-cols-2"><Panel title="审批链路"><div className="p-4">{[["提交申请", "已完成", selected.owner], ["业务负责人复核", selected.status === "草稿" ? "未开始" : "已完成", selected.approver], ["治理委员会发布", selected.status === "已发布" ? "已完成" : "待审批", "数据治理委员会"]].map(([step, status, actor], index) => <div key={step} className="relative flex gap-3 pb-5 last:pb-0"><span className={cn("relative z-10 grid h-6 w-6 shrink-0 place-items-center rounded-full border text-[10px]", status === "已完成" ? "border-emerald-200 bg-emerald-50 text-emerald-600" : status === "待审批" ? "border-blue-200 bg-blue-50 text-blue-600" : "border-slate-200 bg-white text-slate-400")}>{status === "已完成" ? <CheckCircle2 className="h-3.5 w-3.5" /> : index + 1}</span>{index < 2 && <span className="absolute left-3 top-6 h-full w-px bg-border" />}<div><div className="text-[11px] font-medium text-foreground">{step}</div><div className="mt-0.5 text-[9px] text-muted-foreground">{actor} · {status}</div></div></div>)}</div></Panel><Panel title="引用影响"><div className="p-4"><div className="grid grid-cols-2 gap-3">{[["数据模型", "8"], ["指标", "6"], ["数据服务", "3"], ["分析报表", "12"]].map(([label, value]) => <div key={label} className="rounded-md bg-muted/40 p-3 text-center"><div className="text-[18px] font-semibold text-primary">{value}</div><div className="mt-1 text-[9px] text-muted-foreground">{label}</div></div>)}</div><div className="mt-3 flex items-center gap-2 rounded-md bg-amber-50 p-3 text-[10px] text-amber-800"><GitBranch className="h-4 w-4" />发布新版本前需完成 29 个引用对象的影响确认。</div></div></Panel></div>
-        </div>}
-      </div>
-      <section className="grid grid-cols-2 gap-3 lg:grid-cols-4"><MiniStat label="标准总数" value={standards.length} icon={BookOpen} /><MiniStat label="已发布" value={standards.filter((item) => item.status === "已发布").length} icon={CheckCircle2} tone="green" /><MiniStat label="审批中" value={standards.filter((item) => /审批|复核/.test(item.status)).length} icon={ArrowRight} tone="amber" /><MiniStat label="责任主体" value={new Set(standards.map((item) => item.owner)).size} icon={Users} tone="violet" /></section>
     </WorkspacePage>
   );
 }

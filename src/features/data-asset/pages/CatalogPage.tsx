@@ -49,13 +49,14 @@ const DIM_TONE: Record<string, BadgeTone> = {
   无产品: "slate", 草稿: "slate", 审批中: "blue", 运营中: "green", 已暂停: "amber", 已下线: "slate",
 };
 
-const ASSET_TYPE_OPTIONS: AssetType[] = ["table", "dataset", "metric", "tag", "service", "document", "model", "json", "xml", "log", "message", "image", "video", "audio", "knowledge"];
+const ASSET_TYPE_OPTIONS: AssetType[] = ["table", "dataset", "standard", "metric", "tag", "service", "document", "model", "json", "xml", "log", "message", "image", "video", "audio", "knowledge"];
 
 function emptyExt(type: AssetType): AssetExt {
   if (type === "table") return { fields: [{ name: "id", type: "varchar(32)", primaryKey: true, sensitive: false, comment: "主键" }] };
   if (type === "service") return { protocol: "HTTPS", method: "POST", path: "/api/v1/resource", apiVersion: "v1", requestParams: [], responseStructure: "" };
   if (type === "document") return { reportFormat: "Excel", updateCycle: "月度", relatedDatasets: [], generateSystem: "", reportVersion: "V1" };
   if (type === "model") return { modelType: "分类", inputOutput: "", trainingData: "", framework: "", modelVersion: "V1", effectMetrics: "" };
+  if (type === "standard") return { standardCode: "", standardKind: "数据元标准", standardDefinition: "", applicableScope: "", approvingBody: "", effectiveFrom: MOCK_NOW.slice(0, 10), standardVersion: "v1", standardStatus: "草稿" };
   return { relatedDatasets: [], updateCycle: "" };
 }
 
@@ -319,14 +320,14 @@ export default function CatalogPage() {
   return (
     <div className="page-shell animate-fade-in">
       <div className="space-y-4">
-        <PageHeader title="资产目录" description="统一管理数据表、API、报告、模型等各类数据资产；支持自动扫描编目和人工补录，保持稳定资产身份" />
+        <PageHeader title="资产目录" description="统一管理数据表、数据集、数据标准、API、报告和模型等资产；目录状态与类型专属状态分维度保存" />
 
         {meta.error && <WarnNote text={`SQLite 状态读写异常：${meta.error.message}，当前为浏览器临时数据`} />}
         {sourceMeta.error && <WarnNote text={`数据源状态读取异常：${sourceMeta.error.message}，暂时无法从数据源添加或创建扫描任务`} />}
         {meta.hydrated === false && <WarnNote text="正在从 SQLite 恢复数据资产状态..." />}
 
         <section className="grid grid-cols-2 gap-3 lg:grid-cols-5">
-          <KpiCard label="资产总数" value={state.catalog.assets.length} hint={`数据表 / 数据服务 / 文档 / 模型 等`} icon={Boxes} color="text-primary" bg="bg-primary/10" />
+          <KpiCard label="资产总数" value={state.catalog.assets.length} hint="数据表 / 数据标准 / 服务 / 模型 等" icon={Boxes} color="text-primary" bg="bg-primary/10" />
           <KpiCard label="待确权" value={pendingCount} hint="扫描新发现对象自动入目录" icon={Tags} color="text-blue-600" bg="bg-blue-50" />
           <KpiCard label="来源异常" value={sourceAbnormalCount} hint="来源暂不可用，不删除历史资产" icon={AlertTriangle} color="text-amber-600" bg="bg-amber-50" />
           <KpiCard label="待退役" value={retiringCount} hint="需处理完关联产品与授权" icon={Archive} color="text-violet-600" bg="bg-violet-50" />
@@ -741,7 +742,7 @@ function AddAssetModal({ mode, sources, onClose, onCreate }: {
   const fromDataSource = mode === "dataSource";
 
   return (
-    <Modal title={fromDataSource ? "从数据源添加资产" : "人工补录资产"} description={fromDataSource ? "选择数据集成模块已登记的数据源，并填写来源对象信息；保存后引用稳定数据源 ID，不复制连接配置。" : "用于无法自动扫描的报告、文档、模型等资产；来源系统可按实际产生系统补录。"} onClose={onClose} footer={<>
+    <Modal title={fromDataSource ? "从数据源添加资产" : "人工补录资产"} description={fromDataSource ? "选择数据集成模块已登记的数据源，并填写来源对象信息；保存后引用稳定数据源 ID，不复制连接配置。" : "用于无法自动扫描的数据标准、报告、文档和模型等资产；来源系统可按实际产生系统补录。"} onClose={onClose} footer={<>
       <SecondaryButton onClick={onClose}>取消</SecondaryButton>
       <PrimaryButton onClick={create} disabled={!name.trim() || (fromDataSource && !selectedSource)}>保存并进入待确权</PrimaryButton>
     </>} width="max-w-3xl">
@@ -829,6 +830,21 @@ function TypeExtForm({ type, ext, setExt }: { type: AssetType; ext: AssetExt; se
         <Field label="生成系统"><Input value={ext.generateSystem ?? ""} onChange={(v) => setExt({ ...ext, generateSystem: v })} placeholder="BI 系统" /></Field>
         <Field label="报告版本"><Input value={ext.reportVersion ?? "V1"} onChange={(v) => setExt({ ...ext, reportVersion: v })} /></Field>
         <Field label="关联数据集（逗号分隔）"><Input value={(ext.relatedDatasets ?? []).join(", ")} onChange={(v) => setExt({ ...ext, relatedDatasets: v.split(",").map((s) => s.trim()).filter(Boolean) })} /></Field>
+      </div>
+    );
+  }
+
+  if (type === "standard") {
+    return (
+      <div className="grid gap-3 rounded-md border border-border p-4 sm:grid-cols-2">
+        <Field label="标准编码"><Input value={ext.standardCode ?? ""} onChange={(v) => setExt({ ...ext, standardCode: v })} placeholder="STD-ELEMENT-0001" /></Field>
+        <Field label="标准类别"><Select value={ext.standardKind ?? "数据元标准"} onChange={(v) => setExt({ ...ext, standardKind: v as NonNullable<AssetExt["standardKind"]> })} options={["业务术语", "指标标准", "数据元标准", "参考数据标准", "主数据标准"].map((v) => ({ value: v, label: v }))} className="w-full" /></Field>
+        <Field label="标准版本"><Input value={ext.standardVersion ?? "v1"} onChange={(v) => setExt({ ...ext, standardVersion: v })} /></Field>
+        <Field label="治理状态"><Select value={ext.standardStatus ?? "草稿"} onChange={(v) => setExt({ ...ext, standardStatus: v as NonNullable<AssetExt["standardStatus"]> })} options={["草稿", "审批中", "已发布", "已废止"].map((v) => ({ value: v, label: v }))} className="w-full" /></Field>
+        <Field label="适用范围"><Input value={ext.applicableScope ?? ""} onChange={(v) => setExt({ ...ext, applicableScope: v })} placeholder="集团客户域" /></Field>
+        <Field label="批准主体"><Input value={ext.approvingBody ?? ""} onChange={(v) => setExt({ ...ext, approvingBody: v })} placeholder="数据治理委员会" /></Field>
+        <Field label="生效日期"><Input type="date" value={ext.effectiveFrom ?? ""} onChange={(v) => setExt({ ...ext, effectiveFrom: v })} /></Field>
+        <Field label="标准定义"><TextArea value={ext.standardDefinition ?? ""} onChange={(v) => setExt({ ...ext, standardDefinition: v })} placeholder="定义、表示约束与适用规则" rows={3} /></Field>
       </div>
     );
   }
@@ -1135,6 +1151,26 @@ function AssetExtInfo({ asset }: { asset: Asset }) {
           <div><div className="text-[11px] text-muted-foreground">报告版本</div><div className="mt-0.5 font-mono">{ext.reportVersion}</div></div>
           <div className="sm:col-span-2"><div className="text-[11px] text-muted-foreground">关联数据集</div><div className="mt-0.5">{(ext.relatedDatasets ?? []).join(", ") || "—"}</div></div>
         </div>
+      </section>
+    );
+  }
+  if (asset.type === "standard") {
+    return (
+      <section className="space-y-3">
+        <div className="mb-2 flex items-center gap-2 text-[13px] font-semibold text-foreground">
+          数据标准信息
+          <Badge tone={ext.standardStatus === "已发布" ? "green" : ext.standardStatus === "审批中" ? "amber" : "slate"}>{ext.standardStatus ?? "未登记"}</Badge>
+        </div>
+        <div className="grid gap-3 rounded-md border border-border p-3 text-[12px] sm:grid-cols-2">
+          <div><div className="text-[11px] text-muted-foreground">标准编码</div><div className="mt-0.5 font-mono">{ext.standardCode || "—"}</div></div>
+          <div><div className="text-[11px] text-muted-foreground">标准类别</div><div className="mt-0.5">{ext.standardKind || "—"}</div></div>
+          <div><div className="text-[11px] text-muted-foreground">标准版本</div><div className="mt-0.5 font-mono">{ext.standardVersion || `v${asset.version}`}</div></div>
+          <div><div className="text-[11px] text-muted-foreground">生效日期</div><div className="mt-0.5">{ext.effectiveFrom || "—"}</div></div>
+          <div><div className="text-[11px] text-muted-foreground">适用范围</div><div className="mt-0.5">{ext.applicableScope || "—"}</div></div>
+          <div><div className="text-[11px] text-muted-foreground">批准主体</div><div className="mt-0.5">{ext.approvingBody || "—"}</div></div>
+          <div className="sm:col-span-2"><div className="text-[11px] text-muted-foreground">标准定义</div><div className="mt-1 rounded bg-slate-50 p-3 leading-5 text-slate-700">{ext.standardDefinition || "—"}</div></div>
+        </div>
+        <div className="rounded-md border border-blue-200 bg-blue-50 px-3 py-2 text-[11px] text-blue-700">目录状态：{CATALOG_STATUS_LABEL[asset.catalogStatus]} · 标准治理状态：{ext.standardStatus ?? "未登记"}。两者独立变化，不互相覆盖。</div>
       </section>
     );
   }

@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 7,
   "updatedAt": "2026-08-13T00:00:00.000Z",
   "root": [
     {
@@ -48,6 +48,12 @@
       "id": "data-security",
       "builtinRouteKey": "data-security",
       "label": { "zh-CN": "数据安全", "en-US": "Data Security" },
+      "visible": true
+    },
+    {
+      "id": "metrics",
+      "builtinRouteKey": "metrics",
+      "label": { "zh-CN": "量化看板", "en-US": "Metrics Dashboard" },
       "visible": true
     },
     {

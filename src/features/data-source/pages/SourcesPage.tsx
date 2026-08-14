@@ -17,6 +17,7 @@ import {
 const CATEGORY_SUBTYPES: Record<SourceCategory, SourceSubtype[]> = {
   database: ["postgresql", "mysql", "oracle", "sqlserver", "dameng"],
   file: ["csv", "excel", "json", "parquet", "sftp"],
+  "local-file": ["local-csv", "local-excel", "local-json", "local-parquet"],
   message: ["kafka", "rocketmq", "pulsar"],
   api: ["rest", "grpc", "soap"],
   "object-store": ["s3", "minio", "oss"],
@@ -102,6 +103,7 @@ export function SourcesPage() {
                 { value: "all", label: "全部类型" },
                 { value: "database", label: "数据库" },
                 { value: "file", label: "文件源" },
+                { value: "local-file", label: "本地文件" },
                 { value: "message", label: "消息队列" },
                 { value: "api", label: "API" },
                 { value: "object-store", label: "对象存储" },
@@ -485,6 +487,52 @@ function ConnectionForm({ category, config, onChange }: {
       <Field label="认证方式">
         <Select value={config.authType ?? "aksk"} onChange={(v) => onChange("authType", v)} options={[
           { value: "aksk", label: "AK/SK" }, { value: "none", label: "公共读" },
+        ]} />
+      </Field>
+    </div>
+  );
+  if (category === "local-file") return (
+    <div className="grid gap-3 sm:grid-cols-2">
+      <Field label="文件路径" required hint="绝对路径，如 /data/finance/daily.csv 或 /var/log/events/">
+        <input value={config.path ?? ""} onChange={(e) => onChange("path", e.target.value)} className="h-9 w-full rounded-md border border-input bg-background px-3 font-mono text-[11px] outline-none focus:border-primary" placeholder="/data/xxx/file.csv" />
+      </Field>
+      <Field label="文件匹配模式" hint="目录下多文件时使用通配符">
+        <input value={(config.filePattern as string) ?? ""} onChange={(e) => onChange("filePattern", e.target.value)} className="h-9 w-full rounded-md border border-input bg-background px-3 font-mono text-[11px] outline-none focus:border-primary" placeholder="*.parquet" />
+      </Field>
+      <Field label="编码">
+        <Select value={(config.encoding as string) ?? "UTF-8"} onChange={(v) => onChange("encoding", v)} options={[
+          { value: "UTF-8", label: "UTF-8" }, { value: "GBK", label: "GBK" }, { value: "Latin-1", label: "Latin-1" }, { value: "SNAPPY", label: "SNAPPY（Parquet）" }, { value: "GZIP", label: "GZIP" },
+        ]} />
+      </Field>
+      <Field label="CSV 分隔符">
+        <Select value={(config.delimiter as string) ?? ","} onChange={(v) => onChange("delimiter", v)} options={[
+          { value: ",", label: "逗号 ," }, { value: "\t", label: "Tab" }, { value: ";", label: "分号 ;" }, { value: "|", label: "竖线 |" },
+        ]} />
+      </Field>
+      <Field label="首行为表头">
+        <label className="flex h-9 items-center gap-2 text-[12px]">
+          <input type="checkbox" checked={!!config.hasHeader} onChange={(e) => onChange("hasHeader", e.target.checked)} /> 第一行为字段名
+        </label>
+      </Field>
+      <Field label="Sheet（Excel）">
+        <input value={(config.sheetName as string) ?? ""} onChange={(e) => onChange("sheetName", e.target.value)} className="h-9 w-full rounded-md border border-input bg-background px-3 text-[12px] outline-none focus:border-primary" placeholder="Sheet1" />
+      </Field>
+    </div>
+  );
+  if (category === "file") return (
+    <div className="grid gap-3 sm:grid-cols-2">
+      <Field label="主机">
+        <input value={config.host ?? ""} onChange={(e) => onChange("host", e.target.value)} className="h-9 w-full rounded-md border border-input bg-background px-3 font-mono text-[11px] outline-none focus:border-primary" placeholder="sftp-host" />
+      </Field>
+      <Field label="端口">
+        <input type="number" value={config.port ?? ""} onChange={(e) => onChange("port", e.target.value ? Number(e.target.value) : undefined)} className="h-9 w-full rounded-md border border-input bg-background px-3 text-[12px] outline-none focus:border-primary" />
+      </Field>
+      <Field label="远程路径">
+        <input value={config.path ?? ""} onChange={(e) => onChange("path", e.target.value)} className="h-9 w-full rounded-md border border-input bg-background px-3 font-mono text-[11px] outline-none focus:border-primary" placeholder="/shared/reports" />
+      </Field>
+      <Field label="认证方式">
+        <Select value={config.authType ?? "basic"} onChange={(v) => onChange("authType", v)} options={[
+          { value: "basic", label: "用户名密码" }, { value: "key", label: "SSH Key" }, { value: "none", label: "匿名" },
         ]} />
       </Field>
     </div>

@@ -25,6 +25,8 @@
 | `data-asset` | `useDataAssetStore` | `useSqliteState("data-agent.data-asset")` |
 | 数据集成、湖、治理、开发、运维、安全 | 页面级 feature state | 各自 `data-agent.<feature>.*` SQLite scope |
 
+目标 `data-standard` feature 使用单一 `data-agent.data-standard` scope，并在内部按 `candidates`、`ontology`、`businessTerms`、`masterData`、`referenceData`、`dataElements`、`metrics`、`audits`、`aiDecisions` 和 `participationEvidence` 分区。该 scope 尚未实现；其他 feature 只保存标准 ID、版本 ID 和必要摘要，不直接读取或复制标准正文。
+
 ## 持久化键命名 · Persistence Keys
 `data-agent.<scope>` 全小写 dot 分隔:
 - 全局: `data-agent.ui` / `data-agent.locale`
@@ -57,3 +59,4 @@ const [items, setItems, meta] = useSqliteState(
 
 ## 关联 ADR · Related ADRs
 - [ADR-0006 本地 SQLite 状态持久化](../adr/0006-local-sqlite-state-persistence.md)
+- [ADR-0020 数据标准一级产品域](../adr/0020-finalize-data-standard-as-top-level-product.md)

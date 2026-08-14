@@ -69,17 +69,6 @@ export function listStates() {
 export function setState(scope, value, operation = "upsert") {
   const serialized = JSON.stringify(value);
   const updatedAt = now();
-  if (scope.includes("menu")) {
-    try {
-      const root = value.root || [];
-      const ds = root.find(n => n.id === "data-source");
-      const exchange = ds?.children?.find(c => c.id === "data-source.exchange");
-      const kc = root.find(n => n.id === "knowledge-center");
-      console.log(`[SQLite setState] scope=${scope} exchange=${exchange?.visible} kc=${kc?.visible} operation=${operation}`);
-    } catch (e) {
-      console.log(`[SQLite setState] scope=${scope} (parse error: ${e.message})`);
-    }
-  }
   upsertState.run(scope, serialized, updatedAt);
   insertEvent.run(scope, operation, serialized, updatedAt);
   return getState(scope);

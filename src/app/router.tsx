@@ -13,6 +13,7 @@ import { schedulerRoutes } from "@/features/scheduler/routes";
 import { dataAssetRoutes } from "@/features/data-asset/routes";
 import { opsMonitorRoutes } from "@/features/ops-monitor/routes";
 import { dataSecurityRoutes } from "@/features/data-security/routes";
+import { metricsRoutes } from "@/features/metrics/routes";
 import { agentsRoutes } from "@/features/agents/routes";
 import { workflowRoutes } from "@/features/workflow/routes";
 import { insightsRoutes } from "@/features/insights/routes";
@@ -31,6 +32,7 @@ export const appFeatureRoutes = [
   ...dataAssetRoutes,
   ...opsMonitorRoutes,
   ...dataSecurityRoutes,
+  ...metricsRoutes,
   ...agentsRoutes,
   ...workflowRoutes,
   ...insightsRoutes,

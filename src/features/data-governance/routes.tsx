@@ -8,9 +8,6 @@ const GovernanceMetadataPage = lazy(() =>
 const DataQualityPage = lazy(() =>
   import("./pages").then((module) => ({ default: module.DataQualityPage })),
 );
-const DataStandardsPage = lazy(() =>
-  import("./pages").then((module) => ({ default: module.DataStandardsPage })),
-);
 
 export const dataGovernanceRoutes: RouteObject[] = [
   {
@@ -19,7 +16,6 @@ export const dataGovernanceRoutes: RouteObject[] = [
       { index: true, element: <Navigate to="metadata" replace /> },
       { path: "metadata", element: <GovernanceMetadataPage /> },
       { path: "quality", element: <DataQualityPage /> },
-      { path: "standards", element: <DataStandardsPage /> },
     ],
   },
 ];

@@ -19,6 +19,7 @@ const PersonalInformationPage = lazySecurityPage("PersonalInformationPage");
 const ImportantDataPage = lazySecurityPage("ImportantDataPage");
 const CrossBorderAssessmentPage = lazySecurityPage("CrossBorderAssessmentPage");
 const ClassificationPage = lazySecurityPage("ClassificationPage");
+const ClassificationTaskDetailPage = lazySecurityPage("ClassificationTaskDetailPage");
 const ClassificationReviewsPage = lazySecurityPage("ClassificationReviewsPage");
 const ClassificationRulesPage = lazySecurityPage("ClassificationRulesPage");
 const ClassificationReportsPage = lazySecurityPage("ClassificationReportsPage");
@@ -50,6 +51,7 @@ export const dataSecurityRoutes: RouteObject[] = [
       { path: "compliance/important-data", element: <ImportantDataPage /> },
       { path: "cross-border", element: <CrossBorderAssessmentPage /> },
       { path: "classification", element: <ClassificationPage /> },
+      { path: "classification/:taskId", element: <ClassificationTaskDetailPage /> },
       { path: "classification/reviews", element: <ClassificationReviewsPage /> },
       { path: "classification/rules", element: <ClassificationRulesPage /> },
       { path: "classification/reports", element: <ClassificationReportsPage /> },

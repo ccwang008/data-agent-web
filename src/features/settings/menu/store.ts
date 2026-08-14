@@ -112,7 +112,7 @@ export const useMenuStore = create<MenuStoreState>()(
     }),
     {
       name: PERSIST_KEY,
-      version: 3,
+      version: 7,
       partialize: (s) => ({ config: s.config }),
       migrate: (persistedState) => {
         const state = persistedState as Partial<MenuStoreState> | undefined;

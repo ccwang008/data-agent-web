@@ -2,7 +2,7 @@
 
 ## 状态 · Status
 
-Accepted
+Superseded by [ADR-0014](./0014-comprehensive-plus-nine-domain-dashboards.md)
 
 ## 决策 · Decision
 

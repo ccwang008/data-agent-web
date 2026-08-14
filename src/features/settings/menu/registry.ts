@@ -10,6 +10,7 @@ import {
   Database,
   FileInput,
   FileText,
+  Gauge,
   GitBranch,
   Handshake,
   HelpCircle,
@@ -176,6 +177,12 @@ export const BUILTIN_MENU: Record<string, BuiltinMenuEntry> = {
     icon: Boxes,
     defaultLabel: { "zh-CN": "资产目录", "en-US": "Asset Catalog" },
   },
+  "data-asset.circulation": {
+    key: "data-asset.circulation",
+    to: "/data-asset/circulation",
+    icon: Workflow,
+    defaultLabel: { "zh-CN": "资产流通", "en-US": "Asset Circulation" },
+  },
   "data-asset.ownership": {
     key: "data-asset.ownership",
     to: "/data-asset/ownership",
@@ -192,7 +199,7 @@ export const BUILTIN_MENU: Record<string, BuiltinMenuEntry> = {
     key: "data-asset.service",
     to: "/data-asset/service",
     icon: Rocket,
-    defaultLabel: { "zh-CN": "资产运营", "en-US": "Service" },
+    defaultLabel: { "zh-CN": "资产运营", "en-US": "Asset Ops" },
   },
   "data-asset.audit": {
     key: "data-asset.audit",
@@ -248,7 +255,7 @@ export const BUILTIN_MENU: Record<string, BuiltinMenuEntry> = {
     key: "data-lake.tables",
     to: "/data-lake/tables",
     icon: Table2,
-    defaultLabel: { "zh-CN": "湖表管理", "en-US": "Lake Tables" },
+    defaultLabel: { "zh-CN": "数据建模", "en-US": "Data Modeling" },
   },
   "data-lake.capacity": {
     key: "data-lake.capacity",
@@ -274,12 +281,6 @@ export const BUILTIN_MENU: Record<string, BuiltinMenuEntry> = {
     to: "/data-governance/quality",
     icon: ShieldCheck,
     defaultLabel: { "zh-CN": "数据质量", "en-US": "Data Quality" },
-  },
-  "data-governance.standards": {
-    key: "data-governance.standards",
-    to: "/data-governance/standards",
-    icon: Tags,
-    defaultLabel: { "zh-CN": "数据标准", "en-US": "Data Standards" },
   },
   "data-development": {
     key: "data-development",
@@ -548,6 +549,14 @@ export const BUILTIN_MENU: Record<string, BuiltinMenuEntry> = {
     icon: Timer,
     defaultLabel: { "zh-CN": "演练与复盘", "en-US": "Drills & Reviews" },
   },
+  metrics: {
+    key: "metrics",
+    to: "/metrics",
+    matchPrefix: "/metrics",
+    icon: Gauge,
+    status: "ready",
+    defaultLabel: { "zh-CN": "量化看板", "en-US": "Metrics Dashboard" },
+  },
   settings: {
     key: "settings",
     to: "/settings/menu",
@@ -581,6 +590,7 @@ const knowledgeCenterChildren: MenuNode[] = [
 
 const dataAssetChildren: MenuNode[] = [
   builtinNode("data-asset.catalog"),
+  builtinNode("data-asset.circulation"),
   builtinNode("data-asset.ownership"),
   builtinNode("data-asset.value"),
   builtinNode("data-asset.service"),
@@ -601,7 +611,6 @@ const dataLakeChildren = [
 const dataGovernanceChildren = [
   builtinNode("data-governance.metadata"),
   builtinNode("data-governance.quality"),
-  builtinNode("data-governance.standards"),
 ];
 const dataDevelopmentChildren = [
   builtinNode("data-development.etl"),
@@ -670,6 +679,7 @@ const DEPRECATED_MENU_KEYS = new Set([
   "insights",
   "knowledge-center.vectors",
   "data-asset.scan-tasks",
+  "data-governance.standards",
 ]);
 
 export function builtinNode(key: string, children?: MenuNode[]): MenuNode {
@@ -686,7 +696,7 @@ export function builtinNode(key: string, children?: MenuNode[]): MenuNode {
 
 export function createDefaultMenuConfig(): MenuConfig {
   return {
-    version: 3,
+    version: 7,
     updatedAt: new Date().toISOString(),
     root: createDefaultRootNodes(),
   };
@@ -716,7 +726,7 @@ export function normalizeMenuConfig(config: MenuConfig): MenuConfig {
 
   return {
     ...config,
-    version: 3,
+    version: 7,
     root: mergeMissingBuiltinNodes(source, defaults),
   };
 }
@@ -812,6 +822,7 @@ function createDefaultRootNodes(): MenuNode[] {
     builtinNode("scheduler", schedulerChildren),
     builtinNode("ops-monitor", opsMonitorChildren),
     builtinNode("data-security", dataSecurityChildren),
+    builtinNode("metrics"),
     builtinNode("knowledge-center", knowledgeCenterChildren),
     builtinNode("kg", kgChildren),
     builtinNode("settings"),

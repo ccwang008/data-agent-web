@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo } from "react";
 
 import { useSqliteState, type SqliteStateMeta } from "@/lib/sqlite-client";
-import { createDefaultState } from "./api/default-state";
+import { createDefaultState, DATA_ASSET_SCHEMA_VERSION } from "./api/default-state";
 import type { DataAssetState } from "./api/types";
 
 const STATE_SCOPE = "data-agent.data-asset";
@@ -17,15 +17,30 @@ export interface DataAssetStore {
 function migrateState(raw: DataAssetState): DataAssetState {
   const def = createDefaultState();
   const result: DataAssetState = JSON.parse(JSON.stringify(raw)) as DataAssetState;
-  if (!result.catalog.domains || result.catalog.domains.length === 0) {
-    const names = new Set(def.catalog.domains.map((d) => d.name));
-    result.catalog.domains = [
-      ...def.catalog.domains,
-      ...Array.from(new Set(result.catalog.assets.map((a) => a.businessDomain)))
-        .filter((n) => !names.has(n))
-        .map((name, i) => ({ id: `domain-${name}`, name, parentId: null, order: 10 + i })),
-    ];
-  }
+  result.catalog = result.catalog ?? def.catalog;
+  const domainIds = new Set((result.catalog.domains ?? []).map((domain) => domain.id));
+  result.catalog.domains = [
+    ...(result.catalog.domains ?? []),
+    ...def.catalog.domains.filter((domain) => !domainIds.has(domain.id)),
+  ];
+  const knownNames = new Set(result.catalog.domains.map((domain) => domain.name));
+  result.catalog.domains.push(
+    ...Array.from(new Set((result.catalog.assets ?? []).map((asset) => asset.businessDomain)))
+      .filter((name) => !knownNames.has(name))
+      .map((name, index) => ({ id: `domain-${name}`, name, parentId: null, order: 20 + index })),
+  );
+  const assetIds = new Set((result.catalog.assets ?? []).map((asset) => asset.id));
+  result.catalog.assets = [
+    ...(result.catalog.assets ?? []),
+    ...def.catalog.assets.filter((asset) => asset.type === "standard" && !assetIds.has(asset.id)),
+  ];
+  const versionIds = new Set((result.catalog.assetVersions ?? []).map((version) => version.id));
+  result.catalog.assetVersions = [
+    ...(result.catalog.assetVersions ?? []),
+    ...def.catalog.assetVersions.filter((version) => version.assetId.startsWith("asset-standard-") && !versionIds.has(version.id)),
+  ];
+  result.circulation = result.circulation ?? def.circulation;
+  result.schemaVersion = DATA_ASSET_SCHEMA_VERSION;
   return result;
 }
 
@@ -39,7 +54,7 @@ export function useDataAssetState(): DataAssetStore {
   const state = useMemo(() => migrateState(rawState), [rawState]);
 
   useEffect(() => {
-    if (meta.hydrated && rawState.catalog && (!rawState.catalog.domains || rawState.catalog.domains.length === 0)) {
+    if (meta.hydrated && rawState.schemaVersion !== DATA_ASSET_SCHEMA_VERSION) {
       setState((current) => migrateState(current));
     }
   }, [meta.hydrated, rawState, setState]);

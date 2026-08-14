@@ -338,7 +338,12 @@ function CreateTableModal({
     onChange({ ...table, fields: table.fields.filter((_, i) => i !== idx) });
   }
 
-  const valid = table.name.trim().length > 0 && table.fields.every((f) => f.name.trim().length > 0);
+  const missingFields: string[] = [];
+  if (!table.name.trim()) missingFields.push("表名");
+  if (!table.owner.trim()) missingFields.push("负责人");
+  const invalidFields = table.fields.filter((f) => !f.name.trim()).map((_, i) => `第 ${i + 1} 行字段名`);
+  missingFields.push(...invalidFields);
+  const valid = missingFields.length === 0;
 
   return (
     <Modal
@@ -347,15 +352,17 @@ function CreateTableModal({
       width="max-w-5xl"
       onClose={onCancel}
       footer={
-        <>
-          <button onClick={onCancel} className="h-8 rounded-md border border-input px-3 text-[12px] font-medium">取消</button>
+        <div className="flex flex-1 items-center justify-end gap-2">
+          {!valid && <span className="text-[11px] text-amber-600">请填写：{missingFields.join("、")}</span>}
+          <button type="button" onClick={onCancel} className="h-8 rounded-md border border-input px-3 text-[12px] font-medium">取消</button>
           <button
+            type="button"
             disabled={!valid}
             onClick={() => onSave(table)}
             className="h-8 rounded-md bg-primary px-3 text-[12px] font-medium text-primary-foreground disabled:opacity-50">
             {isNew ? "创建表" : "保存修改"}
           </button>
-        </>
+        </div>
       }
     >
       <div className="space-y-5 text-[12px]">
@@ -485,8 +492,8 @@ function FieldEditorModal({
       onClose={onCancel}
       footer={
         <>
-          <button onClick={onCancel} className="h-8 rounded-md border border-input px-3 text-[12px] font-medium">取消</button>
-          <button disabled={!valid} onClick={() => onSave(draft)} className="h-8 rounded-md bg-primary px-3 text-[12px] font-medium text-primary-foreground disabled:opacity-50">
+          <button type="button" onClick={onCancel} className="h-8 rounded-md border border-input px-3 text-[12px] font-medium">取消</button>
+          <button type="button" disabled={!valid} onClick={() => onSave(draft)} className="h-8 rounded-md bg-primary px-3 text-[12px] font-medium text-primary-foreground disabled:opacity-50">
             {isEdit ? "保存修改" : "确认添加"}
           </button>
         </>

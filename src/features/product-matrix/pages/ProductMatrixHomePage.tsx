@@ -151,7 +151,7 @@ const products: Product[] = [
     title: "指标管理平台",
     description: "指标体系构建、指标查询与经营分析",
     detail: "统一指标口径、责任人、版本和使用范围。",
-    href: "/data-governance/standards",
+    href: "/data-governance/metadata",
     icon: Gauge,
     accent: "blue",
     badge: "指标中心",

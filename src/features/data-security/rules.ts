@@ -159,7 +159,7 @@ export function normalizeDomainState(value: unknown, domain: SecurityDomain): Se
 
   if (!isDomainState(value)) return initial;
 
-  return {
+  const merged: SecurityDomainState = {
     ...initial,
     ...value,
     schemaVersion: 2,
@@ -170,6 +170,28 @@ export function normalizeDomainState(value: unknown, domain: SecurityDomain): Se
     },
     activity: Array.isArray(value.activity) ? value.activity : [],
   };
+
+  if (domain === "classification") {
+    const legacyFields: Record<string, string> = {
+      扫描范围: "待配置",
+      范围类型: "数据源",
+      识别模式: "增量扫描",
+      触发方式: "手动",
+    };
+    merged.collections.classification = (merged.collections.classification ?? []).map((record) => {
+      const fields = { ...record.fields };
+      let patched = false;
+      for (const [key, defaultValue] of Object.entries(legacyFields)) {
+        if (fields[key] === undefined || fields[key] === null || fields[key] === "") {
+          fields[key] = defaultValue;
+          patched = true;
+        }
+      }
+      return patched ? { ...record, fields } : record;
+    });
+  }
+
+  return merged;
 }
 
 export function hasCurrentDomainSchema(value: unknown, domain: SecurityDomain) {
