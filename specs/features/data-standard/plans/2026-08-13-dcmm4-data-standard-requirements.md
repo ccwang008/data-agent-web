@@ -37,7 +37,7 @@
 | 二级能力 | 路由 | 主要交付 |
 |---|---|---|
 | 业务术语 | `/data-standard/business-terms` | 企业术语库、本体图、概念绑定、引用与审批 |
-| 主数据 | `/data-standard/master-data` | 实体标准、来源匹配、黄金记录、质量与分发 |
+| 主数据 | `/data-standard/master-data` | 实体标准、来源匹配、权威记录、质量与分发 |
 | 参考数据 | `/data-standard/reference-data` | 目录、代码值版本、映射矩阵、差异与同步 |
 | 数据元标准 | `/data-standard/data-element-standards` | 数据元目录、字段映射、AI 落标与符合性 |
 | 指标字典 | `/data-standard/metric-dictionary` | 指标体系、口径、语义模型、血缘和一致性比对 |

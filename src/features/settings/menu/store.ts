@@ -73,6 +73,21 @@ export const useMenuStore = create<MenuStoreState>()(
         try {
           const storedConfig = await readSqliteState<MenuConfig>(MENU_SQLITE_SCOPE);
           if (storedConfig && Array.isArray(storedConfig.root)) {
+            // 菜单名称重命名（数据资产运营→数据资产），旧版本 SQLite 数据丢弃 root 用公共默认
+            if (typeof storedConfig.version === "number" && storedConfig.version < 13) {
+              const fileConfig = await loadMenuConfigFromPublic();
+              set({
+                config: fileConfig,
+                draft: null,
+                hydratedFromFile: true,
+              });
+              try {
+                await writeSqliteState(MENU_SQLITE_SCOPE, fileConfig);
+              } catch {
+                // SQLite 写入失败不影响内存默认结构
+              }
+              return;
+            }
             set({
               config: normalizeMenuConfig(storedConfig),
               draft: null,
@@ -112,10 +127,18 @@ export const useMenuStore = create<MenuStoreState>()(
     }),
     {
       name: PERSIST_KEY,
-      version: 7,
+      version: 13,
       partialize: (s) => ({ config: s.config }),
-      migrate: (persistedState) => {
+      migrate: (persistedState, fromVersion) => {
         const state = persistedState as Partial<MenuStoreState> | undefined;
+        // 菜单名称重命名（数据资产运营→数据资产），旧版本直接丢弃 root 用默认结构
+        if (fromVersion < 13) {
+          return {
+            ...state,
+            config: createDefaultMenuConfig(),
+            draft: null,
+          };
+        }
         const config = state?.config;
 
         return {

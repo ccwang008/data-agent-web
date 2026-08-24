@@ -1,11 +1,11 @@
 {
-  "version": 7,
-  "updatedAt": "2026-08-13T00:00:00.000Z",
+  "version": 13,
+  "updatedAt": "2026-08-17T00:00:00.000Z",
   "root": [
     {
-      "id": "data-asset",
-      "builtinRouteKey": "data-asset",
-      "label": { "zh-CN": "数据资产运营", "en-US": "Data Assets" },
+      "id": "metrics",
+      "builtinRouteKey": "metrics",
+      "label": { "zh-CN": "量化看板", "en-US": "Metrics Dashboard" },
       "visible": true
     },
     {
@@ -21,6 +21,12 @@
       "visible": true
     },
     {
+      "id": "data-standard",
+      "builtinRouteKey": "data-standard",
+      "label": { "zh-CN": "数据标准", "en-US": "Data Standard" },
+      "visible": true
+    },
+    {
       "id": "data-governance",
       "builtinRouteKey": "data-governance",
       "label": { "zh-CN": "数据治理", "en-US": "Data Governance" },
@@ -30,6 +36,12 @@
       "id": "data-development",
       "builtinRouteKey": "data-development",
       "label": { "zh-CN": "数据开发", "en-US": "Data Development" },
+      "visible": true
+    },
+    {
+      "id": "data-asset",
+      "builtinRouteKey": "data-asset",
+      "label": { "zh-CN": "数据资产", "en-US": "Data Assets" },
       "visible": true
     },
     {
@@ -48,24 +60,6 @@
       "id": "data-security",
       "builtinRouteKey": "data-security",
       "label": { "zh-CN": "数据安全", "en-US": "Data Security" },
-      "visible": true
-    },
-    {
-      "id": "metrics",
-      "builtinRouteKey": "metrics",
-      "label": { "zh-CN": "量化看板", "en-US": "Metrics Dashboard" },
-      "visible": true
-    },
-    {
-      "id": "knowledge-center",
-      "builtinRouteKey": "knowledge-center",
-      "label": { "zh-CN": "知识中心", "en-US": "Knowledge Center" },
-      "visible": true
-    },
-    {
-      "id": "kg",
-      "builtinRouteKey": "kg",
-      "label": { "zh-CN": "知识图谱", "en-US": "Knowledge Graph" },
       "visible": true
     },
     {

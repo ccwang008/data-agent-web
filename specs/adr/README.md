@@ -7,10 +7,6 @@ ADR (Architecture Decision Record) 是对一次架构选择的简短书面记录
 | ID | Title | Status | 截止 · Deadline |
 |---|---|---|---|
 | [0001](./0001-record-architecture-decisions.md) | Record architecture decisions | Accepted | — |
-| [0002](./0002-knowledge-graph-management-frontend.md) | Knowledge graph management frontend | Superseded by [新版 KG spec](../features/knowledge-graph/) | — |
-| 0003 | 代码编辑器选型(Gremlin / Cypher 语法支持) | 🚧 Proposed (待写) | M0 |
-| 0004 | 图渲染库选型(≥ 6 布局 / Mini-map / ≥ 5000 节点) | 🚧 Proposed (待写) | M3 启动前 |
-| 0005 | 文件上传组件选型(大文件 / 断点续传) | 🚧 Proposed (待写) | M3 启动前 |
 | [0006](./0006-local-sqlite-state-persistence.md) | 本地 SQLite 状态持久化 | Accepted | — |
 | [0007](./0007-classic-light-saas-direction.md) | Classic Light SaaS 视觉方向 | Accepted | — |
 | [0008](./0008-tree-menu-and-user-customization.md) | 树形菜单与用户自定义边界 | Accepted | — |

@@ -1,6 +1,6 @@
 # 大数数据平台
 
-大数数据平台是面向企业的数据资产运营与 AI 数据服务平台。平台覆盖数据接入、统一存储、治理、数据标准、开发、调度、服务化与安全运营，帮助企业把分散的数据转化为可发现、可理解、可复用、可运营的数据资产。
+大数数据平台是面向企业的数据资产与 AI 数据服务平台。平台覆盖数据接入、统一存储、治理、数据标准、开发、调度、服务化与安全运营，帮助企业把分散的数据转化为可发现、可理解、可复用、可运营的数据资产。
 
 本仓库是平台的本地全栈原型。业务数据和执行结果使用 mock 语义，但可变状态统一保存到项目本地 SQLite（`data/platform.sqlite`）；真实数据源、计算引擎、权限中心和生产级服务网关不在当前实现范围内。
 
@@ -20,37 +20,34 @@
 
 | 领域 | 核心能力 | 当前状态 |
 |---|---|---|
-| 数据资产运营 | 统一数据资产目录、资产流通申请/审批/对接/使用、权属、估值、产品运营、审计与报告 | SQLite 持久化 mock 已实现；数据标准不作为资产类型 |
+| 量化看板 | 综合态势、DCMM 九大能力域、25 项核心 KPI、33 个能力项覆盖、快照与改进闭环 | 综合看板加九域看板与 SQLite 持久化 mock 已实现 |
 | 数据集成 | 数据源管理、全量/增量/CDC/实时同步、API/文件/库表/消息共享交换 | SQLite 持久化 mock 已实现 |
 | 数据湖 | 统一存储、湖表管理、Schema/版本/ACID、分层与容量、生命周期管理 | SQLite 持久化 mock 已实现 |
-| 数据治理 | 元数据、血缘、数据地图、质量规则与评分 | SQLite 持久化 mock 已实现 |
-| 数据标准 | 企业级业务术语库与本体模型、主数据、参考数据、数据元标准、指标字典与语义层、自动落标稽核、跨部门指标一致性比对 | feature spec 已完成，页面与 SQLite mock 待实现 |
+| 数据标准 | 企业级业务术语库与本体模型、主数据、参考数据、数据元标准、指标字典与语义层、自动落标稽核、跨部门指标一致性比对 | SQLite 持久化 mock 已实现 |
+| 数据治理 | 治理中心（组织/制度/文化）、元数据与血缘（元模型/质量评价/报告）、数据质量（需求/规则/问题闭环/分析/改进） | SQLite 持久化 mock 重构中 · DCMM L4 就绪度 |
 | 数据开发 | ETL 画布、SQL 编辑器、Notebook 单元格工作台 | 专业工作台 P0 与 SQLite mock 已实现 |
+| 数据资产 | 统一数据资产目录、资产流通申请/审批/对接/使用、权属、估值、产品运营、审计与报告 | SQLite 持久化 mock 已实现；数据标准不作为资产类型 |
 | 调度引擎 | 画布编排、节点管理、运行结果、任务监控 | SQLite 持久化 mock 已实现 |
 | 运维与监控 | 任务、数据链路、数据质量、计算资源监控 | SQLite 持久化 mock 已实现 |
 | 数据安全 | 安全总览、合规、分类分级、防护、脱敏、加密、水印、出境评估、审计和事件响应 | 25 个功能页、六分域 SQLite mock 与三级菜单已实现 |
-| 量化看板 | 综合态势、DCMM 九大能力域、25 项核心 KPI、33 个能力项覆盖、快照与改进闭环 | 综合看板加九域看板与 SQLite 持久化 mock 已实现 |
-
-平台还保留知识中心和知识图谱能力，作为数据资产面向 AI 使用的扩展能力。
 
 ## 当前前端入口
 
 | 模块 | 路由 | 页面 |
 |---|---|---|
-| 数据资产 | `/data-asset` | `/catalog` 资产目录、`/circulation` 资产流通、`/ownership` 权属登记、`/value` 价值评估、`/service` 资产运营、`/audit` 使用审计、`/reports` 量化报告 |
+| 量化看板 | `/metrics` | 综合看板；九大能力域使用独立 URL 的 Tab 切换，完整路由见 [metrics spec](./specs/features/metrics/README.md) |
 | 数据集成 | `/data-source` | `/sources` 数据源、`/sync` 数据同步、`/exchange` 共享交换 |
 | 数据湖 | `/data-lake` | `/storage` 统一存储、`/tables` 湖表管理、`/capacity` 分层与容量 |
-| 数据治理 | `/data-governance` | `/metadata` 元数据、`/quality` 数据质量；不再包含标准页面 |
+| 数据标准 | `/data-standard` | `/business-terms` 业务术语、`/master-data` 主数据、`/reference-data` 参考数据、`/data-element-standards` 数据元标准、`/metric-dictionary` 指标字典 |
+| 数据治理 | `/data-governance` | 治理中心 `/center`、`/center/{organization,regulation,culture}`；元数据 `/metadata`、`/metadata/{model,quality,reports}`；数据质量 `/quality`、`/quality/{requirements,rules,issues,analysis,improvement}` |
 | 数据开发 | `/data-development` | `/etl`、`/sql`、`/notebook` 列表及 `/new`、`/:id` 专业编辑器 |
+| 数据资产 | `/data-asset` | `/catalog` 资产目录、`/circulation` 资产流通、`/ownership` 权属登记、`/value` 价值评估、`/service` 资产运营、`/audit` 使用审计、`/reports` 量化报告 |
 | 调度引擎 | `/scheduler` | `/tasks` 调度任务、`/editor` 任务画布、`/monitor` 任务监控 |
 | 运维与监控 | `/ops-monitor` | `/tasks` 任务、`/lineage` 链路、`/quality` 质量、`/resource` 资源监控 |
 | 数据安全 | `/data-security` | 默认 `/overview`；合规、分类、防护、审计、事件响应共 25 个页面，完整路由见 [data-security spec](./specs/features/data-security/README.md) |
-| 量化看板 | `/metrics` | 综合看板；九大能力域使用独立 URL 的 Tab 切换，完整路由见 [metrics spec](./specs/features/metrics/README.md) |
-| 知识中心 | `/knowledge-center` | 知识库、文档、分析报表、知识权限 |
-| 知识图谱 | `/knowledge-graph` | 图实例、元数据、导入、分析、可视化、异步任务等 |
 | 系统设置 | `/settings` | 菜单管理等平台配置能力；菜单调整保存到 SQLite `data-agent.settings.menu` |
 
-数据标准的目标一级入口为 `/data-standard`，二级路由为 `/business-terms`、`/master-data`、`/reference-data`、`/data-element-standards` 和 `/metric-dictionary`。这些路由尚未实现，不属于上表“当前前端入口”；原 `/data-governance/standards` 不保留兼容入口。完整目标见 [data-standard spec](./specs/features/data-standard/README.md)。
+数据标准的一级入口为 `/data-standard`，二级路由为 `/business-terms`、`/master-data`、`/reference-data`、`/data-element-standards` 和 `/metric-dictionary`，五个工作台与 SQLite mock 已实现；原 `/data-governance/standards` 不保留兼容入口。完整设计见 [data-standard spec](./specs/features/data-standard/README.md)。
 
 数据资产目录、数据服务、数据开发、运维监控和数据安全的产品范围与验收方向记录在 [`specs/platform/07-data-platform-product-scope.md`](./specs/platform/07-data-platform-product-scope.md)。
 
@@ -88,17 +85,16 @@ src/
     ui/                   # shadcn 原子组件
     layout/               # AppShell、Sidebar、TopBar
   features/
+    metrics/              # 量化看板：九域 KPI、能力覆盖、快照和改进事项 SQLite mock
     data-source/          # 数据集成：数据源、同步、共享交换
-    data-lake/             # 数据湖：统一存储、湖表、容量分层
-    data-governance/      # 数据治理：元数据、质量
+    data-lake/            # 数据湖：统一存储、湖表、容量分层
+    data-standard/        # 数据标准：业务术语、主数据、参考数据、数据元、指标字典
+    data-governance/      # 数据治理：治理中心、元数据、数据质量
     data-development/     # 数据开发：ETL、SQL、Notebook
-    scheduler/             # 调度引擎：任务列表、任务画布、任务监控
     data-asset/           # 数据资产：目录、流通、权属、估值、运营、审计、报告
+    scheduler/            # 调度引擎：任务列表、任务画布、任务监控
     ops-monitor/          # 运维与监控：任务、链路、质量、资源
     data-security/        # 数据安全：DCMM4 就绪度、合规、防护、审计与事件响应 SQLite mock
-    metrics/              # 量化看板：九域 KPI、能力覆盖、快照和改进事项 SQLite mock
-    knowledge-center/     # 知识资产与向量能力
-    knowledge-graph/       # 知识图谱能力
     settings/             # 系统管理
   stores/                 # 全局 Zustand stores
   lib/                    # cn、i18n、mock-client、SQLite client、local-json-store
@@ -111,8 +107,6 @@ specs/
   features/               # 与 src/features 对应的 feature spec
   adr/                    # 架构决策记录
 ```
-
-目标 `src/features/data-standard/` 尚未创建；实现前必须遵循 `specs/features/data-standard/` 和 ADR-0020。
 
 ## 开发约定
 

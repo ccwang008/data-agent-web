@@ -21,7 +21,6 @@
 
 | Feature | Store | 持久化 |
 |---|---|---|
-| `knowledge-graph` | `useKnowledgeGraphStore` | 页面会话状态 |
 | `data-asset` | `useDataAssetStore` | `useSqliteState("data-agent.data-asset")` |
 | 数据集成、湖、治理、开发、运维、安全 | 页面级 feature state | 各自 `data-agent.<feature>.*` SQLite scope |
 
@@ -55,7 +54,6 @@ const [items, setItems, meta] = useSqliteState(
 - `src/stores/useLocaleStore.ts`
 - `src/lib/sqlite-client.ts`
 - `server/sqlite.mjs`
-- `src/features/knowledge-graph/store.ts`
 
 ## 关联 ADR · Related ADRs
 - [ADR-0006 本地 SQLite 状态持久化](../adr/0006-local-sqlite-state-persistence.md)

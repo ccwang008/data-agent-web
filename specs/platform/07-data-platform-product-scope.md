@@ -8,7 +8,7 @@
 
 ## 能力地图 · Capability Map
 
-### 1. 数据资产运营 · Data Asset Operations
+### 1. 数据资产 · Data Assets
 
 将治理后的数据转化为可发现、可使用、可运营的数据资源。
 
@@ -66,13 +66,13 @@
 建立企业级统一数据标准体系，覆盖 GB/T 36073—2025 第 10 章五项能力：
 
 - **业务术语**：企业级业务术语库、本体模型、同义词、引用影响和审批。
-- **主数据**：主数据标准、权威来源、AI 匹配与查重、黄金记录、订阅分发和质量跟踪。
+- **主数据**：主数据标准、权威来源、AI 匹配与查重、权威记录、订阅分发和质量跟踪。
 - **参考数据**：组织级目录、代码集和值版本、跨系统映射、发布同步和符合性分析。
 - **数据元标准**：数据元目录、术语/本体/参考数据关联、字段映射、AI 自动落标和约束稽核。
 - **指标字典**：企业指标稳定 ID、口径、计算逻辑、来源、责任人、语义层指标模型、血缘和跨部门一致性比对。
 - **量化与追溯**：企业候选归并、人工责任链、简单版本查看、自动落标稽核、整改复检、AI 审计和标准参与证据。
 
-目标入口为 `/data-standard/business-terms`、`/data-standard/master-data`、`/data-standard/reference-data`、`/data-standard/data-element-standards`、`/data-standard/metric-dictionary`。当前已完成 feature spec，页面、路由、菜单和 `data-agent.data-standard` 状态尚未实现。数据标准不作为数据资产类型，本期不建设标准资产发布、申请、授权、下发或流通流程。
+目标入口为 `/data-standard/business-terms`、`/data-standard/master-data`、`/data-standard/reference-data`、`/data-standard/data-element-standards`、`/data-standard/metric-dictionary`。五个工作台、路由、菜单和 `data-agent.data-standard` 状态已实现。数据标准不作为数据资产类型，本期不建设标准资产发布、申请、授权、下发或流通流程。
 
 ### 6. 数据开发 · Data Development
 
@@ -161,17 +161,12 @@
 | 数据湖 | `data-lake` | `/data-lake/*` |
 | 数据治理 | `data-governance` | `/data-governance/*` |
 | 调度引擎 | `scheduler` | `/scheduler/*` |
-| 数据资产运营 | `data-asset` | `/data-asset/*` |
+| 数据资产 | `data-asset` | `/data-asset/*` |
 | 数据开发 | `data-development` | `/data-development/*` |
 | 运维与监控 | `ops-monitor` | `/ops-monitor/*` |
 | 数据安全 | `data-security` | `/data-security/*` |
 | 量化看板 | `metrics` | `/metrics/*` |
-
-### 已完成规格、待实现页面
-
-| 领域 | 目标 Feature | 目标路由 | 状态 |
-|---|---|---|---|
-| 数据标准 | `data-standard` | `/data-standard/*` | requirements/design/tasks 完成，页面与 SQLite mock 待实现 |
+| 数据标准 | `data-standard` | `/data-standard/*` |
 
 其余产品深化能力（如真实连接器、生产执行器、告警通知和完整权限闭环）仍按后续迭代规划，不改变当前 SQLite + mock 的原型边界。
 

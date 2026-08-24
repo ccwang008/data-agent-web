@@ -1,0 +1,14 @@
+export { GovernanceCenterPage } from "./GovernanceCenterPage";
+export { GovernanceOrganizationPage } from "./GovernanceOrganizationPage";
+export { GovernanceRegulationPage } from "./GovernanceRegulationPage";
+export { GovernanceCulturePage } from "./GovernanceCulturePage";
+export { MetadataMapPage } from "./MetadataMapPage";
+export { MetaModelPage } from "./MetaModelPage";
+export { MetadataQualityPage } from "./MetadataQualityPage";
+export { MetadataReportPage } from "./MetadataReportPage";
+export { QualityOverviewPage } from "./QualityOverviewPage";
+export { QualityRequirementPage } from "./QualityRequirementPage";
+export { QualityRulePage } from "./QualityRulePage";
+export { QualityIssuePage } from "./QualityIssuePage";
+export { QualityAnalysisPage } from "./QualityAnalysisPage";
+export { QualityImprovementPage } from "./QualityImprovementPage";

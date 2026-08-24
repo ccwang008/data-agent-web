@@ -36,7 +36,7 @@ src/
 接入层           数据库 / 文件 / 本地文件 / 消息队列 / API
 ```
 
-当前前端已用九个产品域 feature 验证接入、存储、治理、开发、调度、资产运营、运维、安全和量化主链路。目标架构新增独立 `src/features/data-standard/`，权威维护业务术语、本体模型、主数据、参考数据、数据元标准、指标字典和语义层指标模型；该 feature 尚未实现。所有执行结果仍是 mock 语义，可变状态统一写入项目本地 SQLite；产品边界见 [`07-data-platform-product-scope.md`](./07-data-platform-product-scope.md)。
+当前前端已用十个产品域 feature 验证接入、存储、标准、治理、开发、调度、资产运营、运维、安全和量化主链路。`src/features/data-standard/` 作为独立一级产品域，权威维护业务术语、本体模型、主数据、参考数据、数据元标准、指标字典和语义层指标模型，五个工作台与 SQLite mock 已实现。所有执行结果仍是 mock 语义，可变状态统一写入项目本地 SQLite；产品边界见 [`07-data-platform-product-scope.md`](./07-data-platform-product-scope.md)。
 
 ## Feature 解剖 · Feature Anatomy
 每个 `src/features/<key>/` 应包含:

@@ -4,7 +4,7 @@
 |---|---|
 | 目标路径 · Target Path | `src/features/data-standard/` |
 | 目标路由 · Target Route | `/data-standard/*` |
-| 状态 · Status | 📋 需求与设计完成，待实现 |
+| 状态 · Status | ✅ 已实现（SQLite 持久化 mock） |
 | 业务负责人 · Owner | 数据标准负责人 |
 | 创建日期 · Created | 2026-08-13 |
 
@@ -17,12 +17,12 @@
 | 二级菜单 | 目标路由 | 核心任务 |
 |---|---|---|
 | 业务术语 | `/data-standard/business-terms` | 企业级业务术语库、本体模型、术语引用和审批 |
-| 主数据 | `/data-standard/master-data` | 主数据标准、来源匹配、黄金记录、订阅分发和质量跟踪 |
+| 主数据 | `/data-standard/master-data` | 主数据标准、来源匹配、权威记录、订阅分发和质量跟踪 |
 | 参考数据 | `/data-standard/reference-data` | 参考数据目录、代码值版本、跨系统映射和符合性分析 |
 | 数据元标准 | `/data-standard/data-element-standards` | 数据元目录、字段关系、AI 自动落标和符合性稽核 |
 | 指标字典 | `/data-standard/metric-dictionary` | 企业指标体系、语义层模型、血缘和跨部门口径比对 |
 
-这些是目标路由，当前工作区尚未实现 `data-standard` feature，不应在产品文档中标记为已上线。
+这些路由已上线，`src/features/data-standard/` 已实现五个工作台与 SQLite 持久化 mock。
 
 ## 产品边界 · Boundary
 

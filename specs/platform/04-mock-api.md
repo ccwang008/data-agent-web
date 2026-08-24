@@ -35,8 +35,8 @@ registerMockRoute("POST", "/api/<key>", (body) => {
 
 ## 命名约定 · Path Conventions
 - 路径前缀 `/api/<feature-key>/...`, 与 feature 目录同名
-- 资源用复数, 详情用 id: `/api/agents` · `/api/agents/:id` (将来支持)
-- 操作型路由用动词后缀: `/api/agents/:id/trigger`
+- 资源用复数, 详情用 id: `/api/data-sources` · `/api/data-sources/:id`
+- 操作型路由用动词后缀: `/api/scheduler/tasks/:id/run`
 
 ## 当前边界 · Current Boundary
 

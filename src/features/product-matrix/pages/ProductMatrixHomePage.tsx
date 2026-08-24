@@ -107,7 +107,7 @@ const products: Product[] = [
     title: "多场景 Agent",
     description: "垂直行业智能体与业务自动化助手",
     detail: "面向不同业务角色，快速组合数据、知识和工具能力。",
-    href: "/agents",
+    href: "#products",
     icon: BrainCircuit,
     accent: "blue",
     badge: "AI 应用",
@@ -118,7 +118,7 @@ const products: Product[] = [
     title: "智能报表平台",
     description: "多维可视化经营分析与指标监控",
     detail: "把经营数据转化为可追踪、可分享的分析视图。",
-    href: "/insights",
+    href: "#products",
     icon: BarChart3,
     accent: "blue",
     badge: "业务分析",
@@ -140,7 +140,7 @@ const products: Product[] = [
     title: "分析决策平台",
     description: "基于机器学习实现趋势预测与风险预警",
     detail: "将指标、模型与业务规则连接起来，辅助经营决策。",
-    href: "/insights",
+    href: "#products",
     icon: LineChart,
     accent: "blue",
     badge: "决策分析",
@@ -162,12 +162,12 @@ const products: Product[] = [
     title: "Agentic OS",
     englishTitle: "Data Agentic OS",
     description: "智能体与 AI 数据能力操作系统",
-    detail: "统一承载智能体、插件、数据中心、知识中心和运行运维。",
-    href: "/agents",
+    detail: "统一承载智能体、插件、数据中心和运行运维。",
+    href: "#products",
     icon: BrainCircuit,
     accent: "mint",
     badge: "AI 产品",
-    capabilities: ["智能体管理", "能力插件", "数据中心", "知识中心", "Agent 运维"],
+    capabilities: ["智能体管理", "能力插件", "数据中心", "Agent 运维"],
   },
   {
     id: "data-stack",
@@ -176,12 +176,12 @@ const products: Product[] = [
     englishTitle: "Enterprise Data Platform",
     description: "企业数据资产与数据服务平台",
     detail: "统一管理数据资产、数据湖、治理、开发、调度、安全和运维。",
-    href: "/data-asset/catalog",
+    href: "/metrics",
     icon: Layers3,
     accent: "green",
     badge: "数据产品",
     capabilities: [
-      { label: "数据资产运营", href: "/data-asset/catalog" },
+      { label: "数据资产", href: "/data-asset/catalog" },
       { label: "数据集成", href: "/data-source/sources" },
       { label: "数据湖", href: "/data-lake/storage" },
       { label: "数据治理", href: "/data-governance/metadata" },
@@ -198,7 +198,7 @@ const products: Product[] = [
     englishTitle: "DataScienceLLM",
     description: "垂直领域大模型",
     detail: "分析建模与机器学习融合，支撑 AI 应用大脑。",
-    href: "/agents",
+    href: "#products",
     icon: Sparkles,
     accent: "slate",
     badge: "模型基础设施",
@@ -496,9 +496,9 @@ export default function ProductMatrixHomePage() {
                 Data Stack
                 <ArrowUpRight className="ml-auto h-3.5 w-3.5" />
               </Link>
-              <Link to="/agents" className="flex items-center gap-2 rounded-lg px-2 py-2 text-[12px] text-slate-600 transition hover:bg-blue-50 hover:text-blue-700">
-                <BrainCircuit className="h-4 w-4 text-blue-500" />
-                Agentic OS
+              <Link to="/metrics" className="flex items-center gap-2 rounded-lg px-2 py-2 text-[12px] text-slate-600 transition hover:bg-blue-50 hover:text-blue-700">
+                <Gauge className="h-4 w-4 text-blue-500" />
+                Metrics Dashboard
                 <ArrowUpRight className="ml-auto h-3.5 w-3.5" />
               </Link>
             </div>

@@ -23,7 +23,7 @@ Accepted
 - `specs/features/data-standard/` 是后续实现的权威规格，不是历史归档。
 - 目标新增 `src/features/data-standard/`、五个二级路由和 `data-agent.data-standard` SQLite mock 状态。
 - 数据治理只保留元数据、血缘和质量，并引用标准 ID、版本和稽核摘要。
-- 数据资产运营保留非标准资产的目录与流通，不纳管数据标准类型。
+- 数据资产保留非标准资产的目录与流通，不纳管数据标准类型。
 - 已存在的标准资产化代码不代表当前产品目标，应在后续代码实现阶段按 tasks 删除；本轮只完成文档，不改页面代码。
 
 ## 备选 · Alternatives Considered

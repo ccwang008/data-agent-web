@@ -43,8 +43,9 @@ const tones: Record<string, string> = {
   violet: "border-violet-200 bg-violet-50 text-violet-700",
 };
 
-export function Pill({ children, tone = "slate", className }: { children: ReactNode; tone?: keyof typeof tones; className?: string }) {
-  return <span className={cn("inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-medium", tones[tone], className)}>{children}</span>;
+export function Pill({ children, tone = "slate", size = "md", className }: { children: ReactNode; tone?: keyof typeof tones; size?: "sm" | "md"; className?: string }) {
+  const sizes = { sm: "px-1.5 py-px text-[9px]", md: "px-2 py-0.5 text-[10px]" };
+  return <span className={cn("inline-flex items-center rounded-full border font-medium", tones[tone], sizes[size], className)}>{children}</span>;
 }
 
 export function ProgressBar({ value, tone = "blue", className }: { value: number; tone?: "blue" | "green" | "amber" | "red" | "violet"; className?: string }) {
@@ -52,8 +53,9 @@ export function ProgressBar({ value, tone = "blue", className }: { value: number
   return <div className={cn("h-1.5 overflow-hidden rounded-full bg-slate-100", className)}><div className={cn("h-full rounded-full transition-all", colors[tone])} style={{ width: `${Math.min(100, Math.max(0, value))}%` }} /></div>;
 }
 
-export function ActionButton({ children, onClick, icon: Icon, primary = false, disabled = false }: { children: ReactNode; onClick?: () => void; icon?: LucideIcon; primary?: boolean; disabled?: boolean }) {
-  return <button type="button" disabled={disabled} onClick={onClick} className={cn("inline-flex h-8 items-center justify-center gap-1.5 rounded-md px-3 text-[11px] font-medium transition disabled:cursor-not-allowed disabled:opacity-50", primary ? "bg-primary text-primary-foreground hover:opacity-90" : "border border-input bg-card text-foreground hover:border-primary/40 hover:text-primary")}>{Icon && <Icon className="h-3.5 w-3.5" />}{children}</button>;
+export function ActionButton({ children, onClick, icon: Icon, primary = false, disabled = false, size = "md" }: { children: ReactNode; onClick?: () => void; icon?: LucideIcon; primary?: boolean; disabled?: boolean; size?: "sm" | "md" }) {
+  const sizes = { sm: "h-7 px-2 text-[10px] gap-1", md: "h-8 px-3 text-[11px] gap-1.5" };
+  return <button type="button" disabled={disabled} onClick={onClick} className={cn("inline-flex items-center justify-center rounded-md font-medium transition disabled:cursor-not-allowed disabled:opacity-50", sizes[size], primary ? "bg-primary text-primary-foreground hover:opacity-90" : "border border-input bg-card text-foreground hover:border-primary/40 hover:text-primary")}>{Icon && <Icon className={cn(size === "sm" ? "h-3 w-3" : "h-3.5 w-3.5")} />}{children}</button>;
 }
 
 export function InlineNotice({ error, loading }: { error?: Error | null; loading?: boolean }) {
