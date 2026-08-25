@@ -1,0 +1,3 @@
+# Settings Access
+
+password: nimda

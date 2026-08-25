@@ -1,0 +1,78 @@
+{
+  "version": 14,
+  "updatedAt": "2026-08-25T00:00:00.000Z",
+  "root": [
+    {
+      "id": "metrics",
+      "builtinRouteKey": "metrics",
+      "label": { "zh-CN": "量化看板", "en-US": "Metrics Dashboard" },
+      "visible": true
+    },
+    {
+      "id": "data-agent",
+      "builtinRouteKey": "data-agent",
+      "label": { "zh-CN": "Data Agent", "en-US": "Data Agent" },
+      "visible": true
+    },
+    {
+      "id": "data-source",
+      "builtinRouteKey": "data-source",
+      "label": { "zh-CN": "数据集成", "en-US": "Data Integration" },
+      "visible": true
+    },
+    {
+      "id": "data-lake",
+      "builtinRouteKey": "data-lake",
+      "label": { "zh-CN": "数据湖", "en-US": "Data Lake" },
+      "visible": true
+    },
+    {
+      "id": "data-standard",
+      "builtinRouteKey": "data-standard",
+      "label": { "zh-CN": "数据标准", "en-US": "Data Standard" },
+      "visible": true
+    },
+    {
+      "id": "data-governance",
+      "builtinRouteKey": "data-governance",
+      "label": { "zh-CN": "数据治理", "en-US": "Data Governance" },
+      "visible": true
+    },
+    {
+      "id": "data-development",
+      "builtinRouteKey": "data-development",
+      "label": { "zh-CN": "数据开发", "en-US": "Data Development" },
+      "visible": true
+    },
+    {
+      "id": "data-asset",
+      "builtinRouteKey": "data-asset",
+      "label": { "zh-CN": "数据资产", "en-US": "Data Assets" },
+      "visible": true
+    },
+    {
+      "id": "scheduler",
+      "builtinRouteKey": "scheduler",
+      "label": { "zh-CN": "调度引擎", "en-US": "Scheduler" },
+      "visible": true
+    },
+    {
+      "id": "ops-monitor",
+      "builtinRouteKey": "ops-monitor",
+      "label": { "zh-CN": "运维与监控", "en-US": "Operations" },
+      "visible": true
+    },
+    {
+      "id": "data-security",
+      "builtinRouteKey": "data-security",
+      "label": { "zh-CN": "数据安全", "en-US": "Data Security" },
+      "visible": true
+    },
+    {
+      "id": "settings",
+      "builtinRouteKey": "settings",
+      "label": { "zh-CN": "系统设置", "en-US": "Settings" },
+      "visible": true
+    }
+  ]
+}

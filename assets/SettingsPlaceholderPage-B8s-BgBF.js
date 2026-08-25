@@ -1,0 +1,6 @@
+import{c as a,av as r,j as e}from"./index-CoufoOjQ.js";/**
+ * @license lucide-react v0.441.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const d=a("Construction",[["rect",{x:"2",y:"6",width:"20",height:"8",rx:"1",key:"1estib"}],["path",{d:"M17 14v7",key:"7m2elx"}],["path",{d:"M7 14v7",key:"1cm7wv"}],["path",{d:"M17 3v3",key:"1v4jwn"}],["path",{d:"M7 3v3",key:"7o6guu"}],["path",{d:"M10 14 2.3 6.3",key:"1023jk"}],["path",{d:"m14 6 7.7 7.7",key:"1s8pl2"}],["path",{d:"m8 6 8 8",key:"hl96qh"}]]);function c({titleKey:s}){const{t}=r();return e.jsxs("div",{className:"saas-panel flex min-h-[360px] flex-col items-start justify-center gap-4 p-8",children:[e.jsx("div",{className:"grid h-11 w-11 place-items-center rounded-md border border-primary/20 bg-accent text-primary",children:e.jsx(d,{className:"h-5 w-5"})}),e.jsxs("div",{children:[e.jsx("div",{className:"eyebrow",children:t("module.todo.status")}),e.jsx("h2",{className:"mt-1 text-[18px] font-semibold text-foreground",children:t(s)}),e.jsx("p",{className:"mt-2 max-w-xl text-[13px] leading-6 text-muted-foreground",children:t("settings.placeholder")})]})]})}export{c as SettingsPlaceholderPage};
