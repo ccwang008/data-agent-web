@@ -18,7 +18,7 @@ GB/T 36073—2025《数据管理能力成熟度评估模型》DCMM 2.0 第 4 级
 2. **组件名稳定、可回溯**：实现组件（DataQA、DCG、LLMReportComposer 等）使用固定代号，在原型、文档、证据链中保持一致，避免口语化替换。
 3. **证据三要素**：每条 AI 能力至少保留「模型/规则版本、输入对象、输出对象与审批/复核状态」三类证据元数据，原型中以 mock scope 存储。
 4. **人机协作、人负最终责任**：AI 只输出候选、建议或可复核结论，涉及重要数据等级、资产授权、标准发布等必须走人工审批。
-5. **不新增独立一级产品域**：AI 能力作为横向赋能层嵌入现有十个产品域的工作台、报告与证据面板中，不上线独立的「AI 中心」菜单。
+5. **一级入口与横向嵌入并存**：依据 ADR-0021，Data Agent 作为一级任务编排入口组织跨域意图、计划、动作和证据；AI 专业事实、复杂编辑和最终审批仍横向落在现有产品域，不建设与原工作台竞争的第二套事实系统。
 
 ---
 
@@ -97,6 +97,12 @@ interface AiCapabilityEvidence {
 
 ## 与现有 Feature 的嵌入点 · Integration Points
 
+### 0. Data Agent 一级任务编排
+
+`/data-agent/*` 统一承载 A1–A7 能力的任务入口与可见执行轨迹：通用 Agent 根据意图路由数据发现、问答、开发、治理和运维 Agent；领域 Agent 只引用资产、指标、标准、开发版本、质量问题和运行批次的稳定 ID。每个 Agent 有自己的任务 List，但跨 Agent 任务只保存一份，并通过参与关系出现在多个列表。
+
+Data Agent 可以自动进行读取、检索、分析和诊断，改变平台状态前必须提供变更预览并获得确认。标准发布、重要/核心数据认定、安全审批和问题关闭等受控结论继续由原产品域职责链完成。首期 evidence、计划、步骤和产物均为 SQLite mock，不代表执行了真实模型或生产任务。
+
 ### 1. 数据应用流通（Application Circulation）主承载
 
 在 `data-asset` / `data-development` / `metrics` 三处嵌入 A1、A3、A5、A6、A7：
@@ -159,7 +165,7 @@ AI 能力不新增独立一级看板或 KPI，但在以下位置集中展示证�
 ## 非目标 · Out of Scope
 
 1. 不在当前前端原型中实现真实 LLM 推理、向量检索或图神经网络计算；AI 能力以结构化证据 mock、执行流程可视化和产物占位呈现。
-2. 不新增独立的「AI 中心 / AI 工作台」一级或二级菜单；AI 能力作为横向赋能层嵌入现有 feature。
+2. 不建设模型管理、提示词管理或与原专业工作台重复的「AI 中心」；一级 Data Agent 只作为任务编排与证据入口。
 3. 不以 AI 生成结论替代治理审批人、架构师、数据安全负责人等角色的组织职责。
 4. 不在 SQLite 中保存真实模型权重、真实推理日志或可反推的敏感数据样本；仅保存脱敏 ID、版本、置信度和状态。
 
@@ -172,7 +178,8 @@ AI 能力不新增独立一级看板或 KPI，但在以下位置集中展示证�
 - 架构分层：[`01-architecture.md`](./01-architecture.md)
 - ADR-0009 DCMM 就绪度边界：[`../adr/0009-dcmm-readiness-not-certification.md`](../adr/0009-dcmm-readiness-not-certification.md)
 - ADR-0010 AI 数据分级边界：[`../adr/0010-ai-proposes-regulated-data-levels.md`](../adr/0010-ai-proposes-regulated-data-levels.md)
-- ADR-0021 AI 能力体系化映射：[`../adr/0021-ai-capability-systematization-and-evidence.md`](../adr/0021-ai-capability-systematization-and-evidence.md)
+- ADR-0021 Data Agent 一级任务编排模块：[`../adr/0021-data-agent-as-top-level-orchestration-module.md`](../adr/0021-data-agent-as-top-level-orchestration-module.md)
+- Data Agent 设计：[`../features/data-agent/design.md`](../features/data-agent/design.md)
 - 量化看板设计：[`features/metrics/design.md`](../features/metrics/design.md)
 - 数据标准设计：[`features/data-standard/design.md`](../features/data-standard/design.md)
 - 数据资产设计：[`features/data-asset/design.md`](../features/data-asset/design.md)

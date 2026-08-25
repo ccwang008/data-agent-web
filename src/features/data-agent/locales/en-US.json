@@ -1,0 +1,24 @@
+{
+  "title": "Data Agent",
+  "subtitle": "An intelligent task entry point for data discovery, Q&A, development, governance, and operations",
+  "agents": {
+    "general": "General Agent",
+    "discovery": "Data Discovery Agent",
+    "qa": "Data Q&A Agent",
+    "development": "Data Development Agent",
+    "governance": "Data Governance Agent",
+    "operations": "Data Operations Agent"
+  },
+  "status": {
+    "running": "Running",
+    "needs-confirmation": "Needs confirmation",
+    "completed": "Completed",
+    "blocked": "Blocked"
+  },
+  "actions": {
+    "create": "Create task plan",
+    "replay": "Replay case",
+    "reset": "Reset all cases",
+    "confirm": "Confirm mock action"
+  }
+}

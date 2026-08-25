@@ -2,7 +2,7 @@
 
 ## 设计状态 · Design Status
 
-本文描述 `data-standard` feature 的目标设计。当前工作区尚未实现对应菜单、路由、页面和状态；实现必须以本设计和 [requirements.md](./requirements.md) 为准。
+本文描述 `data-standard` feature 的当前设计。独立一级菜单、五个二级路由、专属工作台和 SQLite 持久化 mock 状态均已实现；后续演进必须以本设计和 [requirements.md](./requirements.md) 为准。
 
 ## 设计原则 · Principles
 
@@ -23,7 +23,7 @@
 | `data-standard.data-element-standards` | 数据元标准 | `/data-standard/data-element-standards` | 数据元目录与自动落标工作台 |
 | `data-standard.metric-dictionary` | 指标字典 | `/data-standard/metric-dictionary` | 指标口径、语义模型与一致性工作台 |
 
-原 `/data-governance/standards` 和旧菜单 key 删除，不增加兼容重定向。目标路由只有在页面、mock 数据和持久化状态实现后才能登记为已上线。
+原 `/data-governance/standards` 和旧菜单 key 已删除，不增加兼容重定向。上述五个路由已随页面、mock 数据和持久化状态登记为已上线；后续新增路由仍须满足相同上线条件。
 
 ## 页面信息架构 · Page Information Architecture
 

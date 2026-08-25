@@ -1,0 +1,24 @@
+{
+  "title": "Data Agent",
+  "subtitle": "面向数据发现、问答、开发、治理和运维的智能任务入口",
+  "agents": {
+    "general": "通用 Agent",
+    "discovery": "数据发现 Agent",
+    "qa": "数据问答 Agent",
+    "development": "数据开发 Agent",
+    "governance": "数据治理 Agent",
+    "operations": "数据运维 Agent"
+  },
+  "status": {
+    "running": "执行中",
+    "needs-confirmation": "待确认",
+    "completed": "已完成",
+    "blocked": "受阻"
+  },
+  "actions": {
+    "create": "生成任务计划",
+    "replay": "重新演示",
+    "reset": "恢复全部案例",
+    "confirm": "确认执行 mock 动作"
+  }
+}

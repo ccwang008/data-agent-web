@@ -11,6 +11,7 @@ src/
 ├── features/      # 业务模块, 每个自包含 (pages/store/api/locales/routes)
 │   ├── product-matrix/    # 产品矩阵首页
 │   ├── solutions/         # 行业解决方案
+│   ├── data-agent/        # 通用 Agent 编排与五类专业任务工作区
 │   ├── data-source/       # 数据源、同步、共享交换
 │   ├── data-lake/         # 统一存储、湖表、分层与容量
 │   ├── data-governance/   # 元数据、质量
@@ -36,7 +37,7 @@ src/
 接入层           数据库 / 文件 / 本地文件 / 消息队列 / API
 ```
 
-当前前端已用十个产品域 feature 验证接入、存储、标准、治理、开发、调度、资产运营、运维、安全和量化主链路。`src/features/data-standard/` 作为独立一级产品域，权威维护业务术语、本体模型、主数据、参考数据、数据元标准、指标字典和语义层指标模型，五个工作台与 SQLite mock 已实现。所有执行结果仍是 mock 语义，可变状态统一写入项目本地 SQLite；产品边界见 [`07-data-platform-product-scope.md`](./07-data-platform-product-scope.md)。
+当前前端已用十一个产品域 feature 验证 Data Agent、接入、存储、标准、治理、开发、调度、资产运营、运维、安全和量化主链路。`src/features/data-agent/` 作为一级跨域智能任务入口，只保存共享任务、可见计划、动作、产物和证据引用；专业事实继续由原产品域持有。`src/features/data-standard/` 作为独立一级产品域，权威维护业务术语、本体模型、主数据、参考数据、数据元标准、指标字典和语义层指标模型。所有执行结果仍是 mock 语义，可变状态统一写入项目本地 SQLite；产品边界见 [`07-data-platform-product-scope.md`](./07-data-platform-product-scope.md)。
 
 ## Feature 解剖 · Feature Anatomy
 每个 `src/features/<key>/` 应包含:

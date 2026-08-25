@@ -15,6 +15,7 @@
 ## 模块全景 · Modules at a Glance
 | Key | 名称 · Name | 状态 · Status | 入口 · Route |
 |---|---|---|---|
+| `data-agent` | Data Agent | ✅ 通用 Agent + 五类专业任务工作区与 SQLite mock | `/data-agent/*` |
 | `product-matrix` | 产品矩阵首页 | 🔨 SQLite 持久化 mock | `/` |
 | `solutions` | 行业解决方案 | 🔨 本地图片与状态 mock | `/solutions` |
 | `metrics` | 量化看板 | ✅ 九域 KPI、能力覆盖与 SQLite 持久化 mock | `/metrics/*` |
@@ -52,6 +53,9 @@
 | 术语 · Term | 释义 · Definition |
 |---|---|
 | Agent · 智能体 | 可被编排和触发的、围绕特定数据任务的 AI 角色 |
+| Data Agent | 统一接收数据任务并协调通用 Agent 与五个领域 Agent 的一级产品模块 |
+| 通用 Agent | 负责意图理解、自动路由、多 Agent 编排和结果汇总的角色，不复制领域专业能力 |
+| Agent 任务 | 在参与 Agent 之间共享目标、计划、动作、产物、证据和确认的任务记录 |
 | Workflow · 编排流水线 | 由多个 agent / 数据节点组成的 DAG 执行单元 |
 | Insight · 洞察 | 由 agent 自动生成或由用户保存的、对数据的解读结论 |
 | Mock 模式 | 前端通过 `mockClient` 命中本地 fixture，执行结果为演示语义 |

@@ -27,6 +27,7 @@ import {
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import { DataAgentContextLink } from "@/components/data-platform/DataAgentContextLink";
 import { initialSqlWorkspace, createBlankSqlScript } from "../fixtures";
 import { formatNow, makeId, useDevelopmentWorkspace } from "../state";
 import type { DevelopmentRun, SqlParameter, SqlResult, SqlScript, ValidationIssue } from "../types";
@@ -105,6 +106,7 @@ export function SqlDevelopmentPage() {
       artifacts={workspace.artifacts}
       hydrated={meta.hydrated}
       error={meta.error}
+      headerAction={<DataAgentContextLink agent="development" contextType="SQL 开发" contextId="sql-workspace" intent="根据当前数据上下文生成或优化 SQL 草稿" />}
       columns={[
         { label: "数据上下文", render: (script) => `${script.context.database}.${script.context.schema}` },
         { label: "SQL 摘要", className: "max-w-[260px] truncate font-mono text-[10px]", render: (script) => script.content.replace(/\s+/g, " ").slice(0, 58) },

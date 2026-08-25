@@ -16,10 +16,11 @@ specs/
 
 ## 产品范围 · Product Scope
 
-大数数据平台的十个产品域、核心对象、调用链、当前前端边界和目标 feature 见 [07-data-platform-product-scope](./platform/07-data-platform-product-scope.md)。
+大数数据平台的十一个产品域、核心对象、调用链、当前前端边界和目标 feature 见 [07-data-platform-product-scope](./platform/07-data-platform-product-scope.md)。
 
 | 产品域 | 当前 feature | 状态 | 入口 |
 |---|---|---|---|
+| Data Agent | `data-agent` | ✅ 六个 Agent 任务 List、专属工作区与 SQLite mock | `/data-agent/*` |
 | 量化看板 | `metrics` | ✅ 九域差异化页面、25 项核心 KPI 与 SQLite mock | `/metrics/*` |
 | 数据集成 | `data-source` | 🔨 SQLite 持久化 mock | `/data-source/*` |
 | 数据湖 | `data-lake` | 🔨 SQLite 持久化 mock | `/data-lake/*` |
@@ -37,6 +38,7 @@ specs/
 
 | Feature | 路径 · Path | 路由 · Route | 状态 | Spec |
 |---|---|---|---|---|
+| Data Agent | `src/features/data-agent/` | `/data-agent/*` | ✅ 通用编排、五类专业任务工作区与案例重放 | [README](./features/data-agent/README.md) · [Req](./features/data-agent/requirements.md) · [Design](./features/data-agent/design.md) · [Tasks](./features/data-agent/tasks.md) |
 | Product Matrix | `src/features/product-matrix/` | `/` | 🔨 产品发现首页 | [README](./features/product-matrix/README.md) · [Req](./features/product-matrix/requirements.md) · [Design](./features/product-matrix/design.md) · [Tasks](./features/product-matrix/tasks.md) |
 | Solutions | `src/features/solutions/` | `/solutions` | 🔨 行业方案首页 | [README](./features/solutions/README.md) · [Req](./features/solutions/requirements.md) · [Design](./features/solutions/design.md) · [Tasks](./features/solutions/tasks.md) |
 | Metrics | `src/features/metrics/` | `/metrics/*` | ✅ 九域 KPI、能力覆盖、快照与改进闭环 | [README](./features/metrics/README.md) · [Req](./features/metrics/requirements.md) · [Design](./features/metrics/design.md) · [Tasks](./features/metrics/tasks.md) |
@@ -62,7 +64,7 @@ specs/
 | [04-mock-api](./platform/04-mock-api.md) | mockClient、Local JSON Store 与真实 API 切换点 |
 | [05-state-management](./platform/05-state-management.md) | Zustand 全局状态与 feature state |
 | [06-routing](./platform/06-routing.md) | 路由组装、菜单身份和导航规则 |
-| [07-data-platform-product-scope](./platform/07-data-platform-product-scope.md) | 大数数据平台十大产品域、对象、边界和验收原则 |
+| [07-data-platform-product-scope](./platform/07-data-platform-product-scope.md) | 大数数据平台十一个产品域、对象、边界和验收原则 |
 | [platform/references](./platform/references/README.md) | 外部标准和平台参考原文 |
 
 ## ADR

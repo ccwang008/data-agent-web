@@ -19,6 +19,7 @@ import {
   Badge, EmptyState, Field, Input, KpiCard, Modal, PageHeader, PrimaryButton,
   SecondaryButton, SectionCard, Select, TabBar, TextArea, WarnNote, type BadgeTone,
 } from "../components/common";
+import { DataAgentContextLink } from "@/components/data-platform/DataAgentContextLink";
 
 const CATALOG_TONE: Record<CatalogStatus, BadgeTone> = {
   normal: "green", sourceAbnormal: "amber", retiring: "amber", retired: "slate", archived: "slate",
@@ -320,7 +321,7 @@ export default function CatalogPage() {
   return (
     <div className="page-shell animate-fade-in">
       <div className="space-y-4">
-        <PageHeader title="资产目录" description="统一管理数据表、数据集、数据标准、API、报告和模型等资产；目录状态与类型专属状态分维度保存" />
+        <PageHeader title="资产目录" description="统一管理数据表、数据集、数据标准、API、报告和模型等资产；目录状态与类型专属状态分维度保存" actions={<DataAgentContextLink agent="discovery" contextType="数据资产" contextId={selected?.id ?? "asset-catalog"} intent={selected ? `查找与${selected.name}相关且更适合使用的数据` : "帮我寻找适合当前业务需求的数据资产"} />} />
 
         {meta.error && <WarnNote text={`SQLite 状态读写异常：${meta.error.message}，当前为浏览器临时数据`} />}
         {sourceMeta.error && <WarnNote text={`数据源状态读取异常：${sourceMeta.error.message}，暂时无法从数据源添加或创建扫描任务`} />}

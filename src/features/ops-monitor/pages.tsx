@@ -10,6 +10,7 @@ import {
   WorkspacePage,
 } from "@/components/data-platform/WorkspacePrimitives";
 import { statusTone } from "@/components/data-platform/workspace-utils";
+import { DataAgentContextLink } from "@/components/data-platform/DataAgentContextLink";
 import { useSqliteState } from "@/lib/sqlite-client";
 import { cn } from "@/lib/utils";
 
@@ -60,7 +61,7 @@ export function OpsTasksPage() {
 
   return (
     <WorkspacePage>
-      <PageTitle eyebrow="Operations / Task Command Center" title="任务运行指挥台" description="统一观察跨域任务的健康、延迟、依赖与重试；任务监控本身适合指标与运行列表，但异常被提升为处置流。" actions={<ActionButton icon={RefreshCw} onClick={() => setTasks((current) => [...current])}>刷新运行态</ActionButton>} />
+      <PageTitle eyebrow="Operations / Task Command Center" title="任务运行指挥台" description="统一观察跨域任务的健康、延迟、依赖与重试；任务监控本身适合指标与运行列表，但异常被提升为处置流。" actions={<><DataAgentContextLink agent="operations" contextType="运行任务" contextId={abnormal[0]?.id ?? "ops-task-stream"} intent={abnormal[0] ? `诊断${abnormal[0].name}异常并生成恢复方案` : "检查当前任务运行风险"} /><ActionButton icon={RefreshCw} onClick={() => setTasks((current) => [...current])}>刷新运行态</ActionButton></>} />
       <InlineNotice error={meta.error} loading={!meta.hydrated} />
       <section className="grid grid-cols-2 gap-3 lg:grid-cols-4"><MiniStat label="运行对象" value={tasks.length} hint="集成 / 开发 / 质量 / 服务" icon={Activity} /><MiniStat label="健康任务" value={tasks.filter((task) => task.status === "正常").length} hint="最近批次成功" icon={CheckCircle2} tone="green" /><MiniStat label="运行中" value={running} hint="正在执行或重跑" icon={Play} tone="violet" /><MiniStat label="待处置" value={abnormal.length} hint="异常、阻塞或关注" icon={ShieldAlert} tone="red" /></section>
       <div className="grid gap-4 xl:grid-cols-[minmax(0,1.45fr)_360px]">

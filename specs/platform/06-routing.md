@@ -79,7 +79,9 @@ interface MenuNode {
 
 ### 默认菜单结构 · Default Menu
 
-默认菜单由 `src/features/settings/menu/registry.ts` 的稳定 `builtinRouteKey` 清单定义，`public/menu.config.json` 保存可编辑的默认展示配置。当前根节点覆盖量化看板、数据集成、数据湖、数据标准、数据治理、数据开发、数据资产、调度引擎、运维与监控、数据安全和系统设置；每个有子路由的产品域以树形 children 展示。产品矩阵和行业解决方案不进入侧栏菜单；智能体、编排流水线和洞察分析 feature 已移除，相关 `builtinRouteKey` 列入 `DEPRECATED_MENU_KEYS` 用于清理旧缓存。
+默认菜单由 `src/features/settings/menu/registry.ts` 的稳定 `builtinRouteKey` 清单定义，`public/menu.config.json` 保存可编辑的默认展示配置。当前根节点覆盖量化看板、Data Agent、数据集成、数据湖、数据标准、数据治理、数据开发、数据资产、调度引擎、运维与监控、数据安全和系统设置；每个有子路由的产品域以树形 children 展示。产品矩阵和行业解决方案不进入侧栏菜单。旧智能体、编排流水线和洞察分析 feature 已移除，旧 `agents`、`workflow`、`insights` 继续列入 `DEPRECATED_MENU_KEYS`；新 Data Agent 使用 `data-agent` 与 `data-agent.*` 稳定 key，不复用旧缓存身份。
+
+Data Agent 一级菜单包含 `data-agent.general`、`data-agent.discovery`、`data-agent.qa`、`data-agent.development`、`data-agent.governance` 和 `data-agent.operations` 六个二级入口；`/data-agent` 默认重定向至 `/data-agent/general`。每个 Agent 首页展示自己的任务 List，任务详情使用 `/data-agent/<agent>/tasks/:taskId`。不配置统一任务中心路由，同一个跨 Agent 任务 ID 可以从不同 Agent 详情路由查看。
 
 数据标准为一级产品域，下设业务术语、主数据、参考数据、数据元标准和指标字典，分别使用 `/data-standard/business-terms`、`/master-data`、`/reference-data`、`/data-element-standards` 和 `/metric-dictionary`。路由和菜单 key 已实现，稳定 key 使用 `data-standard.*`。原 `/data-governance/standards` 和旧 key 删除，不提供兼容重定向。
 

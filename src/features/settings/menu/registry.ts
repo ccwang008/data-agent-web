@@ -1,7 +1,9 @@
 import type { LucideIcon } from "lucide-react";
 import {
+  Activity,
   BookMarked,
   BookOpen,
+  Bot,
   Boxes,
   Calculator,
   Cloud,
@@ -14,14 +16,17 @@ import {
   Layers,
   LineChart,
   ListTree,
+  MessageSquareText,
   NotebookTabs,
   Rocket,
   Route,
+  Search,
   ServerCog,
   Settings,
   ShieldAlert,
   ShieldCheck,
   Sigma,
+  Sparkles,
   SquareCode,
   Table2, Tags, Target, Timer, Workflow, Wrench,
 } from "lucide-react";
@@ -55,6 +60,49 @@ export interface BuiltinMenuEntry {
 }
 
 export const BUILTIN_MENU: Record<string, BuiltinMenuEntry> = {
+  "data-agent": {
+    key: "data-agent",
+    matchPrefix: "/data-agent",
+    icon: Bot,
+    status: "ready",
+    defaultLabel: { "zh-CN": "Data Agent", "en-US": "Data Agent" },
+  },
+  "data-agent.general": {
+    key: "data-agent.general",
+    to: "/data-agent/general",
+    icon: Sparkles,
+    defaultLabel: { "zh-CN": "通用 Agent", "en-US": "General Agent" },
+  },
+  "data-agent.discovery": {
+    key: "data-agent.discovery",
+    to: "/data-agent/discovery",
+    icon: Search,
+    defaultLabel: { "zh-CN": "数据发现 Agent", "en-US": "Data Discovery Agent" },
+  },
+  "data-agent.qa": {
+    key: "data-agent.qa",
+    to: "/data-agent/qa",
+    icon: MessageSquareText,
+    defaultLabel: { "zh-CN": "数据问答 Agent", "en-US": "Data Q&A Agent" },
+  },
+  "data-agent.development": {
+    key: "data-agent.development",
+    to: "/data-agent/development",
+    icon: Code2,
+    defaultLabel: { "zh-CN": "数据开发 Agent", "en-US": "Data Development Agent" },
+  },
+  "data-agent.governance": {
+    key: "data-agent.governance",
+    to: "/data-agent/governance",
+    icon: ShieldCheck,
+    defaultLabel: { "zh-CN": "数据治理 Agent", "en-US": "Data Governance Agent" },
+  },
+  "data-agent.operations": {
+    key: "data-agent.operations",
+    to: "/data-agent/operations",
+    icon: Activity,
+    defaultLabel: { "zh-CN": "数据运维 Agent", "en-US": "Data Operations Agent" },
+  },
   "data-asset": {
     key: "data-asset",
     matchPrefix: "/data-asset",
@@ -585,6 +633,15 @@ export const BUILTIN_MENU: Record<string, BuiltinMenuEntry> = {
   },
 };
 
+const dataAgentChildren: MenuNode[] = [
+  builtinNode("data-agent.general"),
+  builtinNode("data-agent.discovery"),
+  builtinNode("data-agent.qa"),
+  builtinNode("data-agent.development"),
+  builtinNode("data-agent.governance"),
+  builtinNode("data-agent.operations"),
+];
+
 const dataAssetChildren: MenuNode[] = [
   builtinNode("data-asset.catalog"),
   builtinNode("data-asset.circulation"),
@@ -739,7 +796,7 @@ export function builtinNode(key: string, children?: MenuNode[]): MenuNode {
 
 export function createDefaultMenuConfig(): MenuConfig {
   return {
-    version: 12,
+    version: 14,
     updatedAt: new Date().toISOString(),
     root: createDefaultRootNodes(),
   };
@@ -858,6 +915,7 @@ function reparentLegacyDataSecurityChildren(nodes: MenuNode[]): MenuNode[] {
 function createDefaultRootNodes(): MenuNode[] {
   return [
     builtinNode("metrics"),
+    builtinNode("data-agent", dataAgentChildren),
     builtinNode("data-source", dataSourceChildren),
     builtinNode("data-lake", dataLakeChildren),
     builtinNode("data-standard", dataStandardChildren),

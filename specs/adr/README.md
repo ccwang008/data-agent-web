@@ -22,6 +22,7 @@ ADR (Architecture Decision Record) 是对一次架构选择的简短书面记录
 | [0018](./0018-restore-data-standard-as-top-level-product.md) | 恢复数据标准一级产品域 | Superseded by [0019](./0019-finalize-data-standards-as-assets.md) | — |
 | [0019](./0019-finalize-data-standards-as-assets.md) | 最终确认数据标准资产化 | Superseded by [0020](./0020-finalize-data-standard-as-top-level-product.md) | — |
 | [0020](./0020-finalize-data-standard-as-top-level-product.md) | 最终确认数据标准为一级产品域 | Accepted | — |
+| [0021](./0021-data-agent-as-top-level-orchestration-module.md) | Data Agent 作为一级任务编排模块 | Accepted | — |
 
 ## 编号 · Numbering
 - 4 位递增数字, 文件名 `NNNN-kebab-title.md`

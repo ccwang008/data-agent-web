@@ -155,6 +155,7 @@ export function ArtifactListPage<TArtifact extends DevelopmentArtifactSummary>({
   onOpen,
   onDuplicate,
   onDelete,
+  headerAction,
 }: {
   title: string;
   description: string;
@@ -169,6 +170,7 @@ export function ArtifactListPage<TArtifact extends DevelopmentArtifactSummary>({
   onOpen: (artifact: TArtifact) => void;
   onDuplicate: (artifact: TArtifact) => void;
   onDelete: (artifact: TArtifact) => void;
+  headerAction?: ReactNode;
 }) {
   const [query, setQuery] = useState("");
   const visible = useMemo(() => {
@@ -188,7 +190,7 @@ export function ArtifactListPage<TArtifact extends DevelopmentArtifactSummary>({
         <div>
           <div className="flex items-center gap-2.5"><span className="grid h-9 w-9 place-items-center rounded-lg bg-blue-50 text-primary"><Icon className="h-4 w-4" /></span><div><h1 className="text-[20px] font-semibold tracking-tight text-foreground">{title}</h1><p className="mt-0.5 max-w-3xl text-[12px] leading-5 text-muted-foreground">{description}</p></div></div>
         </div>
-        <EditorButton onClick={onCreate} variant="primary"><Plus className="h-3.5 w-3.5" />{createLabel}</EditorButton>
+        <div className="flex flex-wrap items-center gap-2">{headerAction}<EditorButton onClick={onCreate} variant="primary"><Plus className="h-3.5 w-3.5" />{createLabel}</EditorButton></div>
       </header>
 
       {error && <div className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-[12px] text-red-700">SQLite 状态同步失败：{error.message}</div>}

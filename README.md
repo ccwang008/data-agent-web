@@ -1,6 +1,6 @@
 # 大数数据平台
 
-大数数据平台是面向企业的数据资产与 AI 数据服务平台。平台覆盖数据接入、统一存储、治理、数据标准、开发、调度、服务化与安全运营，帮助企业把分散的数据转化为可发现、可理解、可复用、可运营的数据资产。
+大数数据平台是面向企业的数据资产与 AI 数据服务平台。平台覆盖 Data Agent、数据接入、统一存储、治理、数据标准、开发、调度、服务化与安全运营，帮助企业把分散的数据转化为可发现、可理解、可复用、可运营的数据资产。
 
 本仓库是平台的本地全栈原型。业务数据和执行结果使用 mock 语义，但可变状态统一保存到项目本地 SQLite（`data/platform.sqlite`）；真实数据源、计算引擎、权限中心和生产级服务网关不在当前实现范围内。
 
@@ -20,6 +20,7 @@
 
 | 领域 | 核心能力 | 当前状态 |
 |---|---|---|
+| Data Agent | 通用 Agent 自动路由，数据发现、问答、开发、治理和运维五类专业任务，计划/动作/证据/确认与案例重放 | 六个 Agent 任务 List、专属任务详情与 SQLite mock 已实现 |
 | 量化看板 | 综合态势、DCMM 九大能力域、25 项核心 KPI、33 个能力项覆盖、快照与改进闭环 | 综合看板加九域看板与 SQLite 持久化 mock 已实现 |
 | 数据集成 | 数据源管理、全量/增量/CDC/实时同步、API/文件/库表/消息共享交换 | SQLite 持久化 mock 已实现 |
 | 数据湖 | 统一存储、湖表管理、Schema/版本/ACID、分层与容量、生命周期管理 | SQLite 持久化 mock 已实现 |
@@ -35,6 +36,7 @@
 
 | 模块 | 路由 | 页面 |
 |---|---|---|
+| Data Agent | `/data-agent` | 默认 `/general`；`/discovery`、`/qa`、`/development`、`/governance`、`/operations` 及各自 `/tasks/:id` 任务详情 |
 | 量化看板 | `/metrics` | 综合看板；九大能力域使用独立 URL 的 Tab 切换，完整路由见 [metrics spec](./specs/features/metrics/README.md) |
 | 数据集成 | `/data-source` | `/sources` 数据源、`/sync` 数据同步、`/exchange` 共享交换 |
 | 数据湖 | `/data-lake` | `/storage` 统一存储、`/tables` 湖表管理、`/capacity` 分层与容量 |
@@ -85,6 +87,7 @@ src/
     ui/                   # shadcn 原子组件
     layout/               # AppShell、Sidebar、TopBar
   features/
+    data-agent/           # Data Agent：通用编排与五类专业任务工作区
     metrics/              # 量化看板：九域 KPI、能力覆盖、快照和改进事项 SQLite mock
     data-source/          # 数据集成：数据源、同步、共享交换
     data-lake/            # 数据湖：统一存储、湖表、容量分层

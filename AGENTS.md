@@ -4,7 +4,7 @@
 
 ## 产品定位
 
-大数数据平台是面向企业的数据资产与 AI 数据服务平台，覆盖数据集成、数据湖、数据治理、数据标准、数据开发、调度引擎、运维监控、数据安全和 DCMM 量化管理。
+大数数据平台是面向企业的数据资产与 AI 数据服务平台，覆盖 Data Agent、数据集成、数据湖、数据治理、数据标准、数据开发、调度引擎、运维监控、数据安全和 DCMM 量化管理。
 
 当前仓库是本地全栈原型：业务数据和执行结果仍是 mock 语义，但列表、详情、增删改查、运行状态、调度结果、质量评分、服务调用、安全策略和监控指标统一持久化到本地 SQLite，不依赖真实数据源、真实执行引擎或生产级服务。
 
@@ -12,6 +12,7 @@
 
 | 产品域 | Feature / Route | 状态 |
 |---|---|---|
+| Data Agent | `data-agent` / `/data-agent/*` | 通用 Agent + 五个领域 Agent、共享任务、专属工作区与 SQLite mock |
 | 量化看板 | `metrics` / `/metrics/*` | 九域 25 项核心 KPI、33 个能力项覆盖与 SQLite mock |
 | 数据集成 | `data-source` / `/data-source/*` | SQLite 持久化 mock |
 | 数据湖 | `data-lake` / `/data-lake/*` | SQLite 持久化 mock |
@@ -72,6 +73,7 @@
 |---|---|
 | 产品矩阵首页 | `/` |
 | 行业解决方案 | `/solutions` |
+| Data Agent | `/data-agent/{general,discovery,qa,development,governance,operations}` 任务 List 及各自 `/tasks/:id` 专业任务详情 |
 | 量化看板 | `/metrics` 综合看板、`/metrics/{strategy,governance,architecture,assets,standards,quality,security,lifecycle,application-circulation}` 九域看板 |
 | 数据集成 | `/data-source/sources`、`/data-source/sync`、`/data-source/exchange` |
 | 数据湖 | `/data-lake/storage`、`/data-lake/tables`、`/data-lake/capacity` |
@@ -85,6 +87,8 @@
 | 系统设置 | `/settings/*` 菜单管理等平台配置 |
 
 没有实际页面和 mock 数据前，不要伪造规划中模块的已上线路由。
+
+Data Agent 是独立一级智能任务入口，包含通用 Agent、数据发现 Agent、数据问答 Agent、数据开发 Agent、数据治理 Agent和数据运维 Agent。通用 Agent 只负责编排与汇总；每个 Agent 有自己的任务 List，跨 Agent 任务共享同一记录并按参与关系展示，不建设统一任务中心。读取分析可自动执行，业务变更需用户确认，受控结论必须回到原产品域审批；复杂编辑跳转原专业工作台。状态保存在 `data-agent.agent-workspace`，案例只具备 mock 演示语义。
 
 数据安全采用一级“数据安全”、六个二级能力域和 25 个三级功能页；完整菜单、路由和持久化模型见 `specs/features/data-security/design.md`。旧 `/classification`、`/masking` 路径与稳定菜单 key 保持兼容。
 

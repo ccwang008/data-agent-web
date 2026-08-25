@@ -13,6 +13,7 @@ import { dataAssetRoutes } from "@/features/data-asset/routes";
 import { opsMonitorRoutes } from "@/features/ops-monitor/routes";
 import { dataSecurityRoutes } from "@/features/data-security/routes";
 import { metricsRoutes } from "@/features/metrics/routes";
+import { dataAgentRoutes } from "@/features/data-agent/routes";
 import { settingsRoutes } from "@/features/settings/routes";
 
 export const appFeatureRoutes = [
@@ -28,6 +29,7 @@ export const appFeatureRoutes = [
   ...opsMonitorRoutes,
   ...dataSecurityRoutes,
   ...metricsRoutes,
+  ...dataAgentRoutes,
   ...settingsRoutes,
 ];
 

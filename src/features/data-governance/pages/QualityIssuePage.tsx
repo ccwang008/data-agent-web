@@ -13,6 +13,7 @@ import {
   WorkspacePage,
 } from "@/components/data-platform/WorkspacePrimitives";
 import { statusTone } from "@/components/data-platform/workspace-utils";
+import { DataAgentContextLink } from "@/components/data-platform/DataAgentContextLink";
 import { cn } from "@/lib/utils";
 
 import { SCHEMA_VERSION, seedQualityIssues } from "../fixtures";
@@ -173,6 +174,7 @@ export function QualityIssuePage() {
         description="独立管理质量问题，驱动发现→确认→分发→整改→复检→关闭闭环；强制职责分离：确认人 ≠ 处置人 ≠ 关闭人。"
         actions={
           <>
+            <DataAgentContextLink agent="governance" contextType="质量问题" contextId={activeIssue?.id ?? "quality-issues"} intent={activeIssue ? `分析${activeIssue.objectName}质量问题的根因并生成整改方案` : "分析当前质量问题并生成整改建议"} />
             <ActionButton icon={Bug} onClick={() => navigate("/data-governance/quality/rules")}>规则库</ActionButton>
             <ActionButton primary icon={Send} onClick={bulkDispatch} disabled={!canBulkDispatch}>
               批量分发 ({selectedConfirmingCount})
